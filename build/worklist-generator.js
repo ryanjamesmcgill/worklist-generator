@@ -25524,6 +25524,8 @@ console.log('[worklist-generator] app.js loaded');
 ReactDOM.render(React.createElement(Application, null), document.getElementById('react-application'));
 
 },{"./components/application.react":210,"react":208,"react-dom":52}],210:[function(require,module,exports){
+"use strict";
+
 const React = require('react');
 const FixedDataTable = require('fixed-data-table');
 const Table = FixedDataTable.Table;
@@ -25532,80 +25534,147 @@ const Cell = FixedDataTable.Cell;
 var Steps = require('../stepdata/steps.json');
 console.log('[worklist-generator] application.react.js');
 
+class DataListWrapper {
+	constructor(indexMap, data) {
+		this._indexMap = indexMap;
+		this._data = data;
+	}
+
+	getSize() {
+		return this._indexMap.length;
+	}
+
+	getObjectAt(index) {
+		var unfiltered_index = this._indexMap[index];
+		if (typeof this._data.getObjectAt != "undefined") {
+			return this._data.getObjectAt(unfiltered_index);
+		} else return this._data[unfiltered_index];
+	}
+}
+
+var genIndexes = function (arr) {
+	var i;
+	var indexes = [];
+	for (i = 0; i < arr.length; i++) {
+		indexes.push(i);
+	}
+	return indexes;
+};
+
 var Application = React.createClass({
 	displayName: 'Application',
 
 	getInitialState: function () {
 		return {
-			myTableData: Steps
+			filteredDataList: new DataListWrapper(genIndexes(Steps), Steps)
 		};
+	},
+	_onFilterChangeStepSeq: function (e) {
+		console.log(e.target.value);
+		if (!e.target.value) {
+			this.setState({
+				filteredDataList: Steps
+			});
+		}
+
+		var filterBy = e.target.value.toLowerCase();
+		var size = Steps.length;
+		var filteredIndxes = [];
+		for (var index = 0; index < size; index++) {
+			var StepSeq = Steps[index].StepSeq;
+			if (StepSeq.toLowerCase().indexOf(filterBy) !== -1) {
+				filteredIndxes.push(index);
+			}
+		}
+
+		this.setState({
+			filteredDataList: new DataListWrapper(filteredIndxes, Steps)
+		});
 	},
 	render: function () {
 		return React.createElement(
-			Table,
-			{
-				rowsCount: this.state.myTableData.length,
-				rowHeight: 50,
-				headerHeight: 50,
-				width: 1000,
-				height: 230 },
-			React.createElement(Column, {
-				header: React.createElement(
-					Cell,
-					null,
-					'Process ID'
-				),
-				cell: props => React.createElement(
-					Cell,
-					props,
-					this.state.myTableData[props.rowIndex].ProcessID
-				),
-				width: 120
+			'div',
+			null,
+			React.createElement('input', {
+				onChange: this._onFilterChangeStepSeq,
+				placeholder: 'Filter StepSeq'
 			}),
-			React.createElement(Column, {
-				header: React.createElement(
-					Cell,
-					null,
-					'Step Seq'
-				),
-				cell: props => React.createElement(
-					Cell,
-					props,
-					this.state.myTableData[props.rowIndex].StepSeq
-				),
-				width: 120
+			React.createElement('input', {
+				onChange: this._onFilterChangeStepDesc,
+				placeholder: 'Filter StepDesc'
 			}),
-			React.createElement(Column, {
-				header: React.createElement(
-					Cell,
-					null,
-					'Step Description'
-				),
-				cell: props => React.createElement(
-					Cell,
-					props,
-					this.state.myTableData[props.rowIndex].StepDesc
-				),
-				width: 300
-			}),
-			React.createElement(Column, {
-				header: React.createElement(
-					Cell,
-					null,
-					'PPID'
-				),
-				cell: props => React.createElement(
-					Cell,
-					props,
-					this.state.myTableData[props.rowIndex].PPID
-				),
-				width: 200
-			})
+			React.createElement(
+				Table,
+				{
+					rowsCount: this.state.filteredDataList.getSize(),
+					rowHeight: 50,
+					headerHeight: 50,
+					width: 1000,
+					height: 230 },
+				React.createElement(Column, {
+					header: React.createElement(
+						Cell,
+						null,
+						'Process ID'
+					),
+					cell: props => React.createElement(
+						Cell,
+						props,
+						this.state.filteredDataList.getObjectAt(props.rowIndex).ProcessID
+					),
+					width: 120
+				}),
+				React.createElement(Column, {
+					header: React.createElement(
+						Cell,
+						null,
+						'Step Seq'
+					),
+					cell: props => React.createElement(
+						Cell,
+						props,
+						this.state.filteredDataList.getObjectAt(props.rowIndex).StepSeq
+					),
+					width: 120
+				}),
+				React.createElement(Column, {
+					header: React.createElement(
+						Cell,
+						null,
+						'Step Description'
+					),
+					cell: props => React.createElement(
+						Cell,
+						props,
+						this.state.filteredDataList.getObjectAt(props.rowIndex).StepDesc
+					),
+					width: 300
+				}),
+				React.createElement(Column, {
+					header: React.createElement(
+						Cell,
+						null,
+						'PPID'
+					),
+					cell: props => React.createElement(
+						Cell,
+						props,
+						this.state.filteredDataList.getObjectAt(props.rowIndex).PPID
+					),
+					width: 200
+				})
+			)
 		);
 	}
 });
 
 module.exports = Application;
+
+/*
+<Cell {...props}>
+  	{this.state.filteredDataList[props.rowIndex].PPID}
+</Cell>)}
+*/
 
 },{"../stepdata/steps.json":211,"fixed-data-table":51,"react":208}],211:[function(require,module,exports){
 module.exports=[
