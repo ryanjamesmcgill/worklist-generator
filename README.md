@@ -1,2 +1,2 @@
-# snapterest
-Project created to learn reactjs, from 'React.js Essentials' by Artemij Fedosejev
+# worklist-generator
+React.js based app that enables the user to easily build configuration files for an external engineering system.
