@@ -19017,10 +19017,32 @@ module.exports = warning;
 module.exports = require('./lib/React');
 
 },{"./lib/React":26}],159:[function(require,module,exports){
-var React = require('react');
-var ReactDOM = require('react-dom');
-//var Application = require('./components/Application.react');
+const React = require('react');
+const ReactDOM = require('react-dom');
+const Application = require('./components/Application.react');
 
 console.log('[worklist-generator] app.js loaded');
+ReactDOM.render(React.createElement(Application, null), document.getElementById('react-application'));
 
-},{"react":158,"react-dom":2}]},{},[159]);
+},{"./components/Application.react":160,"react":158,"react-dom":2}],160:[function(require,module,exports){
+const React = require('react');
+
+var Application = React.createClass({
+	displayName: "Application",
+
+	render: function () {
+		return React.createElement(
+			"div",
+			{ className: "container-fluid" },
+			React.createElement(
+				"p",
+				null,
+				" Loaded from application.react.js "
+			)
+		);
+	}
+});
+
+module.exports = Application;
+
+},{"react":158}]},{},[159]);
