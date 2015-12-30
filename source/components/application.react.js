@@ -1,76 +1,41 @@
 "use strict";
 
 const React = require('react');
+const StepmasterStore = require('../stores/StepmasterStore');
+const StepmasterActionCreators = require('../actions/StepmasterActionCreators');
 const FixedDataTable = require('fixed-data-table');
 const Table = FixedDataTable.Table;
 const Column = FixedDataTable.Column;
 const Cell = FixedDataTable.Cell;
-var Steps = require('../stepdata/steps.json');
+
 console.log('[worklist-generator] application.react.js');
 
-class DataListWrapper {
-  constructor(indexMap, data) {
-    this._indexMap = indexMap;
-    this._data = data;
-  }
-
-  getSize() {
-    return this._indexMap.length;
-  }
-
-  getObjectAt(index) {
-  	var unfiltered_index = this._indexMap[index];
-  	if(typeof this._data.getObjectAt != "undefined"){
-  		return this._data.getObjectAt(unfiltered_index);
-  	}else
-  		return this._data[unfiltered_index];
-  	}
-}
-
-
-var genIndexes = function(arr){
-	var i;
-	var indexes = [];
-	for(i = 0; i < arr.length; i++){
-		indexes.push(i);
-	}
-	return indexes;
-};
 
 var Application = React.createClass({
 	getInitialState: function(){
 		return {
-	      filteredDataList: new DataListWrapper(genIndexes(Steps), Steps)
-    	};
+			filters: StepmasterStore.getFilters()
+		};
 	},
-	_onFilterChangeStepSeq: function(e){
-		console.log(e.target.value);
-		if (!e.target.value) {
-	      	this.setState({
-	        	filteredDataList: Steps
-	    	});
-		}
-    	
-    	var filterBy = e.target.value.toLowerCase();
-    	var size = Steps.length;
-    	var filteredIndxes = [];
-    	for (var index = 0; index < size; index++){
-    		var StepSeq = Steps[index].StepSeq;
-    		if(StepSeq.toLowerCase().indexOf(filterBy) !== -1){
-    			filteredIndxes.push(index);
-    		}
-    	}
-    	
-    	this.setState({
-    		filteredDataList: new DataListWrapper(filteredIndxes, Steps)
-    	});
-    
+	componentDidMount: function(){
+		StepmasterStore.addChangeListener(this.onFilterChange);	
+	},
+	componentWillUnmount: function(){
+		StepmasterStore.removeChangeListener(this.onFilterChange);	
+	},
+	onFilterChange: function(){
+		this.setState({
+			filters: StepmasterStore.getFilters()
+		});
+	},
+	_onType: function(e){
+		StepmasterActionCreators.setFilterStepSeq(e.target.value);
 	},
 	render: function(){
 		return (
 			<div>
 			<input
-        	onChange={this._onFilterChangeStepSeq}
+        	onChange={this._onType}
           	placeholder="Filter StepSeq"
         	/>
         	<input
@@ -78,7 +43,7 @@ var Application = React.createClass({
           	placeholder="Filter StepDesc"
         	/>
 	      	<Table
-	        	rowsCount={this.state.filteredDataList.getSize()}
+	        	rowsCount={StepmasterStore.getFilteredLength()}
 	        	rowHeight={50}
 	        	headerHeight={50}
 	        	width={1000}
@@ -87,7 +52,7 @@ var Application = React.createClass({
 	          		header={<Cell>Process ID</Cell>}
 	          		cell={props =>(
 	            	<Cell {...props}>
-	              		{this.state.filteredDataList.getObjectAt(props.rowIndex).ProcessID}
+	              		{StepmasterStore.getObjectAt(props.rowIndex).processid}
 	            	</Cell>)}
 	          	width={120}
 	        	/>
@@ -95,7 +60,7 @@ var Application = React.createClass({
 	          		header={<Cell>Step Seq</Cell>}
 	          		cell={props =>(
 	            	<Cell {...props}>
-	              		{this.state.filteredDataList.getObjectAt(props.rowIndex).StepSeq}
+	              		{StepmasterStore.getObjectAt(props.rowIndex).stepseq}
 	            	</Cell>)}
 	          	width={120}
 	        	/>
@@ -103,7 +68,7 @@ var Application = React.createClass({
 	          		header={<Cell>Step Description</Cell>}
 	          		cell={props =>(
 	            	<Cell {...props}>
-	              		{this.state.filteredDataList.getObjectAt(props.rowIndex).StepDesc}
+	              		{StepmasterStore.getObjectAt(props.rowIndex).stepseq}
 	            	</Cell>)}
 	          	width={300}
 	        	/>
@@ -111,7 +76,7 @@ var Application = React.createClass({
 	          		header={<Cell>PPID</Cell>}
 	          		cell={props=>(	
 	          		<Cell {...props}>
-  						{this.state.filteredDataList.getObjectAt(props.rowIndex).PPID}
+  						{StepmasterStore.getObjectAt(props.rowIndex).ppid}
   					</Cell>)}
 	          	width={200}
 	        	/>
@@ -122,9 +87,3 @@ var Application = React.createClass({
 });
 
 module.exports = Application;
-
-/*
-<Cell {...props}>
-  	{this.state.filteredDataList[props.rowIndex].PPID}
-</Cell>)}
-*/

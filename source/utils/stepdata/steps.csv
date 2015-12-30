@@ -1,4 +1,4 @@
-ProcessID,StepSeq,StepDesc,PPID
+processid,stepseq,stepdesc,ppid
 DUMM,DUMMY01,Dummy Description (DMM) 01,RECIPEGOESHERE1
 DUMM,DUMMY02,Dummy Description (DMM) 02,RECIPEGOESHERE2
 DUMM,DUMMY03,Dummy Description (DMM) 03,RECIPEGOESHERE3
