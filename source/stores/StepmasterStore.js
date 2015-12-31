@@ -13,6 +13,12 @@ var filters = {
 		stepdesc: "",
 		ppid: ""
 };
+var names = {
+	"processid" : "Process ID",
+	"stepseq" : "Step Seq",
+	"stepdesc" : "Step Desc",
+	"ppid" : "PPID"
+};
 
 
 function setStepmaster(stepArray){
@@ -58,6 +64,9 @@ var StepmasterStore = assign({}, EventEmitter.prototype, {
 	},
 	getFilters: function(){
 		return filters;
+	},
+	getName: function(key){
+		return names[key];
 	}
 });
 

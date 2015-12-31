@@ -5,7 +5,9 @@ const Cell = require('fixed-data-table').Cell;
 var StepmasterText = React.createClass({
     render: function(){
         return( <Cell>
-                {StepmasterStore.getObjectAt(this.props.rowIndex)[this.props.column]}
+                {StepmasterStore
+                    .getObjectAt(this.props.rowIndex)
+                    [this.props.column]}
                 </Cell>);
     }
 });

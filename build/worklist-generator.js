@@ -38581,7 +38581,13 @@ var Stepmaster = React.createClass({
 
 	getInitialState: function () {
 		return {
-			filters: StepmasterStore.getFilters()
+			filters: StepmasterStore.getFilters(),
+			columnWidths: {
+				processid: 120,
+				stepseq: 120,
+				stepdesc: 250,
+				ppid: 200
+			}
 		};
 	},
 	componentDidMount: function () {
@@ -38600,6 +38606,13 @@ var Stepmaster = React.createClass({
 		var value = e.target.value;
 		StepmasterActionCreators.setFilter(filtertype, value);
 	},
+	_onColumnResizeEnd: function (newColumnWidth, columnKey) {
+		var newWidths = this.state.columnWidths;
+		newWidths[columnKey] = newColumnWidth;
+		this.setState({
+			columnWidths: newWidths
+		});
+	},
 	render: function () {
 		return React.createElement(
 			'div',
@@ -38611,42 +38624,47 @@ var Stepmaster = React.createClass({
 					rowHeight: 30,
 					headerHeight: 80,
 					width: 1000,
-					height: 230 },
+					height: 500,
+					onColumnResizeEndCallback: this._onColumnResizeEnd },
 				React.createElement(Column, {
-					width: 120,
-					header: React.createElement(StepmasterHeader, {
-						name: 'Process ID',
-						filtertype: 'processid',
+					columnKey: 'processid',
+					width: this.state.columnWidths.processid,
+					isResizable: true,
+					header: props => React.createElement(StepmasterHeader, {
+						filterType: props.columnKey,
 						handler: this._onType }),
 					cell: props => React.createElement(StepmasterText, {
-						column: 'processid',
+						column: props.columnKey,
 						rowIndex: props.rowIndex }) }),
 				React.createElement(Column, {
-					width: 120,
-					header: React.createElement(StepmasterHeader, {
-						name: 'Step Seq',
-						filtertype: 'stepseq',
+					columnKey: 'stepseq',
+					width: this.state.columnWidths.stepseq,
+					isResizable: true,
+					header: props => React.createElement(StepmasterHeader, {
+						filterType: props.columnKey,
 						handler: this._onType }),
 					cell: props => React.createElement(StepmasterText, {
-						column: 'stepseq',
+						column: props.columnKey,
 						rowIndex: props.rowIndex }) }),
 				React.createElement(Column, {
-					width: 300,
-					header: React.createElement(StepmasterHeader, {
-						name: 'Step Desc',
-						filtertype: 'stepdesc',
+					columnKey: 'stepdesc',
+					width: this.state.columnWidths.stepdesc,
+					isResizable: true,
+					header: props => React.createElement(StepmasterHeader, {
+						filterType: props.columnKey,
 						handler: this._onType }),
 					cell: props => React.createElement(StepmasterText, {
-						column: 'stepdesc',
+						column: props.columnKey,
 						rowIndex: props.rowIndex }) }),
 				React.createElement(Column, {
-					width: 300,
-					header: React.createElement(StepmasterHeader, {
-						name: 'PPID',
-						filtertype: 'ppid',
+					columnKey: 'ppid',
+					width: this.state.columnWidths.ppid,
+					isResizable: true,
+					header: props => React.createElement(StepmasterHeader, {
+						filterType: props.columnKey,
 						handler: this._onType }),
 					cell: props => React.createElement(StepmasterText, {
-						column: 'ppid',
+						column: props.columnKey,
 						rowIndex: props.rowIndex }) })
 			)
 		);
@@ -38658,6 +38676,7 @@ module.exports = Stepmaster;
 },{"../actions/StepmasterActionCreators":215,"../stores/StepmasterStore":222,"./stepmasterheader.react":219,"./stepmastertext.react":220,"fixed-data-table":52,"react":214}],219:[function(require,module,exports){
 const React = require('react');
 const Cell = require('fixed-data-table').Cell;
+const StepmasterStore = require("../stores/StepmasterStore");
 
 var StepmasterHeader = React.createClass({
     displayName: 'StepmasterHeader',
@@ -38670,20 +38689,20 @@ var StepmasterHeader = React.createClass({
             React.createElement(
                 'p',
                 null,
-                this.props.name
+                StepmasterStore.getName(this.props.filterType)
             ),
             React.createElement('input', { type: 'search',
                 className: 'form-control',
                 placeholder: defaultText,
                 onChange: this.props.handler,
-                id: this.props.filtertype })
+                id: this.props.filterType })
         );
     }
 });
 
 module.exports = StepmasterHeader;
 
-},{"fixed-data-table":52,"react":214}],220:[function(require,module,exports){
+},{"../stores/StepmasterStore":222,"fixed-data-table":52,"react":214}],220:[function(require,module,exports){
 const React = require('react');
 const StepmasterStore = require('../stores/StepmasterStore');
 const Cell = require('fixed-data-table').Cell;
@@ -38721,6 +38740,12 @@ var filters = {
 	stepseq: "",
 	stepdesc: "",
 	ppid: ""
+};
+var names = {
+	"processid": "Process ID",
+	"stepseq": "Step Seq",
+	"stepdesc": "Step Desc",
+	"ppid": "PPID"
 };
 
 function setStepmaster(stepArray) {
@@ -38766,6 +38791,9 @@ var StepmasterStore = assign({}, EventEmitter.prototype, {
 	},
 	getFilters: function () {
 		return filters;
+	},
+	getName: function (key) {
+		return names[key];
 	}
 });
 

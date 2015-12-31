@@ -12,7 +12,13 @@ const Cell = FixedDataTable.Cell;
 var Stepmaster = React.createClass({
     getInitialState: function(){
 		return {
-			filters: StepmasterStore.getFilters()
+			filters: StepmasterStore.getFilters(),
+			columnWidths: {
+				processid: 120,
+				stepseq: 120,
+				stepdesc: 250,
+				ppid: 200
+			}
 		};
 	},
 	componentDidMount: function(){
@@ -31,6 +37,13 @@ var Stepmaster = React.createClass({
 	    var value = e.target.value;
 		StepmasterActionCreators.setFilter(filtertype, value);
 	},
+	_onColumnResizeEnd: function(newColumnWidth, columnKey){
+		var newWidths = this.state.columnWidths;
+		newWidths[columnKey] = newColumnWidth;
+	    this.setState({
+	    	columnWidths: newWidths
+	    });	
+	},
 	render: function(){
 		return (
 			<div>
@@ -39,43 +52,49 @@ var Stepmaster = React.createClass({
 	        	rowHeight={30}
 	        	headerHeight={80}
 	        	width={1000}
-	        	height={230}>
+	        	height={500}
+	        	onColumnResizeEndCallback={this._onColumnResizeEnd}>
 	        	<Column
-	        		width={120}
-	        	    header={<StepmasterHeader
-	        	    			name="Process ID"
-	        	    			filtertype="processid"
-	        	    			handler={this._onType}/>}
+	     			columnKey="processid"
+	     			width={this.state.columnWidths.processid}
+	     			isResizable={true}
+	        	    header={props=>(<StepmasterHeader
+	        	    			filterType={props.columnKey}
+	        	    			handler={this._onType}/> )}
 	        	    cell={props=>(<StepmasterText
-	        	    			column="processid"
+	        	    			column={props.columnKey}
 	        	    			rowIndex={props.rowIndex} /> )} />
 	        	<Column
-	        		width={120}
-	        	    header={<StepmasterHeader
-	        	    			name="Step Seq"
-	        	    			filtertype="stepseq"
-	        	    			handler={this._onType}/>}
+	     			columnKey="stepseq"
+	     			width={this.state.columnWidths.stepseq}
+	     			isResizable={true}
+	        	    header={props=>(<StepmasterHeader
+	        	    			filterType={props.columnKey}
+	        	    			handler={this._onType}/> )}
 	        	    cell={props=>(<StepmasterText
-	        	    			column="stepseq"
+	        	    			column={props.columnKey}
 	        	    			rowIndex={props.rowIndex} /> )} />
 	        	<Column
-	        		width={300}
-	        	    header={<StepmasterHeader
-	        	    			name="Step Desc"
-	        	    			filtertype="stepdesc"
-	        	    			handler={this._onType}/>}
+	     			columnKey="stepdesc"
+	     			width={this.state.columnWidths.stepdesc}
+	     			isResizable={true}
+	        	    header={props=>(<StepmasterHeader
+	        	    			filterType={props.columnKey}
+	        	    			handler={this._onType}/> )}
 	        	    cell={props=>(<StepmasterText
-	        	    			column="stepdesc"
+	        	    			column={props.columnKey}
 	        	    			rowIndex={props.rowIndex} /> )} />
 	        	<Column
-	        		width={300}
-	        	    header={<StepmasterHeader
-	        	    			name="PPID"
-	        	    			filtertype="ppid"
-	        	    			handler={this._onType}/>}
+	     			columnKey="ppid"
+	     			width={this.state.columnWidths.ppid}
+	     			isResizable={true}
+	        	    header={props=>(<StepmasterHeader
+	        	    			filterType={props.columnKey}
+	        	    			handler={this._onType}/> )}
 	        	    cell={props=>(<StepmasterText
-	        	    			column="ppid"
+	        	    			column={props.columnKey}
 	        	    			rowIndex={props.rowIndex} /> )} />
+
 	      	</Table>
 	      	</div>
 		);
