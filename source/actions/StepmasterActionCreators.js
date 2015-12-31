@@ -8,10 +8,10 @@ function setStepmaster(stepArray){
     AppDispatcher.dispatch(action);
 }
 
-function setFilterStepSeq(value){
+function setFilter(filtertype, value){
     var action = {
         type: 'set_filter',
-        column: 'stepseq',
+        filtertype: filtertype,
         value: value
     };
     AppDispatcher.dispatch(action);
@@ -19,5 +19,5 @@ function setFilterStepSeq(value){
 
 module.exports = {
 	setStepmaster: setStepmaster,
-	setFilterStepSeq: setFilterStepSeq
+	setFilter: setFilter
 };

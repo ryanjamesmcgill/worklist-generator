@@ -38520,10 +38520,10 @@ function setStepmaster(stepArray) {
     AppDispatcher.dispatch(action);
 }
 
-function setFilterStepSeq(value) {
+function setFilter(filtertype, value) {
     var action = {
         type: 'set_filter',
-        column: 'stepseq',
+        filtertype: filtertype,
         value: value
     };
     AppDispatcher.dispatch(action);
@@ -38531,10 +38531,10 @@ function setFilterStepSeq(value) {
 
 module.exports = {
     setStepmaster: setStepmaster,
-    setFilterStepSeq: setFilterStepSeq
+    setFilter: setFilter
 };
 
-},{"../dispatcher/AppDispatcher":218}],216:[function(require,module,exports){
+},{"../dispatcher/AppDispatcher":221}],216:[function(require,module,exports){
 const React = require('react');
 const ReactDOM = require('react-dom');
 const Application = require('./components/application.react');
@@ -38545,21 +38545,39 @@ console.log('[worklist-generator] app.js loaded');
 StepmasterUtils.generateStepmaster();
 ReactDOM.render(React.createElement(Application, null), document.getElementById('react-application'));
 
-},{"./components/application.react":217,"./utils/StepmasterUtils":220,"react":214,"react-dom":58}],217:[function(require,module,exports){
+},{"./components/application.react":217,"./utils/StepmasterUtils":223,"react":214,"react-dom":58}],217:[function(require,module,exports){
+const React = require('react');
+const Stepmaster = require("./stepmaster.react");
+
+var Application = React.createClass({
+	displayName: 'Application',
+
+	render: function () {
+		return React.createElement(
+			'div',
+			{ className: 'container' },
+			React.createElement(Stepmaster, null)
+		);
+	}
+});
+
+module.exports = Application;
+
+},{"./stepmaster.react":218,"react":214}],218:[function(require,module,exports){
 "use strict";
 
 const React = require('react');
 const StepmasterStore = require('../stores/StepmasterStore');
 const StepmasterActionCreators = require('../actions/StepmasterActionCreators');
+const StepmasterHeader = require('./stepmasterheader.react');
+const StepmasterText = require('./stepmastertext.react');
 const FixedDataTable = require('fixed-data-table');
 const Table = FixedDataTable.Table;
 const Column = FixedDataTable.Column;
 const Cell = FixedDataTable.Cell;
 
-console.log('[worklist-generator] application.react.js');
-
-var Application = React.createClass({
-	displayName: 'Application',
+var Stepmaster = React.createClass({
+	displayName: 'Stepmaster',
 
 	getInitialState: function () {
 		return {
@@ -38578,92 +38596,117 @@ var Application = React.createClass({
 		});
 	},
 	_onType: function (e) {
-		StepmasterActionCreators.setFilterStepSeq(e.target.value);
+		var filtertype = e.target.attributes.id.textContent;
+		var value = e.target.value;
+		StepmasterActionCreators.setFilter(filtertype, value);
 	},
 	render: function () {
 		return React.createElement(
 			'div',
 			null,
-			React.createElement('input', {
-				onChange: this._onType,
-				placeholder: 'Filter StepSeq'
-			}),
-			React.createElement('input', {
-				onChange: this._onFilterChangeStepDesc,
-				placeholder: 'Filter StepDesc'
-			}),
 			React.createElement(
 				Table,
 				{
 					rowsCount: StepmasterStore.getFilteredLength(),
-					rowHeight: 50,
-					headerHeight: 50,
+					rowHeight: 30,
+					headerHeight: 80,
 					width: 1000,
 					height: 230 },
 				React.createElement(Column, {
-					header: React.createElement(
-						Cell,
-						null,
-						'Process ID'
-					),
-					cell: props => React.createElement(
-						Cell,
-						props,
-						StepmasterStore.getObjectAt(props.rowIndex).processid
-					),
-					width: 120
-				}),
+					width: 120,
+					header: React.createElement(StepmasterHeader, {
+						name: 'Process ID',
+						filtertype: 'processid',
+						handler: this._onType }),
+					cell: props => React.createElement(StepmasterText, {
+						column: 'processid',
+						rowIndex: props.rowIndex }) }),
 				React.createElement(Column, {
-					header: React.createElement(
-						Cell,
-						null,
-						'Step Seq'
-					),
-					cell: props => React.createElement(
-						Cell,
-						props,
-						StepmasterStore.getObjectAt(props.rowIndex).stepseq
-					),
-					width: 120
-				}),
+					width: 120,
+					header: React.createElement(StepmasterHeader, {
+						name: 'Step Seq',
+						filtertype: 'stepseq',
+						handler: this._onType }),
+					cell: props => React.createElement(StepmasterText, {
+						column: 'stepseq',
+						rowIndex: props.rowIndex }) }),
 				React.createElement(Column, {
-					header: React.createElement(
-						Cell,
-						null,
-						'Step Description'
-					),
-					cell: props => React.createElement(
-						Cell,
-						props,
-						StepmasterStore.getObjectAt(props.rowIndex).stepseq
-					),
-					width: 300
-				}),
+					width: 300,
+					header: React.createElement(StepmasterHeader, {
+						name: 'Step Desc',
+						filtertype: 'stepdesc',
+						handler: this._onType }),
+					cell: props => React.createElement(StepmasterText, {
+						column: 'stepdesc',
+						rowIndex: props.rowIndex }) }),
 				React.createElement(Column, {
-					header: React.createElement(
-						Cell,
-						null,
-						'PPID'
-					),
-					cell: props => React.createElement(
-						Cell,
-						props,
-						StepmasterStore.getObjectAt(props.rowIndex).ppid
-					),
-					width: 200
-				})
+					width: 300,
+					header: React.createElement(StepmasterHeader, {
+						name: 'PPID',
+						filtertype: 'ppid',
+						handler: this._onType }),
+					cell: props => React.createElement(StepmasterText, {
+						column: 'ppid',
+						rowIndex: props.rowIndex }) })
 			)
 		);
 	}
 });
 
-module.exports = Application;
+module.exports = Stepmaster;
 
-},{"../actions/StepmasterActionCreators":215,"../stores/StepmasterStore":219,"fixed-data-table":52,"react":214}],218:[function(require,module,exports){
+},{"../actions/StepmasterActionCreators":215,"../stores/StepmasterStore":222,"./stepmasterheader.react":219,"./stepmastertext.react":220,"fixed-data-table":52,"react":214}],219:[function(require,module,exports){
+const React = require('react');
+const Cell = require('fixed-data-table').Cell;
+
+var StepmasterHeader = React.createClass({
+    displayName: 'StepmasterHeader',
+
+    render: function () {
+        var defaultText = "filter by " + this.props.name;
+        return React.createElement(
+            Cell,
+            null,
+            React.createElement(
+                'p',
+                null,
+                this.props.name
+            ),
+            React.createElement('input', { type: 'search',
+                className: 'form-control',
+                placeholder: defaultText,
+                onChange: this.props.handler,
+                id: this.props.filtertype })
+        );
+    }
+});
+
+module.exports = StepmasterHeader;
+
+},{"fixed-data-table":52,"react":214}],220:[function(require,module,exports){
+const React = require('react');
+const StepmasterStore = require('../stores/StepmasterStore');
+const Cell = require('fixed-data-table').Cell;
+
+var StepmasterText = React.createClass({
+    displayName: 'StepmasterText',
+
+    render: function () {
+        return React.createElement(
+            Cell,
+            null,
+            StepmasterStore.getObjectAt(this.props.rowIndex)[this.props.column]
+        );
+    }
+});
+
+module.exports = StepmasterText;
+
+},{"../stores/StepmasterStore":222,"fixed-data-table":52,"react":214}],221:[function(require,module,exports){
 var Dispatcher = require('flux').Dispatcher;
 module.exports = new Dispatcher();
 
-},{"flux":53}],219:[function(require,module,exports){
+},{"flux":53}],222:[function(require,module,exports){
 const AppDispatcher = require('../dispatcher/AppDispatcher');
 const EventEmitter = require('events').EventEmitter;
 const assign = require('object-assign');
@@ -38686,8 +38729,8 @@ function setStepmaster(stepArray) {
 		filteredIndexes.push(i);
 	}
 }
-function setFilter(column, value) {
-	filters[column] = value.toLowerCase();
+function setFilter(filtertype, value) {
+	filters[filtertype] = value.toLowerCase();
 	filter();
 }
 function filter() {
@@ -38733,7 +38776,7 @@ function handleAction(action) {
 			emitChange();
 			break;
 		case 'set_filter':
-			setFilter(action.column, action.value);
+			setFilter(action.filtertype, action.value);
 			emitChange();
 			break;
 
@@ -38744,7 +38787,7 @@ function handleAction(action) {
 StepmasterStore.dispatchToken = AppDispatcher.register(handleAction);
 module.exports = StepmasterStore;
 
-},{"../dispatcher/AppDispatcher":218,"../utils/StepmasterUtils":220,"events":1,"object-assign":57}],220:[function(require,module,exports){
+},{"../dispatcher/AppDispatcher":221,"../utils/StepmasterUtils":223,"events":1,"object-assign":57}],223:[function(require,module,exports){
 const _ = require('lodash');
 const StepmasterActionCreator = require('../actions/StepmasterActionCreators');
 const stepArray = require('./stepdata/steps.json');
@@ -38754,7 +38797,6 @@ function generateStepmaster() {
 }
 
 function filterTest(row, filters) {
-    console.log('filter');
     var pass = true;
     _.forEach(filters, function (value, key) {
         if (value !== "") {
@@ -38769,7 +38811,7 @@ module.exports = {
     filterTest: filterTest
 };
 
-},{"../actions/StepmasterActionCreators":215,"./stepdata/steps.json":221,"lodash":56}],221:[function(require,module,exports){
+},{"../actions/StepmasterActionCreators":215,"./stepdata/steps.json":224,"lodash":56}],224:[function(require,module,exports){
 module.exports=[
 {"processid":"DUMM","stepseq":"DUMMY01","stepdesc":"Dummy Description (DMM) 01","ppid":"RECIPEGOESHERE1"},
 {"processid":"DUMM","stepseq":"DUMMY02","stepdesc":"Dummy Description (DMM) 02","ppid":"RECIPEGOESHERE2"},

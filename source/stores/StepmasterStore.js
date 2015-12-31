@@ -21,8 +21,8 @@ function setStepmaster(stepArray){
 	    filteredIndexes.push(i);
 	}
 }
-function setFilter(column, value){
-	filters[column] = value.toLowerCase();
+function setFilter(filtertype, value){
+	filters[filtertype] = value.toLowerCase();
 	filter();
 }
 function filter(){
@@ -68,7 +68,7 @@ function handleAction(action){
 			emitChange();
 			break;
 		case 'set_filter':
-			setFilter(action.column, action.value);
+			setFilter(action.filtertype, action.value);
 			emitChange();
 			break;
 			

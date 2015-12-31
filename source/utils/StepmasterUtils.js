@@ -7,7 +7,6 @@ function generateStepmaster(){
 }
 
 function filterTest(row, filters){
-    console.log('filter');
     var pass = true;
     _.forEach(filters,function(value, key){
         if(value !== ""){
