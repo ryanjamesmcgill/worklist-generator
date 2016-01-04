@@ -9,10 +9,13 @@ const Table = FixedDataTable.Table;
 const Column = FixedDataTable.Column;
 const Cell = FixedDataTable.Cell;
 
+
+
 var Stepmaster = React.createClass({
     getInitialState: function(){
 		return {
 			filters: StepmasterStore.getFilters(),
+			dimensions: StepmasterStore.getDimensions(),
 			columnWidths: {
 				processid: 120,
 				stepseq: 120,
@@ -22,14 +25,15 @@ var Stepmaster = React.createClass({
 		};
 	},
 	componentDidMount: function(){
-		StepmasterStore.addChangeListener(this.onFilterChange);	
+		StepmasterStore.addChangeListener(this._onStoreChange);	
 	},
 	componentWillUnmount: function(){
-		StepmasterStore.removeChangeListener(this.onFilterChange);	
+		StepmasterStore.removeChangeListener(this._onStoreChange);	
 	},
-	onFilterChange: function(){
+	_onStoreChange: function(){
 		this.setState({
-			filters: StepmasterStore.getFilters()
+			filters: StepmasterStore.getFilters(),
+			dimensions: StepmasterStore.getDimensions()
 		});
 	},
 	_onType: function(e){
@@ -46,13 +50,14 @@ var Stepmaster = React.createClass({
 	},
 	render: function(){
 		return (
-			<div>
 	      	<Table
 	        	rowsCount={StepmasterStore.getFilteredLength()}
 	        	rowHeight={30}
 	        	headerHeight={80}
-	        	width={1000}
-	        	height={500}
+	        	width={this.state.dimensions.width}
+	        	height={this.state.dimensions.height}
+	        	footerHeight={10}
+	        	isColumnResizing={false}
 	        	onColumnResizeEndCallback={this._onColumnResizeEnd}>
 	        	<Column
 	     			columnKey="processid"
@@ -96,7 +101,6 @@ var Stepmaster = React.createClass({
 	        	    			rowIndex={props.rowIndex} /> )} />
 
 	      	</Table>
-	      	</div>
 		);
 	}
 });

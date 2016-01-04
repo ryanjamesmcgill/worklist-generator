@@ -17,7 +17,16 @@ function setFilter(filtertype, value){
     AppDispatcher.dispatch(action);
 }
 
+function setHeight(height){
+    var action = {
+        type: 'set_height',
+        height: height
+    }
+    AppDispatcher.dispatch(action);
+}
+
 module.exports = {
 	setStepmaster: setStepmaster,
-	setFilter: setFilter
+	setFilter: setFilter,
+	setHeight: setHeight
 };

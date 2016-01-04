@@ -19,6 +19,10 @@ var names = {
 	"stepdesc" : "Step Desc",
 	"ppid" : "PPID"
 };
+var dimensions = {
+	height: 500,
+	width: 800
+};
 
 
 function setStepmaster(stepArray){
@@ -40,6 +44,9 @@ function filter(){
 			filteredIndexes.push(index);
 		}
 	}
+}
+function setHeight(height){
+	dimensions.height = height;
 }
 function emitChange(){
 	StepmasterStore.emit(CHANGE_EVENT);
@@ -67,6 +74,9 @@ var StepmasterStore = assign({}, EventEmitter.prototype, {
 	},
 	getName: function(key){
 		return names[key];
+	},
+	getDimensions:function(){
+		return dimensions;
 	}
 });
 
@@ -78,6 +88,10 @@ function handleAction(action){
 			break;
 		case 'set_filter':
 			setFilter(action.filtertype, action.value);
+			emitChange();
+			break;
+		case 'set_height':
+			setHeight(action.height);
 			emitChange();
 			break;
 			
