@@ -4,6 +4,7 @@ const StepmasterStore = require('../stores/StepmasterStore');
 const StepmasterActionCreators = require('../actions/StepmasterActionCreators');
 const StepmasterHeader = require('./stepmasterheader.react');
 const StepmasterText = require('./stepmastertext.react');
+const StepmasterHandle = require("./stepmasterhandle.react");
 const FixedDataTable = require('fixed-data-table');
 const Table = FixedDataTable.Table;
 const Column = FixedDataTable.Column;
@@ -50,13 +51,14 @@ var Stepmaster = React.createClass({
 	},
 	render: function(){
 		return (
+			<div>
 	      	<Table
 	        	rowsCount={StepmasterStore.getFilteredLength()}
 	        	rowHeight={30}
 	        	headerHeight={80}
 	        	width={this.state.dimensions.width}
 	        	height={this.state.dimensions.height}
-	        	footerHeight={10}
+	        	footerHeight={0}
 	        	isColumnResizing={false}
 	        	onColumnResizeEndCallback={this._onColumnResizeEnd}>
 	        	<Column
@@ -101,6 +103,8 @@ var Stepmaster = React.createClass({
 	        	    			rowIndex={props.rowIndex} /> )} />
 
 	      	</Table>
+	      	<StepmasterHandle />
+	      	</div>
 		);
 	}
 });
