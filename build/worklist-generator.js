@@ -38543,7 +38543,7 @@ module.exports = {
     setHeight: setHeight
 };
 
-},{"../dispatcher/AppDispatcher":223}],216:[function(require,module,exports){
+},{"../dispatcher/AppDispatcher":225}],216:[function(require,module,exports){
 const React = require('react');
 const ReactDOM = require('react-dom');
 const Application = require('./components/application.react');
@@ -38554,7 +38554,7 @@ console.log('[worklist-generator] app.js loaded');
 StepmasterUtils.generateStepmaster();
 ReactDOM.render(React.createElement(Application, null), document.getElementById('react-application'));
 
-},{"./components/application.react":217,"./utils/StepmasterUtils":225,"react":214,"react-dom":58}],217:[function(require,module,exports){
+},{"./components/application.react":217,"./utils/StepmasterUtils":227,"react":214,"react-dom":58}],217:[function(require,module,exports){
 const React = require('react');
 const Stepmaster = require("./stepmaster.react");
 
@@ -38606,6 +38606,8 @@ const StepmasterActionCreators = require('../actions/StepmasterActionCreators');
 const StepmasterHeader = require('./stepmasterheader.react');
 const StepmasterText = require('./stepmastertext.react');
 const StepmasterHandle = require("./stepmasterhandle.react");
+const StepmasterButton = require("./stepmasterbutton.react");
+const StepmasterHeaderButton = require("./stepmasterheaderbutton.react");
 const FixedDataTable = require('fixed-data-table');
 const Table = FixedDataTable.Table;
 const Column = FixedDataTable.Column;
@@ -38619,6 +38621,7 @@ var Stepmaster = React.createClass({
 			filters: StepmasterStore.getFilters(),
 			dimensions: StepmasterStore.getDimensions(),
 			columnWidths: {
+				button: 67,
 				processid: 120,
 				stepseq: 120,
 				stepdesc: 250,
@@ -38658,13 +38661,19 @@ var Stepmaster = React.createClass({
 				Table,
 				{
 					rowsCount: StepmasterStore.getFilteredLength(),
-					rowHeight: 30,
+					rowHeight: 45,
 					headerHeight: 80,
 					width: this.state.dimensions.width,
 					height: this.state.dimensions.height,
-					footerHeight: 0,
+					footerHeight: 5,
 					isColumnResizing: false,
 					onColumnResizeEndCallback: this._onColumnResizeEnd },
+				React.createElement(Column, {
+					columnKey: 'button',
+					width: this.state.columnWidths.button,
+					isResizable: true,
+					header: React.createElement(StepmasterHeaderButton, null),
+					cell: props => React.createElement(StepmasterButton, { rowIndex: props.rowIndex }) }),
 				React.createElement(Column, {
 					columnKey: 'processid',
 					width: this.state.columnWidths.processid,
@@ -38713,7 +38722,35 @@ var Stepmaster = React.createClass({
 
 module.exports = Stepmaster;
 
-},{"../actions/StepmasterActionCreators":215,"../stores/StepmasterStore":224,"./stepmasterhandle.react":220,"./stepmasterheader.react":221,"./stepmastertext.react":222,"fixed-data-table":52,"react":214}],220:[function(require,module,exports){
+},{"../actions/StepmasterActionCreators":215,"../stores/StepmasterStore":226,"./stepmasterbutton.react":220,"./stepmasterhandle.react":221,"./stepmasterheader.react":222,"./stepmasterheaderbutton.react":223,"./stepmastertext.react":224,"fixed-data-table":52,"react":214}],220:[function(require,module,exports){
+const React = require('react');
+const StepmasterStore = require('../stores/StepmasterStore');
+const Cell = require('fixed-data-table').Cell;
+
+var StepmasterButton = React.createClass({
+    displayName: 'StepmasterButton',
+
+    _onClick: function (e) {
+        console.log('clicked ', StepmasterStore.getObjectAt(this.props.rowIndex));
+    },
+    render: function () {
+        return React.createElement(
+            Cell,
+            null,
+            React.createElement(
+                'button',
+                { type: 'button',
+                    className: 'btn btn-primary btn-sm',
+                    onClick: this._onClick },
+                'Add'
+            )
+        );
+    }
+});
+
+module.exports = StepmasterButton;
+
+},{"../stores/StepmasterStore":226,"fixed-data-table":52,"react":214}],221:[function(require,module,exports){
 const React = require('react');
 const StepmasterActionCreators = require("../actions/StepmasterActionCreators");
 const StepmasterStore = require('../stores/StepmasterStore');
@@ -38721,8 +38758,9 @@ const MousemoveCatcher = require('./mousemovecatcher.react');
 
 var divHandleStyle = {
 	backgroundColor: '#dae6eb',
-	height: 50,
-	width: StepmasterStore.getDimensions().width
+	height: 10,
+	width: StepmasterStore.getDimensions().width,
+	cursor: 'row-resize'
 };
 
 var StepmasterHandle = React.createClass({
@@ -38788,7 +38826,7 @@ module.exports = StepmasterHandle;
 
 */
 
-},{"../actions/StepmasterActionCreators":215,"../stores/StepmasterStore":224,"./mousemovecatcher.react":218,"react":214}],221:[function(require,module,exports){
+},{"../actions/StepmasterActionCreators":215,"../stores/StepmasterStore":226,"./mousemovecatcher.react":218,"react":214}],222:[function(require,module,exports){
 const React = require('react');
 const Cell = require('fixed-data-table').Cell;
 const StepmasterStore = require("../stores/StepmasterStore");
@@ -38817,7 +38855,35 @@ var StepmasterHeader = React.createClass({
 
 module.exports = StepmasterHeader;
 
-},{"../stores/StepmasterStore":224,"fixed-data-table":52,"react":214}],222:[function(require,module,exports){
+},{"../stores/StepmasterStore":226,"fixed-data-table":52,"react":214}],223:[function(require,module,exports){
+const React = require('react');
+const StepmasterStore = require('../stores/StepmasterStore');
+const Cell = require('fixed-data-table').Cell;
+
+var StepmasterHeaderButton = React.createClass({
+    displayName: 'StepmasterHeaderButton',
+
+    _onClick: function (e) {
+        console.log('all filtered ', StepmasterStore.getFilteredStepmaster());
+    },
+    render: function () {
+        return React.createElement(
+            Cell,
+            null,
+            React.createElement(
+                'button',
+                { type: 'button',
+                    className: 'btn btn-info btn-sm',
+                    onClick: this._onClick },
+                'All'
+            )
+        );
+    }
+});
+
+module.exports = StepmasterHeaderButton;
+
+},{"../stores/StepmasterStore":226,"fixed-data-table":52,"react":214}],224:[function(require,module,exports){
 const React = require('react');
 const StepmasterStore = require('../stores/StepmasterStore');
 const Cell = require('fixed-data-table').Cell;
@@ -38836,11 +38902,11 @@ var StepmasterText = React.createClass({
 
 module.exports = StepmasterText;
 
-},{"../stores/StepmasterStore":224,"fixed-data-table":52,"react":214}],223:[function(require,module,exports){
+},{"../stores/StepmasterStore":226,"fixed-data-table":52,"react":214}],225:[function(require,module,exports){
 var Dispatcher = require('flux').Dispatcher;
 module.exports = new Dispatcher();
 
-},{"flux":53}],224:[function(require,module,exports){
+},{"flux":53}],226:[function(require,module,exports){
 const AppDispatcher = require('../dispatcher/AppDispatcher');
 const EventEmitter = require('events').EventEmitter;
 const assign = require('object-assign');
@@ -38911,6 +38977,11 @@ var StepmasterStore = assign({}, EventEmitter.prototype, {
 		var filteredIndex = filteredIndexes[index];
 		return stepmaster[filteredIndex];
 	},
+	getFilteredStepmaster: function () {
+		return filteredIndexes.map(function (index) {
+			return stepmaster[index];
+		});
+	},
 	getFilters: function () {
 		return filters;
 	},
@@ -38944,7 +39015,7 @@ function handleAction(action) {
 StepmasterStore.dispatchToken = AppDispatcher.register(handleAction);
 module.exports = StepmasterStore;
 
-},{"../dispatcher/AppDispatcher":223,"../utils/StepmasterUtils":225,"events":1,"object-assign":57}],225:[function(require,module,exports){
+},{"../dispatcher/AppDispatcher":225,"../utils/StepmasterUtils":227,"events":1,"object-assign":57}],227:[function(require,module,exports){
 const _ = require('lodash');
 const StepmasterActionCreator = require('../actions/StepmasterActionCreators');
 const stepArray = require('./stepdata/steps.json');
@@ -38968,7 +39039,7 @@ module.exports = {
     filterTest: filterTest
 };
 
-},{"../actions/StepmasterActionCreators":215,"./stepdata/steps.json":226,"lodash":56}],226:[function(require,module,exports){
+},{"../actions/StepmasterActionCreators":215,"./stepdata/steps.json":228,"lodash":56}],228:[function(require,module,exports){
 module.exports=[
 {"processid":"DUMM","stepseq":"DUMMY01","stepdesc":"Dummy Description (DMM) 01","ppid":"RECIPEGOESHERE1"},
 {"processid":"DUMM","stepseq":"DUMMY02","stepdesc":"Dummy Description (DMM) 02","ppid":"RECIPEGOESHERE2"},

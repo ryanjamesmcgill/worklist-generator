@@ -5,8 +5,9 @@ const MousemoveCatcher = require('./mousemovecatcher.react');
 
 var divHandleStyle={
 	backgroundColor: '#dae6eb',
-	height: 50,
-	width: StepmasterStore.getDimensions().width
+	height: 10,
+	width: StepmasterStore.getDimensions().width,
+	cursor: 'row-resize'
 };
 
 var StepmasterHandle = React.createClass({

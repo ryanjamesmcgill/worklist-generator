@@ -69,6 +69,12 @@ var StepmasterStore = assign({}, EventEmitter.prototype, {
 		var filteredIndex = filteredIndexes[index];
 		return stepmaster[ filteredIndex ];
 	},
+	getFilteredStepmaster: function(){
+		return filteredIndexes.map(
+					function(index){
+						return stepmaster[ index ];
+				});	
+	},
 	getFilters: function(){
 		return filters;
 	},

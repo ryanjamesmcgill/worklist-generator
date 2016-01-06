@@ -5,6 +5,8 @@ const StepmasterActionCreators = require('../actions/StepmasterActionCreators');
 const StepmasterHeader = require('./stepmasterheader.react');
 const StepmasterText = require('./stepmastertext.react');
 const StepmasterHandle = require("./stepmasterhandle.react");
+const StepmasterButton = require("./stepmasterbutton.react");
+const StepmasterHeaderButton = require("./stepmasterheaderbutton.react");
 const FixedDataTable = require('fixed-data-table');
 const Table = FixedDataTable.Table;
 const Column = FixedDataTable.Column;
@@ -18,6 +20,7 @@ var Stepmaster = React.createClass({
 			filters: StepmasterStore.getFilters(),
 			dimensions: StepmasterStore.getDimensions(),
 			columnWidths: {
+				button: 67,
 				processid: 120,
 				stepseq: 120,
 				stepdesc: 250,
@@ -54,13 +57,19 @@ var Stepmaster = React.createClass({
 			<div>
 	      	<Table
 	        	rowsCount={StepmasterStore.getFilteredLength()}
-	        	rowHeight={30}
+	        	rowHeight={45}
 	        	headerHeight={80}
 	        	width={this.state.dimensions.width}
 	        	height={this.state.dimensions.height}
-	        	footerHeight={0}
+	        	footerHeight={5}
 	        	isColumnResizing={false}
 	        	onColumnResizeEndCallback={this._onColumnResizeEnd}>
+	        	<Column
+	     			columnKey="button"
+	     			width={this.state.columnWidths.button}
+	     			isResizable={true}
+	        	    header={<StepmasterHeaderButton/>}
+	        	    cell={props=>(<StepmasterButton rowIndex={props.rowIndex} /> )} />
 	        	<Column
 	     			columnKey="processid"
 	     			width={this.state.columnWidths.processid}
