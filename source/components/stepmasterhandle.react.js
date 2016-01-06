@@ -1,7 +1,6 @@
 const React = require('react');
 const StepmasterActionCreators = require("../actions/StepmasterActionCreators");
 const StepmasterStore = require('../stores/StepmasterStore');
-const MousemoveCatcher = require('./mousemovecatcher.react');
 
 var divHandleStyle={
 	backgroundColor: '#dae6eb',
@@ -22,6 +21,9 @@ var StepmasterHandle = React.createClass({
 	_handleMouse: function(event){
 	switch(event.type){
 		case 'mousedown':
+			window.getSelection().removeAllRanges(); //not IE compatible
+			window.onmousemove = this._handleMouse;
+			window.onmouseup = this._handleMouse;
 			this.setState({
 				draginprogress: true,
 				initialMouseY: event.clientY,
@@ -29,6 +31,8 @@ var StepmasterHandle = React.createClass({
 			});
 			break;
 		case 'mouseup':
+			window.onmousemove = null;
+			window.onmouseup = null;
 			this.setState({
 				draginprogress: false,
 				initialMouseY: null,
@@ -45,28 +49,12 @@ var StepmasterHandle = React.createClass({
 		}
 	},
 	render: function() {
-		var mousemoveVisibility;
-		if(this.state.draginprogress){
-			mousemoveVisibility = 'visible';
-		} else {
-			mousemoveVisibility = 'hidden';
-		}
-		
 		return (
 		    <div style={divHandleStyle} 
-				onMouseEnter={this._handleMouse}
-				onMouseDown={this._handleMouse}
-				onMouseUp={this._handleMouse}>
-				<MousemoveCatcher 
-					visibility={mousemoveVisibility}
-					_handleMouse={this._handleMouse} />
+				onMouseDown={this._handleMouse}>
 			</div>
 		);
 	}
 });
 
 module.exports = StepmasterHandle;
-
-/*
-
-*/

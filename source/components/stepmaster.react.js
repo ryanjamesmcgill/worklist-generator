@@ -67,7 +67,7 @@ var Stepmaster = React.createClass({
 	        	<Column
 	     			columnKey="button"
 	     			width={this.state.columnWidths.button}
-	     			isResizable={true}
+	     			isResizable={false}
 	        	    header={<StepmasterHeaderButton/>}
 	        	    cell={props=>(<StepmasterButton rowIndex={props.rowIndex} /> )} />
 	        	<Column

@@ -38556,7 +38556,13 @@ ReactDOM.render(React.createElement(Application, null), document.getElementById(
 
 },{"./components/application.react":217,"./utils/StepmasterUtils":227,"react":214,"react-dom":58}],217:[function(require,module,exports){
 const React = require('react');
-const Stepmaster = require("./stepmaster.react");
+const Stepmaster = require('./stepmaster.react');
+const WorklistTable = require('./worklisttable.react');
+
+var divStyle = {
+	position: 'relative',
+	height: '100%'
+};
 
 var Application = React.createClass({
 	displayName: 'Application',
@@ -38565,39 +38571,16 @@ var Application = React.createClass({
 		console.log('render');
 		return React.createElement(
 			'div',
-			{ className: 'container' },
-			React.createElement(Stepmaster, null)
+			{ className: 'container', style: divStyle },
+			React.createElement(Stepmaster, null),
+			React.createElement(WorklistTable, null)
 		);
 	}
 });
 
 module.exports = Application;
 
-},{"./stepmaster.react":219,"react":214}],218:[function(require,module,exports){
-const React = require('react');
-
-var MousemoveCatcher = React.createClass({
-    displayName: 'MousemoveCatcher',
-
-    render: function () {
-        var divStyle = {
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            visibility: this.props.visibility
-        };
-
-        return React.createElement('div', {
-            style: divStyle,
-            onMouseMove: this.props._handleMouse });
-    }
-});
-
-module.exports = MousemoveCatcher;
-
-},{"react":214}],219:[function(require,module,exports){
+},{"./stepmaster.react":218,"./worklisttable.react":224,"react":214}],218:[function(require,module,exports){
 "use strict";
 
 const React = require('react');
@@ -38671,7 +38654,7 @@ var Stepmaster = React.createClass({
 				React.createElement(Column, {
 					columnKey: 'button',
 					width: this.state.columnWidths.button,
-					isResizable: true,
+					isResizable: false,
 					header: React.createElement(StepmasterHeaderButton, null),
 					cell: props => React.createElement(StepmasterButton, { rowIndex: props.rowIndex }) }),
 				React.createElement(Column, {
@@ -38722,7 +38705,7 @@ var Stepmaster = React.createClass({
 
 module.exports = Stepmaster;
 
-},{"../actions/StepmasterActionCreators":215,"../stores/StepmasterStore":226,"./stepmasterbutton.react":220,"./stepmasterhandle.react":221,"./stepmasterheader.react":222,"./stepmasterheaderbutton.react":223,"./stepmastertext.react":224,"fixed-data-table":52,"react":214}],220:[function(require,module,exports){
+},{"../actions/StepmasterActionCreators":215,"../stores/StepmasterStore":226,"./stepmasterbutton.react":219,"./stepmasterhandle.react":220,"./stepmasterheader.react":221,"./stepmasterheaderbutton.react":222,"./stepmastertext.react":223,"fixed-data-table":52,"react":214}],219:[function(require,module,exports){
 const React = require('react');
 const StepmasterStore = require('../stores/StepmasterStore');
 const Cell = require('fixed-data-table').Cell;
@@ -38750,11 +38733,10 @@ var StepmasterButton = React.createClass({
 
 module.exports = StepmasterButton;
 
-},{"../stores/StepmasterStore":226,"fixed-data-table":52,"react":214}],221:[function(require,module,exports){
+},{"../stores/StepmasterStore":226,"fixed-data-table":52,"react":214}],220:[function(require,module,exports){
 const React = require('react');
 const StepmasterActionCreators = require("../actions/StepmasterActionCreators");
 const StepmasterStore = require('../stores/StepmasterStore');
-const MousemoveCatcher = require('./mousemovecatcher.react');
 
 var divHandleStyle = {
 	backgroundColor: '#dae6eb',
@@ -38777,6 +38759,9 @@ var StepmasterHandle = React.createClass({
 	_handleMouse: function (event) {
 		switch (event.type) {
 			case 'mousedown':
+				window.getSelection().removeAllRanges(); //not IE compatible
+				window.onmousemove = this._handleMouse;
+				window.onmouseup = this._handleMouse;
 				this.setState({
 					draginprogress: true,
 					initialMouseY: event.clientY,
@@ -38784,6 +38769,8 @@ var StepmasterHandle = React.createClass({
 				});
 				break;
 			case 'mouseup':
+				window.onmousemove = null;
+				window.onmouseup = null;
 				this.setState({
 					draginprogress: false,
 					initialMouseY: null,
@@ -38800,33 +38787,14 @@ var StepmasterHandle = React.createClass({
 		}
 	},
 	render: function () {
-		var mousemoveVisibility;
-		if (this.state.draginprogress) {
-			mousemoveVisibility = 'visible';
-		} else {
-			mousemoveVisibility = 'hidden';
-		}
-
-		return React.createElement(
-			'div',
-			{ style: divHandleStyle,
-				onMouseEnter: this._handleMouse,
-				onMouseDown: this._handleMouse,
-				onMouseUp: this._handleMouse },
-			React.createElement(MousemoveCatcher, {
-				visibility: mousemoveVisibility,
-				_handleMouse: this._handleMouse })
-		);
+		return React.createElement('div', { style: divHandleStyle,
+			onMouseDown: this._handleMouse });
 	}
 });
 
 module.exports = StepmasterHandle;
 
-/*
-
-*/
-
-},{"../actions/StepmasterActionCreators":215,"../stores/StepmasterStore":226,"./mousemovecatcher.react":218,"react":214}],222:[function(require,module,exports){
+},{"../actions/StepmasterActionCreators":215,"../stores/StepmasterStore":226,"react":214}],221:[function(require,module,exports){
 const React = require('react');
 const Cell = require('fixed-data-table').Cell;
 const StepmasterStore = require("../stores/StepmasterStore");
@@ -38855,7 +38823,7 @@ var StepmasterHeader = React.createClass({
 
 module.exports = StepmasterHeader;
 
-},{"../stores/StepmasterStore":226,"fixed-data-table":52,"react":214}],223:[function(require,module,exports){
+},{"../stores/StepmasterStore":226,"fixed-data-table":52,"react":214}],222:[function(require,module,exports){
 const React = require('react');
 const StepmasterStore = require('../stores/StepmasterStore');
 const Cell = require('fixed-data-table').Cell;
@@ -38883,7 +38851,7 @@ var StepmasterHeaderButton = React.createClass({
 
 module.exports = StepmasterHeaderButton;
 
-},{"../stores/StepmasterStore":226,"fixed-data-table":52,"react":214}],224:[function(require,module,exports){
+},{"../stores/StepmasterStore":226,"fixed-data-table":52,"react":214}],223:[function(require,module,exports){
 const React = require('react');
 const StepmasterStore = require('../stores/StepmasterStore');
 const Cell = require('fixed-data-table').Cell;
@@ -38901,6 +38869,77 @@ var StepmasterText = React.createClass({
 });
 
 module.exports = StepmasterText;
+
+},{"../stores/StepmasterStore":226,"fixed-data-table":52,"react":214}],224:[function(require,module,exports){
+"use strict";
+
+const React = require('react');
+const StepmasterStore = require('../stores/StepmasterStore');
+const FixedDataTable = require('fixed-data-table');
+const Table = FixedDataTable.Table;
+const Column = FixedDataTable.Column;
+const Cell = FixedDataTable.Cell;
+
+var WorklistTable = React.createClass({
+	displayName: 'WorklistTable',
+
+	getInitialState: function () {
+		return {
+			filters: StepmasterStore.getFilters(),
+			dimensions: StepmasterStore.getDimensions()
+		};
+	},
+	componentDidMount: function () {
+		StepmasterStore.addChangeListener(this._onStoreChange);
+	},
+	componentWillUnmount: function () {
+		StepmasterStore.removeChangeListener(this._onStoreChange);
+	},
+	_onStoreChange: function () {
+		this.setState({
+			filters: StepmasterStore.getFilters(),
+			dimensions: StepmasterStore.getDimensions()
+		});
+	},
+	_onType: function (e) {
+		var filtertype = e.target.attributes.id.textContent;
+		var value = e.target.value;
+		StepmasterActionCreators.setFilter(filtertype, value);
+	},
+	_onColumnResizeEnd: function (newColumnWidth, columnKey) {
+		var newWidths = this.state.columnWidths;
+		newWidths[columnKey] = newColumnWidth;
+		this.setState({
+			columnWidths: newWidths
+		});
+	},
+	render: function () {
+		return React.createElement(
+			'div',
+			{ className: "workliststeps-table" },
+			React.createElement(Table, {
+				rowsCount: StepmasterStore.getFilteredLength(),
+				rowHeight: 45,
+				headerHeight: 80,
+				width: this.state.dimensions.width,
+				height: 200,
+				footerHeight: 5,
+				isColumnResizing: false,
+				onColumnResizeEndCallback: this._onColumnResizeEnd }),
+			React.createElement(
+				'div',
+				{ ref: 'footer', className: 'footer' },
+				React.createElement(
+					'p',
+					{ className: 'text-center signiture' },
+					'Ryan J McGill'
+				)
+			)
+		);
+	}
+});
+
+module.exports = WorklistTable;
 
 },{"../stores/StepmasterStore":226,"fixed-data-table":52,"react":214}],225:[function(require,module,exports){
 var Dispatcher = require('flux').Dispatcher;

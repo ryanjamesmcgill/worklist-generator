@@ -101,7 +101,8 @@ function handleAction(action){
 			emitChange();
 			break;
 			
-		default: // .. do nothing
+		default:
+			console.error('StepmasterStore recieved unknown action type');
 	}
 }
 
