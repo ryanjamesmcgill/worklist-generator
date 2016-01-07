@@ -2,12 +2,22 @@ html, body {
 	height: 100%;
 }
 
+#react-application {
+    height: 100%;
+    overflow: hidden;
+}
+
 .footer {
     position: absolute;
     bottom: 0px;
     height: 20px;
     width: 800px;
     background-color: #dae6eb;
+    z-index: 1;
+}
+
+.worklist-table {
+    z-index: 0;
 }
 
 .signiture {
@@ -16,8 +26,6 @@ html, body {
     margin: 0 10px 0 0;
 }
 
-#react-application {
-    height: 100%;
-}
+
 
 

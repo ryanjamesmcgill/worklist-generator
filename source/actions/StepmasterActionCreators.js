@@ -19,7 +19,7 @@ function setFilter(filtertype, value){
 
 function setHeight(height){
     var action = {
-        type: 'set_height',
+        type: 'stepmaster_set_height',
         height: height
     }
     AppDispatcher.dispatch(action);

@@ -1,11 +1,13 @@
 const React = require('react');
 const StepmasterActionCreators = require("../actions/StepmasterActionCreators");
+const DimensionsActionCreators = require("../actions/DimensionsActionCreators");
 const StepmasterStore = require('../stores/StepmasterStore');
+const DimensionsStore = require('../stores/DimensionsStore');
 
 var divHandleStyle={
 	backgroundColor: '#dae6eb',
 	height: 10,
-	width: StepmasterStore.getDimensions().width,
+	width: DimensionsStore.getStepmaster().width,
 	cursor: 'row-resize'
 };
 
@@ -27,7 +29,7 @@ var StepmasterHandle = React.createClass({
 			this.setState({
 				draginprogress: true,
 				initialMouseY: event.clientY,
-				initalStepmasterY: StepmasterStore.getDimensions().height
+				initalStepmasterY: DimensionsStore.getStepmaster().height
 			});
 			break;
 		case 'mouseup':
@@ -43,7 +45,9 @@ var StepmasterHandle = React.createClass({
 			if(this.state.draginprogress){
 			    var height = this.state.initalStepmasterY;
 				var deltaY = event.clientY - this.state.initialMouseY;
-				StepmasterActionCreators.setHeight(height+deltaY);
+				var newHeight = height+deltaY;
+				DimensionsActionCreators.setStepmasterHeight(newHeight);
+				
 			}
 	    default: //do nothing
 		}

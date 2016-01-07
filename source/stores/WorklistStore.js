@@ -6,16 +6,10 @@ const assign = require('object-assign');
 const CHANGE_EVENT = 'change';
 
 var workliststeps = [];
-var dimensions = {
-    width: StepmasterStore.getDimensions().width,
-    height: 200
-};
+
 
 function addStep(stepObj){
     workliststeps.push(stepObj);
-}
-function setHeight(height){
-    dimensions.height=height;
 }
 function emitChange(){
     WorklistStore.emit(CHANGE_EVENT);
@@ -28,9 +22,6 @@ var WorklistStore = assign({}, EventEmitter.prototype, {
     removeChangeListener: function(callback){
         this.removeChangeListener(CHANGE_EVENT, callback)
     },
-    getDimensions: function(){
-        return dimensions;
-    },
     getLength: function(){
         return workliststeps.length
     }
@@ -38,17 +29,11 @@ var WorklistStore = assign({}, EventEmitter.prototype, {
 
 function handleAction(action){
     switch(action.type){
-        case 'add_step':
+        case 'worklist_add_step':
             addStep(action.stepObj);
             emitChange();
             break;
-        case 'set_height':
-            setHeight(action.height);
-            emitChange();
-            break;
-            
-        default:
-            console.error('WorklistStore recieved unknown action type');
+        default: // .. do nothing
     }
 }
 

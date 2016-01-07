@@ -2,6 +2,7 @@ const AppDispatcher = require('../dispatcher/AppDispatcher');
 const EventEmitter = require('events').EventEmitter;
 const assign = require('object-assign');
 const StepmasterUtils = require('../utils/StepmasterUtils');
+const WorklistStore = require('./WorklistStore');
 
 const CHANGE_EVENT = 'change';
 
@@ -19,11 +20,6 @@ var names = {
 	"stepdesc" : "Step Desc",
 	"ppid" : "PPID"
 };
-var dimensions = {
-	height: 500,
-	width: 800
-};
-
 
 function setStepmaster(stepArray){
 	for(var i=0; i<stepArray.length; i++){
@@ -44,9 +40,6 @@ function filter(){
 			filteredIndexes.push(index);
 		}
 	}
-}
-function setHeight(height){
-	dimensions.height = height;
 }
 function emitChange(){
 	StepmasterStore.emit(CHANGE_EVENT);
@@ -80,9 +73,6 @@ var StepmasterStore = assign({}, EventEmitter.prototype, {
 	},
 	getName: function(key){
 		return names[key];
-	},
-	getDimensions:function(){
-		return dimensions;
 	}
 });
 
@@ -96,13 +86,8 @@ function handleAction(action){
 			setFilter(action.filtertype, action.value);
 			emitChange();
 			break;
-		case 'set_height':
-			setHeight(action.height);
-			emitChange();
-			break;
-			
-		default:
-			console.error('StepmasterStore recieved unknown action type');
+
+		default: // .. do nothing
 	}
 }
 

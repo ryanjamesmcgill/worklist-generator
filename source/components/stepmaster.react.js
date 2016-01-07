@@ -1,5 +1,6 @@
 "use strict";
 const React = require('react');
+const DimensionsStore = require('../stores/DimensionsStore');
 const StepmasterStore = require('../stores/StepmasterStore');
 const StepmasterActionCreators = require('../actions/StepmasterActionCreators');
 const StepmasterHeader = require('./stepmasterheader.react');
@@ -18,7 +19,7 @@ var Stepmaster = React.createClass({
     getInitialState: function(){
 		return {
 			filters: StepmasterStore.getFilters(),
-			dimensions: StepmasterStore.getDimensions(),
+			dimensions: DimensionsStore.getStepmaster(),
 			columnWidths: {
 				button: 67,
 				processid: 120,
@@ -29,15 +30,17 @@ var Stepmaster = React.createClass({
 		};
 	},
 	componentDidMount: function(){
-		StepmasterStore.addChangeListener(this._onStoreChange);	
+		StepmasterStore.addChangeListener(this._onStoreChange);
+		DimensionsStore.addChangeListener(this._onStoreChange);
 	},
 	componentWillUnmount: function(){
-		StepmasterStore.removeChangeListener(this._onStoreChange);	
+		StepmasterStore.removeChangeListener(this._onStoreChange);
+		DimensionsStore.removeChangeListener(this._onStoreChange);
 	},
 	_onStoreChange: function(){
 		this.setState({
 			filters: StepmasterStore.getFilters(),
-			dimensions: StepmasterStore.getDimensions()
+			dimensions: DimensionsStore.getStepmaster()
 		});
 	},
 	_onType: function(e){

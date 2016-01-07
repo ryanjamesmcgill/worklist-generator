@@ -38512,6 +38512,30 @@ module.exports = require('./lib/React');
 },{"./lib/React":82}],215:[function(require,module,exports){
 var AppDispatcher = require('../dispatcher/AppDispatcher');
 
+function setStepmasterHeight(height) {
+    var action = {
+        type: 'set_stepmaster_height',
+        height: height
+    };
+    AppDispatcher.dispatch(action);
+}
+
+function storeReferences(refs) {
+    var action = {
+        type: "store_references",
+        refs: refs
+    };
+    AppDispatcher.dispatch(action);
+}
+
+module.exports = {
+    setStepmasterHeight: setStepmasterHeight,
+    storeReferences: storeReferences
+};
+
+},{"../dispatcher/AppDispatcher":227}],216:[function(require,module,exports){
+var AppDispatcher = require('../dispatcher/AppDispatcher');
+
 function setStepmaster(stepArray) {
     var action = {
         type: 'set_stepmaster',
@@ -38531,7 +38555,7 @@ function setFilter(filtertype, value) {
 
 function setHeight(height) {
     var action = {
-        type: 'set_height',
+        type: 'stepmaster_set_height',
         height: height
     };
     AppDispatcher.dispatch(action);
@@ -38543,7 +38567,22 @@ module.exports = {
     setHeight: setHeight
 };
 
-},{"../dispatcher/AppDispatcher":225}],216:[function(require,module,exports){
+},{"../dispatcher/AppDispatcher":227}],217:[function(require,module,exports){
+var AppDispatcher = require('../dispatcher/AppDispatcher');
+
+function addStep(stepObj) {
+    var action = {
+        type: "worklist_add_step",
+        stepObj: stepObj
+    };
+    AppDispatcher.dispatch(action);
+}
+
+module.exports = {
+    addStep: addStep
+};
+
+},{"../dispatcher/AppDispatcher":227}],218:[function(require,module,exports){
 const React = require('react');
 const ReactDOM = require('react-dom');
 const Application = require('./components/application.react');
@@ -38554,7 +38593,7 @@ console.log('[worklist-generator] app.js loaded');
 StepmasterUtils.generateStepmaster();
 ReactDOM.render(React.createElement(Application, null), document.getElementById('react-application'));
 
-},{"./components/application.react":217,"./utils/StepmasterUtils":227,"react":214,"react-dom":58}],217:[function(require,module,exports){
+},{"./components/application.react":219,"./utils/StepmasterUtils":231,"react":214,"react-dom":58}],219:[function(require,module,exports){
 const React = require('react');
 const Stepmaster = require('./stepmaster.react');
 const WorklistTable = require('./worklisttable.react');
@@ -38580,10 +38619,11 @@ var Application = React.createClass({
 
 module.exports = Application;
 
-},{"./stepmaster.react":218,"./worklisttable.react":224,"react":214}],218:[function(require,module,exports){
+},{"./stepmaster.react":220,"./worklisttable.react":226,"react":214}],220:[function(require,module,exports){
 "use strict";
 
 const React = require('react');
+const DimensionsStore = require('../stores/DimensionsStore');
 const StepmasterStore = require('../stores/StepmasterStore');
 const StepmasterActionCreators = require('../actions/StepmasterActionCreators');
 const StepmasterHeader = require('./stepmasterheader.react');
@@ -38602,7 +38642,7 @@ var Stepmaster = React.createClass({
 	getInitialState: function () {
 		return {
 			filters: StepmasterStore.getFilters(),
-			dimensions: StepmasterStore.getDimensions(),
+			dimensions: DimensionsStore.getStepmaster(),
 			columnWidths: {
 				button: 67,
 				processid: 120,
@@ -38614,14 +38654,16 @@ var Stepmaster = React.createClass({
 	},
 	componentDidMount: function () {
 		StepmasterStore.addChangeListener(this._onStoreChange);
+		DimensionsStore.addChangeListener(this._onStoreChange);
 	},
 	componentWillUnmount: function () {
 		StepmasterStore.removeChangeListener(this._onStoreChange);
+		DimensionsStore.removeChangeListener(this._onStoreChange);
 	},
 	_onStoreChange: function () {
 		this.setState({
 			filters: StepmasterStore.getFilters(),
-			dimensions: StepmasterStore.getDimensions()
+			dimensions: DimensionsStore.getStepmaster()
 		});
 	},
 	_onType: function (e) {
@@ -38705,7 +38747,7 @@ var Stepmaster = React.createClass({
 
 module.exports = Stepmaster;
 
-},{"../actions/StepmasterActionCreators":215,"../stores/StepmasterStore":226,"./stepmasterbutton.react":219,"./stepmasterhandle.react":220,"./stepmasterheader.react":221,"./stepmasterheaderbutton.react":222,"./stepmastertext.react":223,"fixed-data-table":52,"react":214}],219:[function(require,module,exports){
+},{"../actions/StepmasterActionCreators":216,"../stores/DimensionsStore":228,"../stores/StepmasterStore":229,"./stepmasterbutton.react":221,"./stepmasterhandle.react":222,"./stepmasterheader.react":223,"./stepmasterheaderbutton.react":224,"./stepmastertext.react":225,"fixed-data-table":52,"react":214}],221:[function(require,module,exports){
 const React = require('react');
 const StepmasterStore = require('../stores/StepmasterStore');
 const Cell = require('fixed-data-table').Cell;
@@ -38733,20 +38775,22 @@ var StepmasterButton = React.createClass({
 
 module.exports = StepmasterButton;
 
-},{"../stores/StepmasterStore":226,"fixed-data-table":52,"react":214}],220:[function(require,module,exports){
+},{"../stores/StepmasterStore":229,"fixed-data-table":52,"react":214}],222:[function(require,module,exports){
 const React = require('react');
 const StepmasterActionCreators = require("../actions/StepmasterActionCreators");
+const DimensionsActionCreators = require("../actions/DimensionsActionCreators");
 const StepmasterStore = require('../stores/StepmasterStore');
+const DimensionsStore = require('../stores/DimensionsStore');
 
 var divHandleStyle = {
 	backgroundColor: '#dae6eb',
 	height: 10,
-	width: StepmasterStore.getDimensions().width,
+	width: DimensionsStore.getStepmaster().width,
 	cursor: 'row-resize'
 };
 
 var StepmasterHandle = React.createClass({
-	displayName: 'StepmasterHandle',
+	displayName: "StepmasterHandle",
 
 	getInitialState: function () {
 		return {
@@ -38765,7 +38809,7 @@ var StepmasterHandle = React.createClass({
 				this.setState({
 					draginprogress: true,
 					initialMouseY: event.clientY,
-					initalStepmasterY: StepmasterStore.getDimensions().height
+					initalStepmasterY: DimensionsStore.getStepmaster().height
 				});
 				break;
 			case 'mouseup':
@@ -38781,20 +38825,21 @@ var StepmasterHandle = React.createClass({
 				if (this.state.draginprogress) {
 					var height = this.state.initalStepmasterY;
 					var deltaY = event.clientY - this.state.initialMouseY;
-					StepmasterActionCreators.setHeight(height + deltaY);
+					var newHeight = height + deltaY;
+					DimensionsActionCreators.setStepmasterHeight(newHeight);
 				}
 			default: //do nothing
 		}
 	},
 	render: function () {
-		return React.createElement('div', { style: divHandleStyle,
+		return React.createElement("div", { style: divHandleStyle,
 			onMouseDown: this._handleMouse });
 	}
 });
 
 module.exports = StepmasterHandle;
 
-},{"../actions/StepmasterActionCreators":215,"../stores/StepmasterStore":226,"react":214}],221:[function(require,module,exports){
+},{"../actions/DimensionsActionCreators":215,"../actions/StepmasterActionCreators":216,"../stores/DimensionsStore":228,"../stores/StepmasterStore":229,"react":214}],223:[function(require,module,exports){
 const React = require('react');
 const Cell = require('fixed-data-table').Cell;
 const StepmasterStore = require("../stores/StepmasterStore");
@@ -38823,7 +38868,7 @@ var StepmasterHeader = React.createClass({
 
 module.exports = StepmasterHeader;
 
-},{"../stores/StepmasterStore":226,"fixed-data-table":52,"react":214}],222:[function(require,module,exports){
+},{"../stores/StepmasterStore":229,"fixed-data-table":52,"react":214}],224:[function(require,module,exports){
 const React = require('react');
 const StepmasterStore = require('../stores/StepmasterStore');
 const Cell = require('fixed-data-table').Cell;
@@ -38851,7 +38896,7 @@ var StepmasterHeaderButton = React.createClass({
 
 module.exports = StepmasterHeaderButton;
 
-},{"../stores/StepmasterStore":226,"fixed-data-table":52,"react":214}],223:[function(require,module,exports){
+},{"../stores/StepmasterStore":229,"fixed-data-table":52,"react":214}],225:[function(require,module,exports){
 const React = require('react');
 const StepmasterStore = require('../stores/StepmasterStore');
 const Cell = require('fixed-data-table').Cell;
@@ -38870,11 +38915,14 @@ var StepmasterText = React.createClass({
 
 module.exports = StepmasterText;
 
-},{"../stores/StepmasterStore":226,"fixed-data-table":52,"react":214}],224:[function(require,module,exports){
+},{"../stores/StepmasterStore":229,"fixed-data-table":52,"react":214}],226:[function(require,module,exports){
 "use strict";
 
 const React = require('react');
-const StepmasterStore = require('../stores/StepmasterStore');
+const WorklistStore = require('../stores/WorklistStore');
+const DimensionsStore = require('../stores/DimensionsStore');
+const WorklistActionCreators = require('../actions/WorklistActionCreators');
+const DimensionsActionCreators = require('../actions/DimensionsActionCreators');
 const FixedDataTable = require('fixed-data-table');
 const Table = FixedDataTable.Table;
 const Column = FixedDataTable.Column;
@@ -38885,44 +38933,40 @@ var WorklistTable = React.createClass({
 
 	getInitialState: function () {
 		return {
-			filters: StepmasterStore.getFilters(),
-			dimensions: StepmasterStore.getDimensions()
+			dimensions: DimensionsStore.getWorklist()
 		};
 	},
 	componentDidMount: function () {
-		StepmasterStore.addChangeListener(this._onStoreChange);
+		WorklistStore.addChangeListener(this._onStoreChange);
+		DimensionsStore.addChangeListener(this._onStoreChange);
+		this.storeReferences();
 	},
 	componentWillUnmount: function () {
-		StepmasterStore.removeChangeListener(this._onStoreChange);
+		WorklistStore.removeChangeListener(this._onStoreChange);
+		DimensionsStore.removeChangeListener(this._onStoreChange);
 	},
 	_onStoreChange: function () {
 		this.setState({
-			filters: StepmasterStore.getFilters(),
-			dimensions: StepmasterStore.getDimensions()
+			dimensions: DimensionsStore.getWorklist()
 		});
 	},
-	_onType: function (e) {
-		var filtertype = e.target.attributes.id.textContent;
-		var value = e.target.value;
-		StepmasterActionCreators.setFilter(filtertype, value);
-	},
-	_onColumnResizeEnd: function (newColumnWidth, columnKey) {
-		var newWidths = this.state.columnWidths;
-		newWidths[columnKey] = newColumnWidth;
-		this.setState({
-			columnWidths: newWidths
-		});
+	storeReferences: function () {
+		var refs = {
+			top: this.refs.container,
+			bottom: this.refs.footer
+		};
+		DimensionsActionCreators.storeReferences(refs);
 	},
 	render: function () {
 		return React.createElement(
 			'div',
-			{ className: "workliststeps-table" },
+			{ ref: 'container', className: 'worklist-table' },
 			React.createElement(Table, {
-				rowsCount: StepmasterStore.getFilteredLength(),
+				rowsCount: WorklistStore.getLength(),
 				rowHeight: 45,
-				headerHeight: 80,
+				headerHeight: 40,
 				width: this.state.dimensions.width,
-				height: 200,
+				height: this.state.dimensions.height,
 				footerHeight: 5,
 				isColumnResizing: false,
 				onColumnResizeEndCallback: this._onColumnResizeEnd }),
@@ -38941,15 +38985,93 @@ var WorklistTable = React.createClass({
 
 module.exports = WorklistTable;
 
-},{"../stores/StepmasterStore":226,"fixed-data-table":52,"react":214}],225:[function(require,module,exports){
+},{"../actions/DimensionsActionCreators":215,"../actions/WorklistActionCreators":217,"../stores/DimensionsStore":228,"../stores/WorklistStore":230,"fixed-data-table":52,"react":214}],227:[function(require,module,exports){
 var Dispatcher = require('flux').Dispatcher;
 module.exports = new Dispatcher();
 
-},{"flux":53}],226:[function(require,module,exports){
+},{"flux":53}],228:[function(require,module,exports){
+const AppDispatcher = require('../dispatcher/AppDispatcher');
+const EventEmitter = require('events').EventEmitter;
+const assign = require('object-assign');
+
+const CHANGE_EVENT = 'change';
+
+var stepmaster = {
+    height: 500,
+    width: 800
+};
+
+var worklist = {
+    height: 100,
+    width: 800
+};
+
+var worklistRefs = {
+    top: null,
+    bottom: null
+};
+
+function setStepmasterHeight(height) {
+    stepmaster.height = height;
+}
+function setWorklistHeight(height) {
+    worklist.height = height;
+}
+function calculateWorklistHeight() {
+    var newHeight = worklistRefs.bottom.offsetTop - worklistRefs.top.offsetTop;
+    var newHeight = newHeight + 200; //buffer for redraw
+    setWorklistHeight(newHeight);
+}
+function storeReferences(refs) {
+    worklistRefs.top = refs.top;
+    worklistRefs.bottom = refs.bottom;
+}
+
+function emitChange() {
+    DimensionsStore.emit(CHANGE_EVENT);
+}
+
+var DimensionsStore = assign({}, EventEmitter.prototype, {
+    addChangeListener: function (callback) {
+        this.on(CHANGE_EVENT, callback);
+    },
+    removeChangeListener: function (callback) {
+        this.removeListener(CHANGE_EVENT, callback);
+    },
+    getStepmaster: function () {
+        return stepmaster;
+    },
+    getWorklist: function () {
+        return worklist;
+    }
+});
+
+function handleAction(action) {
+    switch (action.type) {
+        case 'set_stepmaster_height':
+            setStepmasterHeight(action.height);
+            calculateWorklistHeight();
+            emitChange();
+            break;
+
+        case 'store_references':
+            storeReferences(action.refs);
+            emitChange();
+            break;
+
+        default: // .. do nothing
+    }
+}
+
+DimensionsStore.dispatchToken = AppDispatcher.register(handleAction);
+module.exports = DimensionsStore;
+
+},{"../dispatcher/AppDispatcher":227,"events":1,"object-assign":57}],229:[function(require,module,exports){
 const AppDispatcher = require('../dispatcher/AppDispatcher');
 const EventEmitter = require('events').EventEmitter;
 const assign = require('object-assign');
 const StepmasterUtils = require('../utils/StepmasterUtils');
+const WorklistStore = require('./WorklistStore');
 
 const CHANGE_EVENT = 'change';
 
@@ -38966,10 +39088,6 @@ var names = {
 	"stepseq": "Step Seq",
 	"stepdesc": "Step Desc",
 	"ppid": "PPID"
-};
-var dimensions = {
-	height: 500,
-	width: 800
 };
 
 function setStepmaster(stepArray) {
@@ -38991,9 +39109,6 @@ function filter() {
 			filteredIndexes.push(index);
 		}
 	}
-}
-function setHeight(height) {
-	dimensions.height = height;
 }
 function emitChange() {
 	StepmasterStore.emit(CHANGE_EVENT);
@@ -39026,9 +39141,6 @@ var StepmasterStore = assign({}, EventEmitter.prototype, {
 	},
 	getName: function (key) {
 		return names[key];
-	},
-	getDimensions: function () {
-		return dimensions;
 	}
 });
 
@@ -39042,10 +39154,6 @@ function handleAction(action) {
 			setFilter(action.filtertype, action.value);
 			emitChange();
 			break;
-		case 'set_height':
-			setHeight(action.height);
-			emitChange();
-			break;
 
 		default: // .. do nothing
 	}
@@ -39054,7 +39162,49 @@ function handleAction(action) {
 StepmasterStore.dispatchToken = AppDispatcher.register(handleAction);
 module.exports = StepmasterStore;
 
-},{"../dispatcher/AppDispatcher":225,"../utils/StepmasterUtils":227,"events":1,"object-assign":57}],227:[function(require,module,exports){
+},{"../dispatcher/AppDispatcher":227,"../utils/StepmasterUtils":231,"./WorklistStore":230,"events":1,"object-assign":57}],230:[function(require,module,exports){
+const AppDispatcher = require('../dispatcher/AppDispatcher');
+const EventEmitter = require('events').EventEmitter;
+const StepmasterStore = require('./StepmasterStore');
+const assign = require('object-assign');
+
+const CHANGE_EVENT = 'change';
+
+var workliststeps = [];
+
+function addStep(stepObj) {
+    workliststeps.push(stepObj);
+}
+function emitChange() {
+    WorklistStore.emit(CHANGE_EVENT);
+}
+
+var WorklistStore = assign({}, EventEmitter.prototype, {
+    addChangeListener: function (callback) {
+        this.on(CHANGE_EVENT, callback);
+    },
+    removeChangeListener: function (callback) {
+        this.removeChangeListener(CHANGE_EVENT, callback);
+    },
+    getLength: function () {
+        return workliststeps.length;
+    }
+});
+
+function handleAction(action) {
+    switch (action.type) {
+        case 'worklist_add_step':
+            addStep(action.stepObj);
+            emitChange();
+            break;
+        default: // .. do nothing
+    }
+}
+
+WorklistStore.dispatchToken = AppDispatcher.register(handleAction);
+module.exports = WorklistStore;
+
+},{"../dispatcher/AppDispatcher":227,"./StepmasterStore":229,"events":1,"object-assign":57}],231:[function(require,module,exports){
 const _ = require('lodash');
 const StepmasterActionCreator = require('../actions/StepmasterActionCreators');
 const stepArray = require('./stepdata/steps.json');
@@ -39078,7 +39228,7 @@ module.exports = {
     filterTest: filterTest
 };
 
-},{"../actions/StepmasterActionCreators":215,"./stepdata/steps.json":228,"lodash":56}],228:[function(require,module,exports){
+},{"../actions/StepmasterActionCreators":216,"./stepdata/steps.json":232,"lodash":56}],232:[function(require,module,exports){
 module.exports=[
 {"processid":"DUMM","stepseq":"DUMMY01","stepdesc":"Dummy Description (DMM) 01","ppid":"RECIPEGOESHERE1"},
 {"processid":"DUMM","stepseq":"DUMMY02","stepdesc":"Dummy Description (DMM) 02","ppid":"RECIPEGOESHERE2"},
@@ -39276,4 +39426,4 @@ module.exports=[
 {"processid":"MYDU","stepseq":"DUMMY194","stepdesc":"Dummy Description (DMM) 194","ppid":"RECIPEGOESHERE194"},
 {"processid":"MYDU","stepseq":"DUMMY195","stepdesc":"Dummy Description (DMM) 195","ppid":"RECIPEGOESHERE195"}
 ]
-},{}]},{},[216]);
+},{}]},{},[218]);
