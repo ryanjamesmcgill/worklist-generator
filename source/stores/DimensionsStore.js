@@ -11,7 +11,8 @@ var stepmaster = {
 
 var worklist = {
     height: 100,
-    width: 800
+    width: 960,
+    offset: 0
 };
 
 var worklistRefs = {
@@ -19,20 +20,23 @@ var worklistRefs = {
     bottom: null
 };
 
-function setStepmasterHeight(height){
-    stepmaster.height = height;
+function setStepmasterHeight(stepmasterHeight){
+    var worklistHeight = calculateWorklistHeight();
+    setWorklistHeight(worklistHeight);
+    stepmaster.height = stepmasterHeight;
 }
 function setWorklistHeight(height){
     worklist.height = height;
 }
 function calculateWorklistHeight(){
     var newHeight = worklistRefs.bottom.offsetTop - worklistRefs.top.offsetTop;
-    var newHeight = newHeight + 200; //buffer for redraw
-    setWorklistHeight(newHeight);
+    var newHeight = newHeight + worklist.offset; //buffer for redraw
+    return newHeight;
 }
 function storeReferences(refs){
     worklistRefs.top = refs.top;
     worklistRefs.bottom = refs.bottom;
+    setWorklistHeight(calculateWorklistHeight());
 }
 
 function emitChange(){
@@ -58,7 +62,6 @@ function handleAction(action){
     switch(action.type) {
         case 'set_stepmaster_height':
             setStepmasterHeight(action.height);
-            calculateWorklistHeight();
             emitChange();
             break;
             

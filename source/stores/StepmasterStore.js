@@ -16,8 +16,8 @@ var filters = {
 };
 var names = {
 	"processid" : "Process ID",
-	"stepseq" : "Step Seq",
-	"stepdesc" : "Step Desc",
+	"stepseq" : "Step Sequence",
+	"stepdesc" : "Step Description",
 	"ppid" : "PPID"
 };
 

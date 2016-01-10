@@ -57,14 +57,14 @@ var Stepmaster = React.createClass({
 	},
 	render: function(){
 		return (
-			<div>
+			<div id="stepmaster-container">
 	      	<Table
 	        	rowsCount={StepmasterStore.getFilteredLength()}
 	        	rowHeight={45}
 	        	headerHeight={80}
 	        	width={this.state.dimensions.width}
 	        	height={this.state.dimensions.height}
-	        	footerHeight={5}
+	        	footerHeight={0}
 	        	isColumnResizing={false}
 	        	onColumnResizeEndCallback={this._onColumnResizeEnd}>
 	        	<Column
