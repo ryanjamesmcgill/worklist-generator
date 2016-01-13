@@ -17,13 +17,13 @@ var Application = React.createClass({
 	},
 	render: function(){
 		return ( 
-		<div>
-			<button className="btn btn-primary" onClick={this._onStepmasterClick}>add</button>
-			<Stepmaster
-				stepmasterIsVisible={this.state.stepmasterIsVisible}
-				_onStepmasterClick={this._onStepmasterClick} />
-			<WorklistTable />
-		</div>
+			<div>
+				<button className="btn btn-primary" onClick={this._onStepmasterClick}>add</button>
+				<Stepmaster
+					stepmasterIsVisible={this.state.stepmasterIsVisible}
+					_onStepmasterClick={this._onStepmasterClick} />
+				<WorklistTable />
+			</div>
 		);
 	}
 });

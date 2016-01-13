@@ -1,11 +1,11 @@
 const React = require('react');
-const StepmasterStore = require('../stores/StepmasterStore');
+const StepStore = require('../stores/StepStore');
 const Cell = require('fixed-data-table').Cell;
 
 var StepmasterText = React.createClass({
     render: function(){
-        var value = StepmasterStore
-                    .getObjectAt(this.props.rowIndex)
+        var value = StepStore
+                    .getMasterStepAt(this.props.rowIndex)
                     [this.props.column];
         return( <Cell>
                 {String(value)}

@@ -1,8 +1,8 @@
 var AppDispatcher = require('../dispatcher/AppDispatcher');
 
-function setStepmaster(stepArray){
+function setMasterSteps(stepArray){
     var action = {
-        type: 'set_stepmaster',
+        type: 'set_mastersteps',
         stepArray: stepArray
     };
     AppDispatcher.dispatch(action);
@@ -17,27 +17,17 @@ function setFilter(filtertype, value){
     AppDispatcher.dispatch(action);
 }
 
-function addedToWorklist(stepObj){
+function addStepToWorklist(stepObj){
     var action = {
-        type: 'added_to_worklist',
+        type: 'add_step_to_worklist',
         stepObj: stepObj
-    };
+    }
     AppDispatcher.dispatch(action);
 }
-
-function removedFromWorklist(index){
-    var action = {
-        type: 'removed_from_worklist',
-        index: index
-    };
-    AppDispatcher.dispatch(action);
-}
-
 
 
 module.exports = {
-	setStepmaster: setStepmaster,
+	setMasterSteps: setMasterSteps,
 	setFilter: setFilter,
-	addedToWorklist: addedToWorklist,
-	removedFromWorklist: removedFromWorklist
+	addStepToWorklist: addStepToWorklist
 };

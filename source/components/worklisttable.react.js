@@ -1,7 +1,6 @@
 "use strict";
 const React = require('react');
-const WorklistStore = require('../stores/WorklistStore');
-const WorklistActionCreators = require('../actions/WorklistActionCreators');
+const StepStore = require('../stores/StepStore');
 const FixedDataTable = require('fixed-data-table');
 const Table = FixedDataTable.Table;
 const Column = FixedDataTable.Column;
@@ -35,12 +34,13 @@ var WorklistTable = React.createClass({
 		};
 	},
 	componentDidMount: function(){
-		WorklistStore.addChangeListener(this._onStoreChange);
+		StepStore.addChangeListener(this._onStoreChange);
 	},
 	componentWillUnmount: function(){
-		WorklistStore.removeChangeListener(this._onStoreChange);
+		StepStore.removeChangeListener(this._onStoreChange);
 	},
 	_onStoreChange: function(){
+		this.forceUpdate();
 	},
 	_onColumnResizeEnd: function(newColumnWidth, columnKey){
 		var newWidths = this.state.columnWidths;
@@ -54,7 +54,7 @@ var WorklistTable = React.createClass({
 		<div style={{textAlign: 'center'}}>
 			<div style={{display: 'inline-block'}}>
 		      	<Table
-		        	rowsCount={WorklistStore.getLength()}
+		        	rowsCount={StepStore.getWorlistLength()}
 		        	rowHeight={45}
 		        	headerHeight={40}
 		        	width={this.props.dimensions.width}

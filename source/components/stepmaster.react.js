@@ -1,8 +1,7 @@
 "use strict";
 const React = require('react');
-const StepmasterStore = require('../stores/StepmasterStore');
-const WorklistStore = require('../stores/WorklistStore');
-const StepmasterActionCreators = require('../actions/StepmasterActionCreators');
+const StepStore = require('../stores/StepStore');
+const StepActionCreators = require('../actions/StepActionCreators');
 const StepmasterHeader = require('./stepmasterheader.react');
 const StepmasterText = require('./stepmastertext.react');
 const StepmasterButton = require("./stepmasterbutton.react");
@@ -63,7 +62,7 @@ var Stepmaster = React.createClass({
 	},
     getInitialState: function(){
 		return {
-			filters: StepmasterStore.getFilters(),
+			filters: StepStore.getFilters(),
 			columnWidths: {
 				button: 67,
 				processid: 120,
@@ -75,22 +74,20 @@ var Stepmaster = React.createClass({
 		};
 	},
 	componentDidMount: function(){
-		StepmasterStore.addChangeListener(this._onStoreChange);
-		WorklistStore.addChangeListener(this._onStoreChange);
+		StepStore.addChangeListener(this._onStoreChange);
 	},
 	componentWillUnmount: function(){
-		StepmasterStore.removeChangeListener(this._onStoreChange);
-		WorklistStore.removeChangeListener(this._onStoreChange);
+		StepStore.removeChangeListener(this._onStoreChange);
 	},
 	_onStoreChange: function(){
 		this.setState({
-			filters: StepmasterStore.getFilters()
+			filters: StepStore.getFilters()
 		});
 	},
 	_onType: function(e){
 	    var filtertype = e.target.attributes.id.textContent;
 	    var value = e.target.value;
-		StepmasterActionCreators.setFilter(filtertype, value);
+		StepActionCreators.setFilter(filtertype, value);
 	},
 	_onColumnResizeEnd: function(newColumnWidth, columnKey){
 		var newWidths = this.state.columnWidths;
@@ -113,7 +110,7 @@ var Stepmaster = React.createClass({
 			<div id="stepmaster-container" style={{margin: 'auto', width: this.props.dimensions.width}}>
 			<h4 style={{marginTop: '0px'}}>Select steps to add to your worklist</h4>
 	      	<Table
-	        	rowsCount={StepmasterStore.getFilteredLength()}
+	        	rowsCount={StepStore.getFilteredLength()}
 	        	rowHeight={45}
 	        	headerHeight={80}
 	        	width={this.props.dimensions.width}
@@ -168,14 +165,15 @@ var Stepmaster = React.createClass({
 	        	    			column={props.columnKey}
 	        	    			rowIndex={props.rowIndex} /> )} />
 	        	<Column
-	     			columnKey="inWorklist"
+	     			columnKey="workliststatus"
 	     			width={this.state.columnWidths.inWorklist}
 	     			isResizable={true}
 	        	    header={props=>(<StepmasterHeader
 	        	    			filterType={props.columnKey}
 	        	    			handler={this._onType}/> )}
-	        	    cell={props=>(WorklistStore.checkIndex(props.rowIndex))} />
-
+	        	    cell={props=>(<StepmasterText
+	        	    			column={props.columnKey}
+	        	    			rowIndex={props.rowIndex} /> )} />
 	      	</Table>
 	      	</div>
 	      	<div>

@@ -1,10 +1,10 @@
 const React = require('react');
-const StepmasterStore = require('../stores/StepmasterStore');
+const StepStore = require('../stores/StepStore');
 const Cell = require('fixed-data-table').Cell;
 
 var StepmasterHeaderButton = React.createClass({
     _onClick: function(e){
-        console.log('all filtered ', StepmasterStore.getFilteredStepmaster());
+        console.log('all filtered ', StepStore.getFilteredSteps());
     },
     render: function(){
         return( <Cell>

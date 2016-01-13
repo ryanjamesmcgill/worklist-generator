@@ -1,13 +1,14 @@
 const React = require('react');
-const StepmasterStore = require('../stores/StepmasterStore');
-const WorklistActionCreators = require('../actions/WorklistActionCreators');
+const StepStore = require('../stores/StepStore');
+const StepActionCreators = require('../actions/StepActionCreators');
 const Cell = require('fixed-data-table').Cell;
 
 var StepmasterButton = React.createClass({
     _onClick: function(e){
         var index = this.props.rowIndex;
-        WorklistActionCreators.addIndex(index);
-        console.log('clicked ', StepmasterStore.getObjectAt(index));
+        var stepObj = StepStore.getMasterStepAt(index);
+        StepActionCreators.addStepToWorklist(stepObj);
+        console.log('clicked ', stepObj);
     },
     render: function(){
         return( <Cell>
