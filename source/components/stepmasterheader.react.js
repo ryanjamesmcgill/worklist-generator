@@ -4,13 +4,19 @@ const StepmasterStore = require("../stores/StepmasterStore");
 
 var StepmasterHeader = React.createClass({
     render: function(){
-        var defaultText = "filter by " + this.props.name;
+        var currentFilterValue = StepmasterStore.getFilters()[this.props.filterType];
+        var defaultText = "filter by " + StepmasterStore.getName(this.props.filterType);
+        
+        if(currentFilterValue == ""){ currentFilterValue = null;}
+        else { defaultText = null; }
+        
         return(<Cell>
-                    <p className="tableHeader">{StepmasterStore.getName(this.props.filterType)}</p>
+                    <p style={{whiteSpace: 'nowrap'}}>{StepmasterStore.getName(this.props.filterType)}</p>
                     <input type="search" 
                         className="form-control"
                         placeholder = {defaultText}
                         onChange = {this.props.handler}
+                        value = {currentFilterValue}
                         id = {this.props.filterType}/>
                 </Cell>);
     }

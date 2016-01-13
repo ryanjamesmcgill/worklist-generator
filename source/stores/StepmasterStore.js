@@ -8,17 +8,19 @@ const CHANGE_EVENT = 'change';
 
 var stepmaster = [];
 var filteredIndexes = [];
+var worklistIndexes = [];
 var filters = {
-		processid: "",
-		stepseq: "",
-		stepdesc: "",
-		ppid: ""
+		"processid": "",
+		"stepseq": "",
+		"stepdesc": "",
+		"ppid": ""
 };
 var names = {
 	"processid" : "Process ID",
 	"stepseq" : "Step Sequence",
 	"stepdesc" : "Step Description",
-	"ppid" : "PPID"
+	"ppid" : "PPID",
+	"inWorklist" : "inWorklist" //temporary
 };
 
 function setStepmaster(stepArray){
@@ -41,6 +43,18 @@ function filter(){
 		}
 	}
 }
+function addedToWorklist(index){
+	if(stepmaster[index].inWorklist){
+		console.error('addedToWorklist() called on stepmaster but step was already in worklist');
+	}
+	stepmaster[index].inWorklist = true;
+}
+function removedFromWorklist(index){
+	if(!stepmaster[index].inWorklist){
+		console.error('removedFromWorklist() called on stepmaster but step was never in worklist');
+	}
+	stepmaster[index].inWorklist = false;
+}
 function emitChange(){
 	StepmasterStore.emit(CHANGE_EVENT);
 }
@@ -57,6 +71,9 @@ var StepmasterStore = assign({}, EventEmitter.prototype, {
 	},
 	getFilteredLength: function(){
 		return filteredIndexes.length;
+	},
+	getStepmasterIndex: function(filterIndex){
+		return filteredIndexes[filterIndex];	
 	},
 	getObjectAt: function(index){
 		var filteredIndex = filteredIndexes[index];
@@ -86,7 +103,14 @@ function handleAction(action){
 			setFilter(action.filtertype, action.value);
 			emitChange();
 			break;
-
+		case 'added_to_worklist':
+			addedToWorklist(action.stepObj);
+			emitChange();
+			break;
+		case 'removed_from_worklist':
+			removedFromWorklist(action.index);
+			emitChange();
+			break;
 		default: // .. do nothing
 	}
 }

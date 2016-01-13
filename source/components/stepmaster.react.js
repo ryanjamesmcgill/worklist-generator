@@ -1,46 +1,90 @@
 "use strict";
 const React = require('react');
-const DimensionsStore = require('../stores/DimensionsStore');
 const StepmasterStore = require('../stores/StepmasterStore');
+const WorklistStore = require('../stores/WorklistStore');
 const StepmasterActionCreators = require('../actions/StepmasterActionCreators');
 const StepmasterHeader = require('./stepmasterheader.react');
 const StepmasterText = require('./stepmastertext.react');
-const StepmasterHandle = require("./stepmasterhandle.react");
 const StepmasterButton = require("./stepmasterbutton.react");
 const StepmasterHeaderButton = require("./stepmasterheaderbutton.react");
+const Modal = require('react-modal');
 const FixedDataTable = require('fixed-data-table');
 const Table = FixedDataTable.Table;
 const Column = FixedDataTable.Column;
 const Cell = FixedDataTable.Cell;
 
+var modalStyle={
+  overlay : {
+    position          : 'fixed',
+    top               : 0,
+    left              : 0,
+    right             : 0,
+    bottom            : 0,
+    backgroundColor   : 'rgba(0, 0, 0, 0.60)',
+    zIndex			  : 5,
+    textAlign		  : 'center'
+  },
+  content : {
+  	display					   : 'inline-block',
+    position                   : 'relative',
+    top                        : '50px',
+    left					   : 0,
+    right					   : 0,
+    padding                    : '20px',
+    zIndex					   : 10,
+    border                     : '1px solid #ccc',
+    background                 : '#fff',
+    overflow                   : 'auto',
+    WebkitOverflowScrolling    : 'touch',
+    borderRadius               : '8px',
+    outline                    : 'none',
+    WebkitBoxShadow: '0px 3px 13px 0px rgba(0,0,0,0.75)',
+	WozBoxShadow: '0px 3px 13px 0px rgba(0,0,0,0.75)',
+	boxShadow: '0px 3px 13px 0px rgba(0,0,0,0.75)'
+  }
+};
 
+var closeSymbolStyle = {
+	position: 'absolute',
+	right: '0px',
+	top: '0px',
+	width: '21px',
+	height: '21px'
+};
 
 var Stepmaster = React.createClass({
+	getDefaultProps: function(){
+		return {
+			dimensions: {
+				height: 600,
+				width: 800
+			}	
+		}
+	},
     getInitialState: function(){
 		return {
 			filters: StepmasterStore.getFilters(),
-			dimensions: DimensionsStore.getStepmaster(),
 			columnWidths: {
 				button: 67,
 				processid: 120,
 				stepseq: 120,
 				stepdesc: 250,
-				ppid: 200
+				ppid: 100,
+				inWorklist: 100
 			}
 		};
 	},
 	componentDidMount: function(){
 		StepmasterStore.addChangeListener(this._onStoreChange);
-		DimensionsStore.addChangeListener(this._onStoreChange);
+		WorklistStore.addChangeListener(this._onStoreChange);
 	},
 	componentWillUnmount: function(){
 		StepmasterStore.removeChangeListener(this._onStoreChange);
-		DimensionsStore.removeChangeListener(this._onStoreChange);
+		WorklistStore.removeChangeListener(this._onStoreChange);
 	},
 	_onStoreChange: function(){
 		this.setState({
-			filters: StepmasterStore.getFilters(),
-			dimensions: DimensionsStore.getStepmaster()
+			filters: StepmasterStore.getFilters()
 		});
 	},
 	_onType: function(e){
@@ -57,13 +101,23 @@ var Stepmaster = React.createClass({
 	},
 	render: function(){
 		return (
-			<div id="stepmaster-container">
+			<Modal
+				isOpen={this.props.stepmasterIsVisible}
+				onRequestClose={this.props._onStepmasterClick}
+				style={modalStyle}>
+				
+			<span 	className="close"
+					style={closeSymbolStyle}
+					onClick={this.props._onStepmasterClick}>&times;</span>
+					
+			<div id="stepmaster-container" style={{margin: 'auto', width: this.props.dimensions.width}}>
+			<h4 style={{marginTop: '0px'}}>Select steps to add to your worklist</h4>
 	      	<Table
 	        	rowsCount={StepmasterStore.getFilteredLength()}
 	        	rowHeight={45}
 	        	headerHeight={80}
-	        	width={this.state.dimensions.width}
-	        	height={this.state.dimensions.height}
+	        	width={this.props.dimensions.width}
+	        	height={this.props.dimensions.height}
 	        	footerHeight={0}
 	        	isColumnResizing={false}
 	        	onColumnResizeEndCallback={this._onColumnResizeEnd}>
@@ -113,10 +167,24 @@ var Stepmaster = React.createClass({
 	        	    cell={props=>(<StepmasterText
 	        	    			column={props.columnKey}
 	        	    			rowIndex={props.rowIndex} /> )} />
+	        	<Column
+	     			columnKey="inWorklist"
+	     			width={this.state.columnWidths.inWorklist}
+	     			isResizable={true}
+	        	    header={props=>(<StepmasterHeader
+	        	    			filterType={props.columnKey}
+	        	    			handler={this._onType}/> )}
+	        	    cell={props=>(WorklistStore.checkIndex(props.rowIndex))} />
 
 	      	</Table>
-	      	<StepmasterHandle />
 	      	</div>
+	      	<div>
+		      	<button 
+		      		style={{margin: '10px auto 0px auto', display: 'block'}}
+		      		onClick={this.props._onStepmasterClick} 
+		      		className="btn btn-primary">Close</button>
+	      	</div>
+	      	</Modal>
 		);
 	}
 });

@@ -1,18 +1,31 @@
 "use strict";
 const React = require('react');
 const WorklistStore = require('../stores/WorklistStore');
-const DimensionsStore = require('../stores/DimensionsStore');
 const WorklistActionCreators = require('../actions/WorklistActionCreators');
-const DimensionsActionCreators = require('../actions/DimensionsActionCreators');
 const FixedDataTable = require('fixed-data-table');
 const Table = FixedDataTable.Table;
 const Column = FixedDataTable.Column;
 const Cell = FixedDataTable.Cell;
 
+var footerStyle = {
+    height: 20,
+    margin: 'auto',
+    backgroundColor: '#dae6eb',
+    color: '#667b8f',
+    fontStyle: 'italic'
+};
+
 var WorklistTable = React.createClass({
+	getDefaultProps: function(){
+		return {
+			dimensions: {
+				height: 750,
+				width: 960
+			}
+		};
+	},
     getInitialState: function(){
 		return {
-			dimensions: DimensionsStore.getWorklist(),
 			columnWidths: {
 				stepseq: 120,
 				stepdesc: 250,
@@ -23,24 +36,11 @@ var WorklistTable = React.createClass({
 	},
 	componentDidMount: function(){
 		WorklistStore.addChangeListener(this._onStoreChange);
-		DimensionsStore.addChangeListener(this._onStoreChange);
-		this.storeReferences();
 	},
 	componentWillUnmount: function(){
 		WorklistStore.removeChangeListener(this._onStoreChange);
-		DimensionsStore.removeChangeListener(this._onStoreChange);
 	},
 	_onStoreChange: function(){
-		this.setState({
-			dimensions: DimensionsStore.getWorklist()
-		});
-	},
-	storeReferences: function(){
-		var refs = {
-			top: this.refs.container,
-			bottom: this.refs.footer
-		};
-		DimensionsActionCreators.storeReferences(refs);	
 	},
 	_onColumnResizeEnd: function(newColumnWidth, columnKey){
 		var newWidths = this.state.columnWidths;
@@ -51,13 +51,14 @@ var WorklistTable = React.createClass({
 	},
 	render: function(){
 		return (
-			<div ref="container" className="worklist-table">
+		<div style={{textAlign: 'center'}}>
+			<div style={{display: 'inline-block'}}>
 		      	<Table
 		        	rowsCount={WorklistStore.getLength()}
 		        	rowHeight={45}
 		        	headerHeight={40}
-		        	width={this.state.dimensions.width}
-		        	height={this.state.dimensions.height}
+		        	width={this.props.dimensions.width}
+		        	height={this.props.dimensions.height}
 		        	footerHeight={0}
 		        	isColumnResizing={false}
 		        	onColumnResizeEndCallback={this._onColumnResizeEnd}>
@@ -86,10 +87,11 @@ var WorklistTable = React.createClass({
 	        	    header={<Cell><p className="tableHeader">Scan Correlation</p></Cell>}
 	        	    cell={"data"} />
 		      	</Table>
-		      	<div ref="footer" className="footer">
-		      		<p className="text-center signiture">Ryan J McGill</p>
+		      	<div id="footer" style={footerStyle}>
+		      		<p className="text-center">Ryan J McGill</p>
 		      	</div>
 	      	</div>
+	     </div> 
 		);
 	}
 });

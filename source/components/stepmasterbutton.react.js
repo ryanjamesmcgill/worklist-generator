@@ -5,9 +5,9 @@ const Cell = require('fixed-data-table').Cell;
 
 var StepmasterButton = React.createClass({
     _onClick: function(e){
-        var rowObj = StepmasterStore.getObjectAt(this.props.rowIndex);
-        console.log('clicked ', rowObj);
-        WorklistActionCreators.addStep(rowObj);
+        var index = this.props.rowIndex;
+        WorklistActionCreators.addIndex(index);
+        console.log('clicked ', StepmasterStore.getObjectAt(index));
     },
     render: function(){
         return( <Cell>

@@ -17,16 +17,27 @@ function setFilter(filtertype, value){
     AppDispatcher.dispatch(action);
 }
 
-function setHeight(height){
+function addedToWorklist(stepObj){
     var action = {
-        type: 'stepmaster_set_height',
-        height: height
-    }
+        type: 'added_to_worklist',
+        stepObj: stepObj
+    };
     AppDispatcher.dispatch(action);
 }
+
+function removedFromWorklist(index){
+    var action = {
+        type: 'removed_from_worklist',
+        index: index
+    };
+    AppDispatcher.dispatch(action);
+}
+
+
 
 module.exports = {
 	setStepmaster: setStepmaster,
 	setFilter: setFilter,
-	setHeight: setHeight
+	addedToWorklist: addedToWorklist,
+	removedFromWorklist: removedFromWorklist
 };

@@ -1,8 +1,8 @@
 const React = require('react');
 const StepmasterActionCreators = require("../actions/StepmasterActionCreators");
-const DimensionsActionCreators = require("../actions/DimensionsActionCreators");
+//const DimensionsActionCreators = require("../actions/DimensionsActionCreators");
 const StepmasterStore = require('../stores/StepmasterStore');
-const DimensionsStore = require('../stores/DimensionsStore');
+//const DimensionsStore = require('../stores/DimensionsStore');
 
 var divHandleStyle={
 	backgroundColor: '#dae6eb',

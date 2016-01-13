@@ -4,10 +4,11 @@ const Cell = require('fixed-data-table').Cell;
 
 var StepmasterText = React.createClass({
     render: function(){
-        return( <Cell>
-                {StepmasterStore
+        var value = StepmasterStore
                     .getObjectAt(this.props.rowIndex)
-                    [this.props.column]}
+                    [this.props.column];
+        return( <Cell>
+                {String(value)}
                 </Cell>);
     }
 });

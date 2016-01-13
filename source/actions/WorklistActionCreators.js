@@ -1,13 +1,13 @@
 var AppDispatcher = require('../dispatcher/AppDispatcher');
 
-function addStep(stepObj){
+function addIndex(index){
     var action = {
-        type: "worklist_add_step",
-        stepObj: stepObj
+        type: "worklist_add_index",
+        index: index
     };
     AppDispatcher.dispatch(action);
 }
 
 module.exports = {
-    addStep: addStep
+    addIndex: addIndex
 };
