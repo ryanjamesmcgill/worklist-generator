@@ -51,6 +51,14 @@ var closeSymbolStyle = {
 	height: '21px'
 };
 
+var cellOverlayStyle = {
+        backgroundColor   : 'rgba(0, 0, 0, 0.60)',
+        textAlign: 'center',
+        visibility: 'hidden',
+        width: '100%',
+        height: '100%'
+    };
+
 var Stepmaster = React.createClass({
 	getDefaultProps: function(){
 		return {
@@ -70,7 +78,7 @@ var Stepmaster = React.createClass({
 				stepdesc: 250,
 				ppid: 100,
 				inWorklist: 100
-			}
+			},
 		};
 	},
 	componentDidMount: function(){
@@ -123,7 +131,8 @@ var Stepmaster = React.createClass({
 	     			width={this.state.columnWidths.button}
 	     			isResizable={false}
 	        	    header={<StepmasterHeaderButton/>}
-	        	    cell={props=>(<StepmasterButton rowIndex={props.rowIndex} /> )} />
+	        	    cell={props=>(<StepmasterButton 
+	        	    				stepObj={StepStore.getMasterStepAt(props.rowIndex)} /> ) } />
 	        	<Column
 	     			columnKey="processid"
 	     			width={this.state.columnWidths.processid}
@@ -133,7 +142,7 @@ var Stepmaster = React.createClass({
 	        	    			handler={this._onType}/> )}
 	        	    cell={props=>(<StepmasterText
 	        	    			column={props.columnKey}
-	        	    			rowIndex={props.rowIndex} /> )} />
+	        	    			stepObj={StepStore.getMasterStepAt(props.rowIndex)} /> ) } />
 	        	<Column
 	     			columnKey="stepseq"
 	     			width={this.state.columnWidths.stepseq}
@@ -143,7 +152,7 @@ var Stepmaster = React.createClass({
 	        	    			handler={this._onType}/> )}
 	        	    cell={props=>(<StepmasterText
 	        	    			column={props.columnKey}
-	        	    			rowIndex={props.rowIndex} /> )} />
+	        	    			stepObj={StepStore.getMasterStepAt(props.rowIndex)} /> ) } />
 	        	<Column
 	     			columnKey="stepdesc"
 	     			width={this.state.columnWidths.stepdesc}
@@ -153,7 +162,7 @@ var Stepmaster = React.createClass({
 	        	    			handler={this._onType}/> )}
 	        	    cell={props=>(<StepmasterText
 	        	    			column={props.columnKey}
-	        	    			rowIndex={props.rowIndex} /> )} />
+	        	    			stepObj={StepStore.getMasterStepAt(props.rowIndex)} /> ) } />
 	        	<Column
 	     			columnKey="ppid"
 	     			width={this.state.columnWidths.ppid}
@@ -163,7 +172,7 @@ var Stepmaster = React.createClass({
 	        	    			handler={this._onType}/> )}
 	        	    cell={props=>(<StepmasterText
 	        	    			column={props.columnKey}
-	        	    			rowIndex={props.rowIndex} /> )} />
+	        	    			stepObj={StepStore.getMasterStepAt(props.rowIndex)} /> ) } />
 	        	<Column
 	     			columnKey="workliststatus"
 	     			width={this.state.columnWidths.inWorklist}
@@ -173,7 +182,7 @@ var Stepmaster = React.createClass({
 	        	    			handler={this._onType}/> )}
 	        	    cell={props=>(<StepmasterText
 	        	    			column={props.columnKey}
-	        	    			rowIndex={props.rowIndex} /> )} />
+	        	    			stepObj={StepStore.getMasterStepAt(props.rowIndex)} /> ) } />
 	      	</Table>
 	      	</div>
 	      	<div>
