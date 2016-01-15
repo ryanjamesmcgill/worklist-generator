@@ -4,7 +4,6 @@ const StepStore = require("../stores/StepStore");
 
 var StepmasterHeader = React.createClass({
     render: function(){
-        console.log('stepmaster header');
         var filterValue = StepStore.getFilters()[this.props.filterType].value;
         var filterName = StepStore.getFilters()[this.props.filterType].name;
         var defaultText = "filter by " + filterName;

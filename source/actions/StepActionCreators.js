@@ -25,9 +25,17 @@ function addStepToWorklist(stepObj){
     AppDispatcher.dispatch(action);
 }
 
+function removeStepFromWorklist(stepObj){
+    var action = {
+        type: 'remove_step_from_worklist',
+        stepObj: stepObj
+    }
+    AppDispatcher.dispatch(action);
+}
 
 module.exports = {
 	setMasterSteps: setMasterSteps,
 	setFilter: setFilter,
-	addStepToWorklist: addStepToWorklist
+	addStepToWorklist: addStepToWorklist,
+	removeStepFromWorklist: removeStepFromWorklist
 };

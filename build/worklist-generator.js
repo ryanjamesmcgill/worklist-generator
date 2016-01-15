@@ -40245,13 +40245,22 @@ function addStepToWorklist(stepObj) {
     AppDispatcher.dispatch(action);
 }
 
+function removeStepFromWorklist(stepObj) {
+    var action = {
+        type: 'remove_step_from_worklist',
+        stepObj: stepObj
+    };
+    AppDispatcher.dispatch(action);
+}
+
 module.exports = {
     setMasterSteps: setMasterSteps,
     setFilter: setFilter,
-    addStepToWorklist: addStepToWorklist
+    addStepToWorklist: addStepToWorklist,
+    removeStepFromWorklist: removeStepFromWorklist
 };
 
-},{"../dispatcher/AppDispatcher":244}],236:[function(require,module,exports){
+},{"../dispatcher/AppDispatcher":248}],236:[function(require,module,exports){
 const React = require('react');
 const ReactDOM = require('react-dom');
 const Application = require('./components/application.react');
@@ -40262,7 +40271,7 @@ console.log('[worklist-generator] app.js loaded');
 StepUtils.generateMasterSteps();
 ReactDOM.render(React.createElement(Application, null), document.getElementById('react-application'));
 
-},{"./components/application.react":237,"./utils/StepUtils":246,"react":234,"react-dom":58}],237:[function(require,module,exports){
+},{"./components/application.react":237,"./utils/StepUtils":250,"react":234,"react-dom":58}],237:[function(require,module,exports){
 const React = require('react');
 const Stepmaster = require('./stepmaster.react');
 const WorklistTable = require('./worklisttable.react');
@@ -40276,7 +40285,6 @@ var Application = React.createClass({
 		};
 	},
 	_onStepmasterClick: function () {
-		console.log('click');
 		this.setState({
 			stepmasterIsVisible: !this.state.stepmasterIsVisible
 		});
@@ -40520,7 +40528,7 @@ var Stepmaster = React.createClass({
 
 module.exports = Stepmaster;
 
-},{"../actions/StepActionCreators":235,"../stores/StepStore":245,"./stepmasterbutton.react":239,"./stepmasterheader.react":240,"./stepmasterheaderbutton.react":241,"./stepmastertext.react":242,"fixed-data-table":52,"react":234,"react-modal":65}],239:[function(require,module,exports){
+},{"../actions/StepActionCreators":235,"../stores/StepStore":249,"./stepmasterbutton.react":239,"./stepmasterheader.react":240,"./stepmasterheaderbutton.react":241,"./stepmastertext.react":242,"fixed-data-table":52,"react":234,"react-modal":65}],239:[function(require,module,exports){
 const React = require('react');
 const StepStore = require('../stores/StepStore');
 const StepActionCreators = require('../actions/StepActionCreators');
@@ -40537,7 +40545,13 @@ var StepmasterButton = React.createClass({
 
     _onClick: function (e) {
         var stepObj = this.props.stepObj;
-        StepActionCreators.addStepToWorklist(stepObj);
+        var id = e.target.id;
+
+        if (id == "add") {
+            StepActionCreators.addStepToWorklist(stepObj);
+        } else {
+            StepActionCreators.removeStepFromWorklist(stepObj);
+        }
         console.log('clicked ', stepObj);
     },
     getButton: function (workliststatus) {
@@ -40546,7 +40560,7 @@ var StepmasterButton = React.createClass({
                 'button',
                 { type: 'button',
                     id: 'add',
-                    className: 'btn btn-primary btn-sm',
+                    className: 'btn btn-primary',
                     onClick: this._onClick },
                 '+'
             );
@@ -40555,7 +40569,7 @@ var StepmasterButton = React.createClass({
                 'button',
                 { type: 'button',
                     id: 'remove',
-                    className: 'btn btn-danger btn-sm',
+                    className: 'btn btn-danger',
                     onClick: this._onClick },
                 '-'
             );
@@ -40564,7 +40578,6 @@ var StepmasterButton = React.createClass({
     render: function () {
         var stepObj = this.props.stepObj;
         var buttonElement = this.getButton(stepObj.workliststatus);
-        console.log('stepmaster button render');
         return React.createElement(
             Cell,
             { style: style },
@@ -40575,7 +40588,7 @@ var StepmasterButton = React.createClass({
 
 module.exports = StepmasterButton;
 
-},{"../actions/StepActionCreators":235,"../stores/StepStore":245,"fixed-data-table":52,"react":234}],240:[function(require,module,exports){
+},{"../actions/StepActionCreators":235,"../stores/StepStore":249,"fixed-data-table":52,"react":234}],240:[function(require,module,exports){
 const React = require('react');
 const Cell = require('fixed-data-table').Cell;
 const StepStore = require("../stores/StepStore");
@@ -40584,7 +40597,6 @@ var StepmasterHeader = React.createClass({
     displayName: 'StepmasterHeader',
 
     render: function () {
-        console.log('stepmaster header');
         var filterValue = StepStore.getFilters()[this.props.filterType].value;
         var filterName = StepStore.getFilters()[this.props.filterType].name;
         var defaultText = "filter by " + filterName;
@@ -40615,7 +40627,7 @@ var StepmasterHeader = React.createClass({
 
 module.exports = StepmasterHeader;
 
-},{"../stores/StepStore":245,"fixed-data-table":52,"react":234}],241:[function(require,module,exports){
+},{"../stores/StepStore":249,"fixed-data-table":52,"react":234}],241:[function(require,module,exports){
 const React = require('react');
 const StepStore = require('../stores/StepStore');
 const Cell = require('fixed-data-table').Cell;
@@ -40643,7 +40655,7 @@ var StepmasterHeaderButton = React.createClass({
 
 module.exports = StepmasterHeaderButton;
 
-},{"../stores/StepStore":245,"fixed-data-table":52,"react":234}],242:[function(require,module,exports){
+},{"../stores/StepStore":249,"fixed-data-table":52,"react":234}],242:[function(require,module,exports){
 const React = require('react');
 const StepStore = require('../stores/StepStore');
 const Cell = require('fixed-data-table').Cell;
@@ -40673,11 +40685,15 @@ var StepmasterText = React.createClass({
 
 module.exports = StepmasterText;
 
-},{"../stores/StepStore":245,"fixed-data-table":52,"react":234}],243:[function(require,module,exports){
+},{"../stores/StepStore":249,"fixed-data-table":52,"react":234}],243:[function(require,module,exports){
 "use strict";
 
 const React = require('react');
 const StepStore = require('../stores/StepStore');
+const WorklistTableButton = require('./worklisttablebutton.react');
+const WorklistTableText = require('./worklisttabletext.react');
+const WorklistTableDropdown = require('./worklisttabledropdown.react');
+const WorklistTableDropdownSelection = require('./worklisttabledropdownselection.react');
 const FixedDataTable = require('fixed-data-table');
 const Table = FixedDataTable.Table;
 const Column = FixedDataTable.Column;
@@ -40705,10 +40721,17 @@ var WorklistTable = React.createClass({
 	getInitialState: function () {
 		return {
 			columnWidths: {
+				button: 50,
 				stepseq: 120,
 				stepdesc: 250,
 				ppid: 200,
-				scancorrelation: 200
+				scancorrelation: 200,
+				type: 120
+			},
+			dropdown: {
+				visible: false,
+				x: 0,
+				y: 0
 			}
 		};
 	},
@@ -40728,7 +40751,36 @@ var WorklistTable = React.createClass({
 			columnWidths: newWidths
 		});
 	},
+	showDropdown: function (stepObj, e) {
+		var x = e.clientX;
+		var y = e.clientY;
+		this.setState({
+			dropdown: {
+				visible: true,
+				x: x,
+				y: y
+			}
+		});
+	},
+	hideDropdown: function () {
+		this.setState({
+			dropdown: {
+				visible: false,
+				x: 0,
+				y: 0
+			}
+		});
+	},
 	render: function () {
+		var dropdown;
+		if (this.state.dropdown.visible) {
+			dropdown = React.createElement(WorklistTableDropdownSelection, {
+				hideDropdown: this.hideDropdown,
+				x: this.state.dropdown.x,
+				y: this.state.dropdown.y });
+		} else {
+			dropdown = null;
+		}
 		return React.createElement(
 			'div',
 			{ style: { textAlign: 'center' } },
@@ -40738,7 +40790,7 @@ var WorklistTable = React.createClass({
 				React.createElement(
 					Table,
 					{
-						rowsCount: StepStore.getWorlistLength(),
+						rowsCount: StepStore.getWorklistLength(),
 						rowHeight: 45,
 						headerHeight: 40,
 						width: this.props.dimensions.width,
@@ -40746,6 +40798,13 @@ var WorklistTable = React.createClass({
 						footerHeight: 0,
 						isColumnResizing: false,
 						onColumnResizeEndCallback: this._onColumnResizeEnd },
+					React.createElement(Column, {
+						columnKey: 'button',
+						width: this.state.columnWidths.button,
+						isResizable: true,
+						header: '',
+						cell: props => React.createElement(WorklistTableButton, {
+							stepObj: StepStore.getWorklistStepAt(props.rowIndex) }) }),
 					React.createElement(Column, {
 						columnKey: 'stepseq',
 						width: this.state.columnWidths.stepseq,
@@ -40759,7 +40818,8 @@ var WorklistTable = React.createClass({
 								'Step Sequence'
 							)
 						),
-						cell: "data" }),
+						cell: props => React.createElement(WorklistTableText, {
+							value: StepStore.getWorklistStepAt(props.rowIndex)[props.columnKey] }) }),
 					React.createElement(Column, {
 						columnKey: 'stepdesc',
 						width: this.state.columnWidths.stepdesc,
@@ -40773,7 +40833,8 @@ var WorklistTable = React.createClass({
 								'Step Description'
 							)
 						),
-						cell: "data" }),
+						cell: props => React.createElement(WorklistTableText, {
+							value: StepStore.getWorklistStepAt(props.rowIndex)[props.columnKey] }) }),
 					React.createElement(Column, {
 						columnKey: 'ppid',
 						width: this.state.columnWidths.ppid,
@@ -40787,7 +40848,8 @@ var WorklistTable = React.createClass({
 								'PPID'
 							)
 						),
-						cell: "data" }),
+						cell: props => React.createElement(WorklistTableText, {
+							value: StepStore.getWorklistStepAt(props.rowIndex)[props.columnKey] }) }),
 					React.createElement(Column, {
 						columnKey: 'scancorrelation',
 						width: this.state.columnWidths.scancorrelation,
@@ -40801,7 +40863,24 @@ var WorklistTable = React.createClass({
 								'Scan Correlation'
 							)
 						),
-						cell: "data" })
+						cell: props => React.createElement(WorklistTableDropdown, {
+							showDropdown: this.showDropdown,
+							stepObj: StepStore.getWorklistStepAt(props.rowIndex) }) }),
+					React.createElement(Column, {
+						columnKey: 'type',
+						width: this.state.columnWidths.type,
+						isResizable: true,
+						header: React.createElement(
+							Cell,
+							null,
+							React.createElement(
+								'p',
+								{ className: 'tableHeader' },
+								'Step Type'
+							)
+						),
+						cell: props => React.createElement(WorklistTableText, {
+							value: StepStore.getWorklistStepAt(props.rowIndex)[props.columnKey] }) })
 				),
 				React.createElement(
 					'div',
@@ -40811,7 +40890,8 @@ var WorklistTable = React.createClass({
 						{ className: 'text-center' },
 						'Ryan J McGill'
 					)
-				)
+				),
+				dropdown
 			)
 		);
 	}
@@ -40819,11 +40899,192 @@ var WorklistTable = React.createClass({
 
 module.exports = WorklistTable;
 
-},{"../stores/StepStore":245,"fixed-data-table":52,"react":234}],244:[function(require,module,exports){
+},{"../stores/StepStore":249,"./worklisttablebutton.react":244,"./worklisttabledropdown.react":245,"./worklisttabledropdownselection.react":246,"./worklisttabletext.react":247,"fixed-data-table":52,"react":234}],244:[function(require,module,exports){
+const React = require('react');
+const StepStore = require('../stores/StepStore');
+const StepActionCreators = require('../actions/StepActionCreators');
+const Cell = require('fixed-data-table').Cell;
+
+var style = {
+    height: "100%",
+    width: "100%"
+
+};
+
+var WorklistTableButton = React.createClass({
+    displayName: 'WorklistTableButton',
+
+    _onClick: function (e) {
+        var stepObj = this.props.stepObj;
+        StepActionCreators.removeStepFromWorklist(stepObj);
+        console.log('removed ', stepObj);
+    },
+    render: function () {
+        return React.createElement(
+            Cell,
+            { style: style },
+            React.createElement(
+                'button',
+                { type: 'button',
+                    id: 'add',
+                    className: 'btn btn-secondary btn-sm',
+                    onClick: this._onClick },
+                '-'
+            )
+        );
+    }
+});
+
+module.exports = WorklistTableButton;
+
+},{"../actions/StepActionCreators":235,"../stores/StepStore":249,"fixed-data-table":52,"react":234}],245:[function(require,module,exports){
+const React = require('react');
+const Cell = require('fixed-data-table').Cell;
+
+var WorklistTableDropdown = React.createClass({
+    displayName: 'WorklistTableDropdown',
+
+    render: function () {
+        var style = {
+            height: "100%",
+            width: "100%",
+            padding: 0
+        };
+        var value = this.props.value;
+        return React.createElement(
+            Cell,
+            { style: style },
+            React.createElement(
+                'button',
+                { className: 'btn btn-default dropdown-toggle',
+                    type: 'button',
+                    onClick: this.props.showDropdown.bind(null, this.props.stepObj) },
+                'Dropdown',
+                React.createElement('span', { className: 'caret' })
+            )
+        );
+    }
+});
+
+module.exports = WorklistTableDropdown;
+
+},{"fixed-data-table":52,"react":234}],246:[function(require,module,exports){
+const React = require('react');
+const Cell = require('fixed-data-table').Cell;
+
+var WorklistTableDropdownSelection = React.createClass({
+    displayName: 'WorklistTableDropdownSelection',
+
+    getInitialState: function () {
+        return {
+            mouseIsDownOnElement: false
+        };
+    },
+    componentDidMount: function () {
+        window.addEventListener('mousedown', this.onPageClick, false);
+    },
+    componentWillUnmount: function () {
+        window.removeEventListener('mousedown', this.onPageClick, false);
+    },
+    onPageClick: function () {
+        if (this.state.mouseIsDownOnElement) {
+            return;
+        } else {
+            this.props.hideDropdown();
+        }
+    },
+    onDropdownClick: function () {
+        console.log('dropdown clicked');
+    },
+    onMouseDown: function (e) {
+        this.setState({
+            mouseIsDownOnElement: true
+        });
+    },
+    onMouseUp: function (e) {
+        this.setState({
+            mouseIsDownOnElement: false
+        });
+    },
+    render: function () {
+        var value = this.props.value;
+        return React.createElement(
+            'ul',
+            { className: 'dropdown-menu',
+                style: { display: 'block', position: 'absolute', top: this.props.y, left: this.props.x },
+                onMouseDown: this.onMouseDown,
+                onMouseUp: this.onMouseUp },
+            React.createElement(
+                'li',
+                null,
+                React.createElement(
+                    'a',
+                    { href: '#' },
+                    'Action'
+                )
+            ),
+            React.createElement(
+                'li',
+                null,
+                React.createElement(
+                    'a',
+                    { href: '#' },
+                    'Another action'
+                )
+            ),
+            React.createElement(
+                'li',
+                null,
+                React.createElement(
+                    'a',
+                    { href: '#' },
+                    'Something else here'
+                )
+            ),
+            React.createElement('li', { role: 'separator', className: 'divider' }),
+            React.createElement(
+                'li',
+                null,
+                React.createElement(
+                    'a',
+                    { href: '#' },
+                    'Separated link'
+                )
+            )
+        );
+    }
+});
+
+module.exports = WorklistTableDropdownSelection;
+
+},{"fixed-data-table":52,"react":234}],247:[function(require,module,exports){
+const React = require('react');
+const Cell = require('fixed-data-table').Cell;
+
+var WorklistTableText = React.createClass({
+    displayName: 'WorklistTableText',
+
+    render: function () {
+        var style = {
+            height: "100%",
+            width: "100%"
+        };
+        var value = this.props.value;
+        return React.createElement(
+            Cell,
+            { style: style },
+            value
+        );
+    }
+});
+
+module.exports = WorklistTableText;
+
+},{"fixed-data-table":52,"react":234}],248:[function(require,module,exports){
 var Dispatcher = require('flux').Dispatcher;
 module.exports = new Dispatcher();
 
-},{"flux":53}],245:[function(require,module,exports){
+},{"flux":53}],249:[function(require,module,exports){
 const AppDispatcher = require('../dispatcher/AppDispatcher');
 const EventEmitter = require('events').EventEmitter;
 const assign = require('object-assign');
@@ -40860,8 +41121,16 @@ var filters = {
 function setMasterSteps(stepArray) {
 	for (var i = 0; i < stepArray.length; i++) {
 		MasterSteps.push(stepArray[i]);
-		MasterSteps[i].workliststatus = false;
 		filteredIndexes.push(i);
+
+		MasterSteps[i].workliststatus = false;
+		var type = "";
+		if (MasterSteps[i].ppid.indexOf("4") > 0) {
+			type = "scan";
+		} else {
+			type = "process";
+		}
+		MasterSteps[i].type = type;
 	}
 }
 function setFilter(filtertype, value) {
@@ -40880,12 +41149,27 @@ function filter() {
 }
 function addStepToWorklist(stepObj) {
 	WorklistSteps.push(stepObj);
-	var size = MasterSteps.length;
-	for (var index = 0; index < size; index++) {
-		if (MasterSteps[index].stepseq == stepObj.stepseq) {
-			MasterSteps[index].workliststatus = true;
+	MasterSteps.map(function (element, index, MasterSteps) {
+		if (element.stepseq == stepObj.stepseq) {
+			element.workliststatus = true;
 		}
-	}
+	});
+
+	StepUtils.sortWorklist(WorklistSteps);
+}
+function removeStepFromWorklist(stepObj) {
+	WorklistSteps.map(function (element, index, WorklistSteps) {
+		if (element.stepseq == stepObj.stepseq) {
+			WorklistSteps.splice(index, 1);
+		}
+	});
+	MasterSteps.map(function (element, index, MasterSteps) {
+		if (element.stepseq == stepObj.stepseq) {
+			element.workliststatus = false;
+		}
+	});
+
+	StepUtils.sortWorklist(WorklistSteps);
 }
 function emitChange() {
 	StepStore.emit(CHANGE_EVENT);
@@ -40902,7 +41186,10 @@ var StepStore = assign({}, EventEmitter.prototype, {
 		var MasterIndex = filteredIndexes[filteredIndex];
 		return MasterSteps[MasterIndex];
 	},
-	getWorlistLength: function () {
+	getWorklistStepAt: function (index) {
+		return WorklistSteps[index];
+	},
+	getWorklistLength: function () {
 		return WorklistSteps.length;
 	},
 	getFilteredLength: function () {
@@ -40932,6 +41219,10 @@ function handleAction(action) {
 			addStepToWorklist(action.stepObj);
 			emitChange();
 			break;
+		case 'remove_step_from_worklist':
+			removeStepFromWorklist(action.stepObj);
+			emitChange();
+			break;
 		default: // .. do nothing
 	}
 }
@@ -40939,7 +41230,7 @@ function handleAction(action) {
 StepStore.dispatchToken = AppDispatcher.register(handleAction);
 module.exports = StepStore;
 
-},{"../dispatcher/AppDispatcher":244,"../utils/StepUtils":246,"events":1,"object-assign":57}],246:[function(require,module,exports){
+},{"../dispatcher/AppDispatcher":248,"../utils/StepUtils":250,"events":1,"object-assign":57}],250:[function(require,module,exports){
 const _ = require('lodash');
 const StepActionCreators = require('../actions/StepActionCreators');
 const stepArray = require('./stepdata/steps.json');
@@ -40959,12 +41250,27 @@ function filterTest(row, filters) {
     return pass;
 }
 
+function sortWorklist(WorklistSteps) {
+    WorklistSteps.sort(function (a, b) {
+        var aStep = a.stepseq;
+        var bStep = b.stepseq;
+        if (aStep < bStep) {
+            return -1;
+        } else if (aStep > bStep) {
+            return 1;
+        } else {
+            return 0;
+        }
+    });
+}
+
 module.exports = {
     generateMasterSteps: generateMasterSteps,
-    filterTest: filterTest
+    filterTest: filterTest,
+    sortWorklist: sortWorklist
 };
 
-},{"../actions/StepActionCreators":235,"./stepdata/steps.json":247,"lodash":56}],247:[function(require,module,exports){
+},{"../actions/StepActionCreators":235,"./stepdata/steps.json":251,"lodash":56}],251:[function(require,module,exports){
 module.exports=[
 {"processid":"DUMM","stepseq":"DUMMY01","stepdesc":"Dummy Description (DMM) 01","ppid":"RECIPEGOESHERE1"},
 {"processid":"DUMM","stepseq":"DUMMY02","stepdesc":"Dummy Description (DMM) 02","ppid":"RECIPEGOESHERE2"},

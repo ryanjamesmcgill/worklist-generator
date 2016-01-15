@@ -17,7 +17,23 @@ function filterTest(row, filters){
     return pass;
 }
 
+function sortWorklist(WorklistSteps){
+    WorklistSteps.sort(
+        function(a,b){
+            var aStep = a.stepseq;
+            var bStep = b.stepseq;
+            if(aStep < bStep){
+                return -1;
+            } else if(aStep > bStep){
+                return 1;
+            } else {
+                return 0;
+            }
+        });
+}
+
 module.exports = {
     generateMasterSteps: generateMasterSteps,
-    filterTest: filterTest
+    filterTest: filterTest,
+    sortWorklist: sortWorklist
 };

@@ -12,7 +12,13 @@ var style = {
 var StepmasterButton = React.createClass({
     _onClick: function(e){
         var stepObj = this.props.stepObj;
-        StepActionCreators.addStepToWorklist(stepObj);
+        var id = e.target.id;
+        
+        if(id == "add"){
+            StepActionCreators.addStepToWorklist(stepObj);
+        } else {
+            StepActionCreators.removeStepFromWorklist(stepObj);
+        }
         console.log('clicked ', stepObj);
     },
     getButton: function(workliststatus){
@@ -20,7 +26,7 @@ var StepmasterButton = React.createClass({
             return (
                 <button type="button" 
                     id="add"
-                    className="btn btn-primary btn-sm"
+                    className="btn btn-primary"
                     onClick={this._onClick}>
                     +
                 </button>
@@ -29,7 +35,7 @@ var StepmasterButton = React.createClass({
             return (
                 <button type="button" 
                     id="remove"
-                    className="btn btn-danger btn-sm"
+                    className="btn btn-danger"
                     onClick={this._onClick}>
                     -
                 </button>
@@ -39,7 +45,6 @@ var StepmasterButton = React.createClass({
     render: function(){
         var stepObj = this.props.stepObj
         var buttonElement = this.getButton(stepObj.workliststatus);
-        console.log('stepmaster button render');
         return( <Cell style = {style} >
                     {buttonElement}
                 </Cell>

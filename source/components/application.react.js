@@ -10,7 +10,6 @@ var Application = React.createClass({
 		};
 	},
 	_onStepmasterClick: function(){
-		console.log('click');
 		this.setState({
 			stepmasterIsVisible: !(this.state.stepmasterIsVisible)
 		});
