@@ -1,5 +1,6 @@
 const React = require('react');
 const Cell = require('fixed-data-table').Cell;
+const StepStore = require('../stores/StepStore');
 
 var WorklistTableDropdownSelection = React.createClass({
     getInitialState: function(){
@@ -20,8 +21,11 @@ var WorklistTableDropdownSelection = React.createClass({
            this.props.hideDropdown();
        }
     },
-    onDropdownClick: function(){
-        console.log('dropdown clicked');
+    onDropdownClick: function(processStep, e){
+        var scanStep = e.currentTarget.id;
+        console.log('dropdown clicked- process:',processStep,' scan:',scanStep);
+        
+        this.props.hideDropdown();
     },
     onMouseDown: function(e){
         this.setState({
@@ -33,18 +37,43 @@ var WorklistTableDropdownSelection = React.createClass({
             mouseIsDownOnElement: false
         });
     },
+    createList: function(){
+        console.log('createlist');
+        var list=[];
+        StepStore.WorklistStepsMap(
+            function(stepObj, index, array){
+                if(stepObj.scanstep){
+                    var item = <li onClick={this.onDropdownClick.bind(null, this.props.ownerStepSeq)} 
+                                    id={stepObj.stepseq} 
+                                    key={index}>
+                                    <a href='#'>{stepObj.stepseq}</a>
+                                </li>;
+                    list.push(item);
+                }
+            }.bind(this));
+        list.push(<li key={StepStore.getWorklistLength()+1} role="separator" className="divider"></li>);
+        list.push(<li key={StepStore.getWorklistLength()+2}><a href="#">Add step...</a></li>);
+        return list;
+    },
     render: function(){
         var value = this.props.value;
+        var list = this.createList();
+        var style = {
+            display: 'block',
+            position: 'absolute',
+            top: this.props.y,
+            left: this.props.x-20,
+            maxHeight: 200,
+            overflow: 'auto'
+        }
         return( 
                <ul  className="dropdown-menu" 
-                    style={{display: 'block', position: 'absolute', top: this.props.y, left: this.props.x}}
+                    style={style}
                     onMouseDown={this.onMouseDown}
                     onMouseUp={this.onMouseUp}>
-                    <li><a href="#">Action</a></li>
-                    <li><a href="#">Another action</a></li>
-                    <li><a href="#">Something else here</a></li>
-                    <li role="separator" className="divider"></li>
-                    <li><a href="#">Separated link</a></li>
+                    {list.map(function(element, index, array){
+                        return element;
+                    })}
                 </ul>
                );
     }

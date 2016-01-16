@@ -32,8 +32,28 @@ function sortWorklist(WorklistSteps){
         });
 }
 
+function autoCorrelateToScans(WorklistSteps){
+    _.forEach(WorklistSteps,
+        function(stepObj){
+            if(!stepObj.isScan){
+                //process step
+                var index = _.indexOf(WorklistSteps, stepObj);
+                var sublist = _.slice(WorklistSteps, index);
+                var nextScan= _.find(sublist,function(o){return o.isScan});
+                if(nextScan){
+                    stepObj.scanstep=nextScan.stepseq;
+                } else {
+                    stepObj.scanstep='scan not found';
+                }
+            }
+        }
+    );
+    
+}
+
 module.exports = {
     generateMasterSteps: generateMasterSteps,
     filterTest: filterTest,
-    sortWorklist: sortWorklist
+    sortWorklist: sortWorklist,
+    autoCorrelateToScans: autoCorrelateToScans
 };

@@ -8,13 +8,13 @@ var WorklistTableDropdown = React.createClass({
             width: "100%",
             padding: 0
         };
-        var value = this.props.value;
+        var value = this.props.stepObj.scanstep;
         return( 
                 <Cell style={style}>
                   <button   className="btn btn-default dropdown-toggle" 
                             type="button"
                             onClick={this.props.showDropdown.bind(null,this.props.stepObj)}>
-                    Dropdown 
+                    {value} 
                     <span className="caret"></span>
                   </button>
                 </Cell> );

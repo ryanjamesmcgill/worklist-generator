@@ -35,12 +35,13 @@ var WorklistTable = React.createClass({
 				stepdesc: 250,
 				ppid: 200,
 				scancorrelation: 200,
-				type: 120
+				scanstep: 120
 			},
 			dropdown: {
 				visible: false,
 				x: 0,
-				y: 0
+				y: 0,
+				stepseq: ''
 			}
 		};
 	},
@@ -67,7 +68,8 @@ var WorklistTable = React.createClass({
 			dropdown: {
 				visible: true,
 				x: x,
-				y: y
+				y: y,
+				stepseq: stepObj.stepseq
 			}
 		});
 	},
@@ -76,7 +78,8 @@ var WorklistTable = React.createClass({
 			dropdown: {
 				visible: false,
 				x: 0,
-				y: 0
+				y: 0,
+				stepseq: ''
 			}
 		});
 	},
@@ -86,7 +89,8 @@ var WorklistTable = React.createClass({
 			dropdown = <WorklistTableDropdownSelection
 							hideDropdown={this.hideDropdown} 
 							x = {this.state.dropdown.x} 
-							y = {this.state.dropdown.y} />;
+							y = {this.state.dropdown.y} 
+							ownerStepSeq = {this.state.dropdown.stepseq}/>;
 		} else {
 			dropdown = null;
 		}
@@ -135,14 +139,14 @@ var WorklistTable = React.createClass({
 	     			width={this.state.columnWidths.scancorrelation}
 	     			isResizable={true}
 	        	    header={<Cell><p className="tableHeader">Scan Correlation</p></Cell>}
-	        	    cell={props=>(<WorklistTableDropdown 
+	        	    cell={props=>(<WorklistTableDropdown
 	        	    				showDropdown={this.showDropdown}
 	        	    				stepObj={StepStore.getWorklistStepAt(props.rowIndex)} /> ) } />
 				<Column
-	     			columnKey="type"
-	     			width={this.state.columnWidths.type}
+	     			columnKey="scanstep"
+	     			width={this.state.columnWidths.scanstep}
 	     			isResizable={true}
-	        	    header={<Cell><p className="tableHeader">Step Type</p></Cell>}
+	        	    header={<Cell><p className="tableHeader">Scan Step</p></Cell>}
 	        	    cell={props=>(<WorklistTableText
 	        	    				value={StepStore.getWorklistStepAt(props.rowIndex)[props.columnKey]}/> )} />
 		      	</Table>

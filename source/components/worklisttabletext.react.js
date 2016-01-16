@@ -10,7 +10,7 @@ var WorklistTableText = React.createClass({
         var value = this.props.value;
         return( 
                 <Cell style={style}>
-                {value}
+                {String(value)}
                 </Cell> );
     }
 });

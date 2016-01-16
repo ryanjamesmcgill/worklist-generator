@@ -40726,12 +40726,13 @@ var WorklistTable = React.createClass({
 				stepdesc: 250,
 				ppid: 200,
 				scancorrelation: 200,
-				type: 120
+				scanstep: 120
 			},
 			dropdown: {
 				visible: false,
 				x: 0,
-				y: 0
+				y: 0,
+				stepseq: ''
 			}
 		};
 	},
@@ -40758,7 +40759,8 @@ var WorklistTable = React.createClass({
 			dropdown: {
 				visible: true,
 				x: x,
-				y: y
+				y: y,
+				stepseq: stepObj.stepseq
 			}
 		});
 	},
@@ -40767,7 +40769,8 @@ var WorklistTable = React.createClass({
 			dropdown: {
 				visible: false,
 				x: 0,
-				y: 0
+				y: 0,
+				stepseq: ''
 			}
 		});
 	},
@@ -40777,7 +40780,8 @@ var WorklistTable = React.createClass({
 			dropdown = React.createElement(WorklistTableDropdownSelection, {
 				hideDropdown: this.hideDropdown,
 				x: this.state.dropdown.x,
-				y: this.state.dropdown.y });
+				y: this.state.dropdown.y,
+				ownerStepSeq: this.state.dropdown.stepseq });
 		} else {
 			dropdown = null;
 		}
@@ -40867,8 +40871,8 @@ var WorklistTable = React.createClass({
 							showDropdown: this.showDropdown,
 							stepObj: StepStore.getWorklistStepAt(props.rowIndex) }) }),
 					React.createElement(Column, {
-						columnKey: 'type',
-						width: this.state.columnWidths.type,
+						columnKey: 'scanstep',
+						width: this.state.columnWidths.scanstep,
 						isResizable: true,
 						header: React.createElement(
 							Cell,
@@ -40876,7 +40880,7 @@ var WorklistTable = React.createClass({
 							React.createElement(
 								'p',
 								{ className: 'tableHeader' },
-								'Step Type'
+								'Scan Step'
 							)
 						),
 						cell: props => React.createElement(WorklistTableText, {
@@ -40950,7 +40954,7 @@ var WorklistTableDropdown = React.createClass({
             width: "100%",
             padding: 0
         };
-        var value = this.props.value;
+        var value = this.props.stepObj.scanstep;
         return React.createElement(
             Cell,
             { style: style },
@@ -40959,7 +40963,7 @@ var WorklistTableDropdown = React.createClass({
                 { className: 'btn btn-default dropdown-toggle',
                     type: 'button',
                     onClick: this.props.showDropdown.bind(null, this.props.stepObj) },
-                'Dropdown',
+                value,
                 React.createElement('span', { className: 'caret' })
             )
         );
@@ -40971,6 +40975,7 @@ module.exports = WorklistTableDropdown;
 },{"fixed-data-table":52,"react":234}],246:[function(require,module,exports){
 const React = require('react');
 const Cell = require('fixed-data-table').Cell;
+const StepStore = require('../stores/StepStore');
 
 var WorklistTableDropdownSelection = React.createClass({
     displayName: 'WorklistTableDropdownSelection',
@@ -40993,8 +40998,11 @@ var WorklistTableDropdownSelection = React.createClass({
             this.props.hideDropdown();
         }
     },
-    onDropdownClick: function () {
-        console.log('dropdown clicked');
+    onDropdownClick: function (processStep, e) {
+        var scanStep = e.currentTarget.id;
+        console.log('dropdown clicked- process:', processStep, ' scan:', scanStep);
+
+        this.props.hideDropdown();
     },
     onMouseDown: function (e) {
         this.setState({
@@ -41006,58 +41014,64 @@ var WorklistTableDropdownSelection = React.createClass({
             mouseIsDownOnElement: false
         });
     },
+    createList: function () {
+        console.log('createlist');
+        var list = [];
+        StepStore.WorklistStepsMap((function (stepObj, index, array) {
+            if (stepObj.scanstep) {
+                var item = React.createElement(
+                    'li',
+                    { onClick: this.onDropdownClick.bind(null, this.props.ownerStepSeq),
+                        id: stepObj.stepseq,
+                        key: index },
+                    React.createElement(
+                        'a',
+                        { href: '#' },
+                        stepObj.stepseq
+                    )
+                );
+                list.push(item);
+            }
+        }).bind(this));
+        list.push(React.createElement('li', { key: StepStore.getWorklistLength() + 1, role: 'separator', className: 'divider' }));
+        list.push(React.createElement(
+            'li',
+            { key: StepStore.getWorklistLength() + 2 },
+            React.createElement(
+                'a',
+                { href: '#' },
+                'Add step...'
+            )
+        ));
+        return list;
+    },
     render: function () {
         var value = this.props.value;
+        var list = this.createList();
+        var style = {
+            display: 'block',
+            position: 'absolute',
+            top: this.props.y,
+            left: this.props.x - 20,
+            maxHeight: 200,
+            overflow: 'auto'
+        };
         return React.createElement(
             'ul',
             { className: 'dropdown-menu',
-                style: { display: 'block', position: 'absolute', top: this.props.y, left: this.props.x },
+                style: style,
                 onMouseDown: this.onMouseDown,
                 onMouseUp: this.onMouseUp },
-            React.createElement(
-                'li',
-                null,
-                React.createElement(
-                    'a',
-                    { href: '#' },
-                    'Action'
-                )
-            ),
-            React.createElement(
-                'li',
-                null,
-                React.createElement(
-                    'a',
-                    { href: '#' },
-                    'Another action'
-                )
-            ),
-            React.createElement(
-                'li',
-                null,
-                React.createElement(
-                    'a',
-                    { href: '#' },
-                    'Something else here'
-                )
-            ),
-            React.createElement('li', { role: 'separator', className: 'divider' }),
-            React.createElement(
-                'li',
-                null,
-                React.createElement(
-                    'a',
-                    { href: '#' },
-                    'Separated link'
-                )
-            )
+            list.map(function (element, index, array) {
+                return element;
+            })
         );
     }
 });
 
 module.exports = WorklistTableDropdownSelection;
 
-},{"fixed-data-table":52,"react":234}],247:[function(require,module,exports){
+},{"../stores/StepStore":249,"fixed-data-table":52,"react":234}],247:[function(require,module,exports){
 const React = require('react');
 const Cell = require('fixed-data-table').Cell;
 
@@ -41073,7 +41087,7 @@ var WorklistTableText = React.createClass({
         return React.createElement(
             Cell,
             { style: style },
-            value
+            String(value)
         );
     }
 });
@@ -41124,13 +41138,13 @@ function setMasterSteps(stepArray) {
 		filteredIndexes.push(i);
 
 		MasterSteps[i].workliststatus = false;
-		var type = "";
-		if (MasterSteps[i].ppid.indexOf("4") > 0) {
-			type = "scan";
+		var isScan;
+		if (MasterSteps[i].ppid.indexOf("2") > 0) {
+			isScan = true;
 		} else {
-			type = "process";
+			isScan = false;
 		}
-		MasterSteps[i].type = type;
+		MasterSteps[i].isScan = isScan;
 	}
 }
 function setFilter(filtertype, value) {
@@ -41148,6 +41162,7 @@ function filter() {
 	}
 }
 function addStepToWorklist(stepObj) {
+	stepObj.scanstep = null;
 	WorklistSteps.push(stepObj);
 	MasterSteps.map(function (element, index, MasterSteps) {
 		if (element.stepseq == stepObj.stepseq) {
@@ -41156,6 +41171,7 @@ function addStepToWorklist(stepObj) {
 	});
 
 	StepUtils.sortWorklist(WorklistSteps);
+	StepUtils.autoCorrelateToScans(WorklistSteps);
 }
 function removeStepFromWorklist(stepObj) {
 	WorklistSteps.map(function (element, index, WorklistSteps) {
@@ -41170,6 +41186,7 @@ function removeStepFromWorklist(stepObj) {
 	});
 
 	StepUtils.sortWorklist(WorklistSteps);
+	StepUtils.autoCorrelateToScans(WorklistSteps);
 }
 function emitChange() {
 	StepStore.emit(CHANGE_EVENT);
@@ -41188,6 +41205,9 @@ var StepStore = assign({}, EventEmitter.prototype, {
 	},
 	getWorklistStepAt: function (index) {
 		return WorklistSteps[index];
+	},
+	WorklistStepsMap: function (callback) {
+		WorklistSteps.map(callback);
 	},
 	getWorklistLength: function () {
 		return WorklistSteps.length;
@@ -41264,10 +41284,29 @@ function sortWorklist(WorklistSteps) {
     });
 }
 
+function autoCorrelateToScans(WorklistSteps) {
+    _.forEach(WorklistSteps, function (stepObj) {
+        if (!stepObj.isScan) {
+            //process step
+            var index = _.indexOf(WorklistSteps, stepObj);
+            var sublist = _.slice(WorklistSteps, index);
+            var nextScan = _.find(sublist, function (o) {
+                return o.isScan;
+            });
+            if (nextScan) {
+                stepObj.scanstep = nextScan.stepseq;
+            } else {
+                stepObj.scanstep = 'scan not found';
+            }
+        }
+    });
+}
+
 module.exports = {
     generateMasterSteps: generateMasterSteps,
     filterTest: filterTest,
-    sortWorklist: sortWorklist
+    sortWorklist: sortWorklist,
+    autoCorrelateToScans: autoCorrelateToScans
 };
 
 },{"../actions/StepActionCreators":235,"./stepdata/steps.json":251,"lodash":56}],251:[function(require,module,exports){

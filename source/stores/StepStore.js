@@ -37,13 +37,13 @@ function setMasterSteps(stepArray){
 	    filteredIndexes.push(i);
 	    
 	    MasterSteps[i].workliststatus = false;
-	    var type = "";
-	    if(MasterSteps[i].ppid.indexOf("4")>0){
-	    	type = "scan";
+	    var isScan;
+	    if(MasterSteps[i].ppid.indexOf("2")>0){
+	    	isScan=true;
 	    } else {
-	    	type = "process";
+	    	isScan=false;
 	    }
-	    MasterSteps[i].type=type;
+	    MasterSteps[i].isScan=isScan;
 	}
 }
 function setFilter(filtertype, value){
@@ -61,6 +61,7 @@ function filter(){
 	}
 }
 function addStepToWorklist(stepObj){
+	stepObj.scanstep=null;
 	WorklistSteps.push(stepObj);
 	MasterSteps.map(function(element, index, MasterSteps){
 		if(element.stepseq == stepObj.stepseq){
@@ -69,6 +70,7 @@ function addStepToWorklist(stepObj){
 	});
 	
 	StepUtils.sortWorklist(WorklistSteps);
+	StepUtils.autoCorrelateToScans(WorklistSteps);
 }
 function removeStepFromWorklist(stepObj){
 	WorklistSteps.map(function(element, index, WorklistSteps){
@@ -83,6 +85,7 @@ function removeStepFromWorklist(stepObj){
 	});
 	
 	StepUtils.sortWorklist(WorklistSteps);
+	StepUtils.autoCorrelateToScans(WorklistSteps);
 }
 function emitChange(){
 	StepStore.emit(CHANGE_EVENT);
@@ -101,6 +104,9 @@ var StepStore = assign({}, EventEmitter.prototype, {
 	},
 	getWorklistStepAt: function(index){
 		return WorklistSteps[index];
+	},
+	WorklistStepsMap: function(callback){
+		WorklistSteps.map(callback);
 	},
 	getWorklistLength: function(){
 		return WorklistSteps.length;
