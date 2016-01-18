@@ -43,7 +43,7 @@ function autoCorrelateToScans(WorklistSteps){
                 if(nextScan){
                     stepObj.scanstep=nextScan.stepseq;
                 } else {
-                    stepObj.scanstep='scan not found';
+                    stepObj.scanstep=null;
                 }
             }
         }

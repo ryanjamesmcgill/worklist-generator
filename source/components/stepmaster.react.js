@@ -72,7 +72,7 @@ var Stepmaster = React.createClass({
 		return {
 			filters: StepStore.getFilters(),
 			columnWidths: {
-				button: 67,
+				button: 46,
 				processid: 120,
 				stepseq: 120,
 				stepdesc: 250,
@@ -104,16 +104,25 @@ var Stepmaster = React.createClass({
 	    	columnWidths: newWidths
 	    });	
 	},
+	_rowClassNameGetter: function(index){
+		var stepObj = StepStore.getMasterStepAt(index);
+		if(!stepObj.workliststatus){
+			return 'masterStepRow_active';
+		} else {
+			return 'masterStepRow_inactive';
+		}
+	},
 	render: function(){
+		//rowClassNameGetter={/*this._rowClassNameGetter*/}>
 		return (
 			<Modal
 				isOpen={this.props.stepmasterIsVisible}
-				onRequestClose={this.props._onStepmasterClick}
+				onRequestClose={this.props.onStepmasterClick}
 				style={modalStyle}>
 				
 			<span 	className="close"
 					style={closeSymbolStyle}
-					onClick={this.props._onStepmasterClick}>&times;</span>
+					onClick={this.props.onStepmasterClick}>&times;</span>
 					
 			<div id="stepmaster-container" style={{margin: 'auto', width: this.props.dimensions.width}}>
 			<h4 style={{marginTop: '0px'}}>Select steps to add to your worklist</h4>
@@ -126,6 +135,7 @@ var Stepmaster = React.createClass({
 	        	footerHeight={0}
 	        	isColumnResizing={false}
 	        	onColumnResizeEndCallback={this._onColumnResizeEnd}>
+	        	
 	        	<Column
 	     			columnKey="button"
 	     			width={this.state.columnWidths.button}
@@ -188,7 +198,7 @@ var Stepmaster = React.createClass({
 	      	<div>
 		      	<button 
 		      		style={{margin: '10px auto 0px auto', display: 'block'}}
-		      		onClick={this.props._onStepmasterClick} 
+		      		onClick={this.props.onStepmasterClick} 
 		      		className="btn btn-primary">Close</button>
 	      	</div>
 	      	</Modal>

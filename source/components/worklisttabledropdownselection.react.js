@@ -1,6 +1,7 @@
 const React = require('react');
 const Cell = require('fixed-data-table').Cell;
 const StepStore = require('../stores/StepStore');
+const StepActionCreators = require('../actions/StepActionCreators');
 
 var WorklistTableDropdownSelection = React.createClass({
     getInitialState: function(){
@@ -23,8 +24,7 @@ var WorklistTableDropdownSelection = React.createClass({
     },
     onDropdownClick: function(processStep, e){
         var scanStep = e.currentTarget.id;
-        console.log('dropdown clicked- process:',processStep,' scan:',scanStep);
-        
+        StepActionCreators.setWorklistPair(processStep, scanStep);
         this.props.hideDropdown();
     },
     onMouseDown: function(e){
@@ -37,13 +37,20 @@ var WorklistTableDropdownSelection = React.createClass({
             mouseIsDownOnElement: false
         });
     },
+    onAddStepClick: function(e){
+        console.log('onAddStepClick');
+        this.props.hideDropdown();
+        this.props.onStepmasterClick();
+    },
     createList: function(){
         console.log('createlist');
         var list=[];
         StepStore.WorklistStepsMap(
             function(stepObj, index, array){
-                if(stepObj.scanstep){
-                    var item = <li onClick={this.onDropdownClick.bind(null, this.props.ownerStepSeq)} 
+                if(stepObj.isScan){
+                    var item = <li onClick={this.onDropdownClick.bind(null, this.props.ownerStepSeq)}
+                                    onMouseEnter={this.props.onDropdownElementMouseEnter}
+                                    onMouseLeave={this.props.onDropdownMouseLeave}
                                     id={stepObj.stepseq} 
                                     key={index}>
                                     <a href='#'>{stepObj.stepseq}</a>
@@ -52,7 +59,8 @@ var WorklistTableDropdownSelection = React.createClass({
                 }
             }.bind(this));
         list.push(<li key={StepStore.getWorklistLength()+1} role="separator" className="divider"></li>);
-        list.push(<li key={StepStore.getWorklistLength()+2}><a href="#">Add step...</a></li>);
+        list.push(<li   key={StepStore.getWorklistLength()+2}
+                        onClick={this.onAddStepClick}><a href="#">Add step...</a></li>);
         return list;
     },
     render: function(){

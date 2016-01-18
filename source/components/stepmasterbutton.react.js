@@ -3,10 +3,15 @@ const StepStore = require('../stores/StepStore');
 const StepActionCreators = require('../actions/StepActionCreators');
 const Cell = require('fixed-data-table').Cell;
 
-var style = {
-    height: "100%",
+var cellStyle = {
+    height: 45,
     width: "100%",
-    
+}
+
+var buttonStyle = {
+    height: 30,
+    width: "100%",
+    padding: 0
 }
 
 var StepmasterButton = React.createClass({
@@ -27,8 +32,13 @@ var StepmasterButton = React.createClass({
                 <button type="button" 
                     id="add"
                     className="btn btn-primary"
-                    onClick={this._onClick}>
-                    +
+                    onClick={this._onClick}
+                    style={buttonStyle}>
+                    <span
+                        style={{position: 'relative', left: 0.5}}
+                        className="glyphicon glyphicon-plus"
+                        id="add"
+                        aria-hidden="true"></span>
                 </button>
             );
         } else {
@@ -36,8 +46,12 @@ var StepmasterButton = React.createClass({
                 <button type="button" 
                     id="remove"
                     className="btn btn-danger"
-                    onClick={this._onClick}>
-                    -
+                    onClick={this._onClick}
+                    style={buttonStyle}>
+                    <span 
+                        className="glyphicon glyphicon-minus"
+                        id="remove"
+                        aria-hidden="true"></span>
                 </button>
             );
         }
@@ -45,7 +59,7 @@ var StepmasterButton = React.createClass({
     render: function(){
         var stepObj = this.props.stepObj
         var buttonElement = this.getButton(stepObj.workliststatus);
-        return( <Cell style = {style} >
+        return( <Cell style = {cellStyle} >
                     {buttonElement}
                 </Cell>
         );

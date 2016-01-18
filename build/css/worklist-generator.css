@@ -2,8 +2,44 @@ html, body, #react-application {
 	height: 100%;
 	width: 100%;
 }
+.datepicker {
+	-webkit-box-shadow: 0px 3px 15px 0px rgba(0,0,0,0.4);
+	-moz-box-shadow: 0px 3px 15px 0px rgba(0,0,0,0.4);
+	box-shadow: 0px 3px 15px 0px rgba(0,0,0,0.4);
+}
 
 
+.control-label {
+	font-weight: bold;
+}
+.masterStepRow_active:hover .public_fixedDataTableCell_main {
+  background-color: #eef0f2;
+}
 
+
+.worklistStepRow_scan .public_fixedDataTableCell_main {
+	background-color: #ffff99;
+}
+.worklistStepRow_scan.worklistactive .public_fixedDataTableCell_main {
+	background-color: #FFC966;
+}
+.worklistStepRow_scan:hover .public_fixedDataTableCell_main {
+	background-color: #ffff66
+}
+.worklistStepRow_process .public_fixedDataTableCell_main {
+  background-color: #fff;
+}
+.worklistStepRow_process.worklistactive .public_fixedDataTableCell_main {
+  background-color: #669cff;
+}
+.worklistStepRow_process:hover .public_fixedDataTableCell_main {
+  background-color: #eee;
+}
+.worklistRemoveBtn {
+	background-color: #f7d6d6;
+}
+.worklistRemoveBtn:hover {
+	background-color: #efabab;
+}
 
 

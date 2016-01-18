@@ -1,5 +1,6 @@
 "use strict";
 const React = require('react');
+const _ = require('lodash');
 const StepStore = require('../stores/StepStore');
 const WorklistTableButton = require('./worklisttablebutton.react');
 const WorklistTableText = require('./worklisttabletext.react');
@@ -42,7 +43,8 @@ var WorklistTable = React.createClass({
 				x: 0,
 				y: 0,
 				stepseq: ''
-			}
+			},
+			activeIndexes: []
 		};
 	},
 	componentDidMount: function(){
@@ -83,6 +85,45 @@ var WorklistTable = React.createClass({
 			}
 		});
 	},
+	_onDropdownMouseEnter: function(stepObj,e){
+		var activeIndexes = [];
+		activeIndexes.push(StepStore.getWorklistIndexByObj(stepObj));
+		
+		var scanstep = stepObj.scanstep;
+		if(scanstep){
+			var scanIndex=StepStore.getWorklistIndexByStep(scanstep);
+			activeIndexes.push(scanIndex);
+		}
+		
+		this.setState({
+			activeIndexes: activeIndexes
+		});
+	},
+	_onDropdownMouseLeave: function(index){
+		this.setState({
+			activeIndexes: []
+		});
+	},
+	_onDropdownElementMouseEnter: function(e){
+		var stepseq = e.currentTarget.id;
+		var index = StepStore.getWorklistIndexByStep(stepseq);
+		this.setState({
+			activeIndexes: [index]
+		});
+	},
+	rowClassNameGetter: function(index){
+		var classList = "";
+		var stepObj = StepStore.getWorklistStepAt(index);
+		if(stepObj.isScan){
+			classList += "worklistStepRow_scan ";
+		} else {
+			classList += "worklistStepRow_process ";
+		}
+		if(_.indexOf(this.state.activeIndexes,index)>-1){
+			classList += "worklistactive "
+		}
+		return classList;
+	},
 	render: function(){
 		var dropdown;
 		if (this.state.dropdown.visible){
@@ -90,12 +131,15 @@ var WorklistTable = React.createClass({
 							hideDropdown={this.hideDropdown} 
 							x = {this.state.dropdown.x} 
 							y = {this.state.dropdown.y} 
-							ownerStepSeq = {this.state.dropdown.stepseq}/>;
+							ownerStepSeq = {this.state.dropdown.stepseq}
+							onDropdownElementMouseEnter={this._onDropdownElementMouseEnter}
+							onDropdownMouseLeave={this._onDropdownMouseLeave}
+							onStepmasterClick={this.props.onStepmasterClick}/>;
 		} else {
 			dropdown = null;
 		}
 		return (
-		<div style={{textAlign: 'center'}}>
+		<div>
 			<div style={{display: 'inline-block'}}>
 		      	<Table
 		        	rowsCount={StepStore.getWorklistLength()}
@@ -105,7 +149,8 @@ var WorklistTable = React.createClass({
 		        	height={this.props.dimensions.height}
 		        	footerHeight={0}
 		        	isColumnResizing={false}
-		        	onColumnResizeEndCallback={this._onColumnResizeEnd}>
+		        	onColumnResizeEndCallback={this._onColumnResizeEnd}
+		        	rowClassNameGetter={this.rowClassNameGetter}>
 		        <Column
 	     			columnKey="button"
 	     			width={this.state.columnWidths.button}
@@ -140,6 +185,8 @@ var WorklistTable = React.createClass({
 	     			isResizable={true}
 	        	    header={<Cell><p className="tableHeader">Scan Correlation</p></Cell>}
 	        	    cell={props=>(<WorklistTableDropdown
+	        	    				onDropdownMouseEnter={this._onDropdownMouseEnter}
+	        	    				onDropdownMouseLeave={this._onDropdownMouseLeave}
 	        	    				showDropdown={this.showDropdown}
 	        	    				stepObj={StepStore.getWorklistStepAt(props.rowIndex)} /> ) } />
 				<Column

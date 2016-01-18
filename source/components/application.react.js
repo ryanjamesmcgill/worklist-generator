@@ -1,9 +1,13 @@
 const React = require('react');
 const Stepmaster = require('./stepmaster.react');
 const WorklistTable = require('./worklisttable.react');
+const WorklistForm = require('./worklistform/worklistform.react');
 
 
 var Application = React.createClass({
+	getDefaultProps: function(){
+		return ({width: 960});
+	},
 	getInitialState: function(){
 		return {
 			stepmasterIsVisible: false
@@ -16,12 +20,16 @@ var Application = React.createClass({
 	},
 	render: function(){
 		return ( 
-			<div>
+			<div style={{textAlign: 'center'}}>
 				<button className="btn btn-primary" onClick={this._onStepmasterClick}>add</button>
 				<Stepmaster
 					stepmasterIsVisible={this.state.stepmasterIsVisible}
-					_onStepmasterClick={this._onStepmasterClick} />
-				<WorklistTable />
+					onStepmasterClick={this._onStepmasterClick} />
+				<WorklistForm 
+					width={this.props.width}/>
+				<WorklistTable
+					onStepmasterClick={this._onStepmasterClick}
+					width={this.props.width}/>
 			</div>
 		);
 	}

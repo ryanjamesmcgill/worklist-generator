@@ -2,6 +2,7 @@ const AppDispatcher = require('../dispatcher/AppDispatcher');
 const EventEmitter = require('events').EventEmitter;
 const assign = require('object-assign');
 const StepUtils = require('../utils/StepUtils');
+const _ = require('lodash');
 
 const CHANGE_EVENT = 'change';
 
@@ -38,7 +39,7 @@ function setMasterSteps(stepArray){
 	    
 	    MasterSteps[i].workliststatus = false;
 	    var isScan;
-	    if(MasterSteps[i].ppid.indexOf("2")>0){
+	    if(MasterSteps[i].ppid.indexOf("SCAN")>-1){
 	    	isScan=true;
 	    } else {
 	    	isScan=false;
@@ -87,6 +88,13 @@ function removeStepFromWorklist(stepObj){
 	StepUtils.sortWorklist(WorklistSteps);
 	StepUtils.autoCorrelateToScans(WorklistSteps);
 }
+function setWorklistPair(processStep, scanStep){
+	var stepObj = _.find(WorklistSteps,function(o){
+							return (o.stepseq == processStep);
+						}
+	);
+	stepObj.scanstep = scanStep;
+}
 function emitChange(){
 	StepStore.emit(CHANGE_EVENT);
 }
@@ -104,6 +112,17 @@ var StepStore = assign({}, EventEmitter.prototype, {
 	},
 	getWorklistStepAt: function(index){
 		return WorklistSteps[index];
+	},
+	getWorklistIndexByObj: function(stepObj){
+		return _.indexOf(WorklistSteps, stepObj);	
+	},
+	getWorklistIndexByStep: function(stepseq){
+		for(var i=0; i<WorklistSteps.length; i++){
+			if(WorklistSteps[i].stepseq == stepseq){
+				return i;
+			}
+		}
+		return -1;
 	},
 	WorklistStepsMap: function(callback){
 		WorklistSteps.map(callback);
@@ -142,6 +161,10 @@ function handleAction(action){
 			break;
 		case 'remove_step_from_worklist':
 			removeStepFromWorklist(action.stepObj);
+			emitChange();
+			break;
+		case 'set_worklist_pair' :
+			setWorklistPair(action.processStep, action.scanStep);
 			emitChange();
 			break;
 		default: // .. do nothing

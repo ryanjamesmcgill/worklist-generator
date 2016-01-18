@@ -19,7 +19,7 @@ var WorklistTableButton = React.createClass({
         return( <Cell style = {style} >
                     <button type="button" 
                         id="add"
-                        className="btn btn-secondary btn-sm"
+                        className="btn btn-secondary btn-sm worklistRemoveBtn"
                         onClick={this._onClick}>
                         -
                     </button>
