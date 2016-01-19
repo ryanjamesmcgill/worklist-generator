@@ -64,7 +64,6 @@ var WorklistTableDropdownSelection = React.createClass({
         return list;
     },
     render: function(){
-        var value = this.props.value;
         var list = this.createList();
         var style = {
             display: 'block',
@@ -73,7 +72,7 @@ var WorklistTableDropdownSelection = React.createClass({
             left: this.props.x-20,
             maxHeight: 200,
             overflow: 'auto'
-        }
+        };
         return( 
                <ul  className="dropdown-menu" 
                     style={style}
