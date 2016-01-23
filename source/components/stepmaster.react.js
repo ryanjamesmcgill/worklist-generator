@@ -113,7 +113,6 @@ var Stepmaster = React.createClass({
 		}
 	},
 	render: function(){
-		//rowClassNameGetter={/*this._rowClassNameGetter*/}>
 		return (
 			<Modal
 				isOpen={this.props.stepmasterIsVisible}

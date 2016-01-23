@@ -1,7 +1,6 @@
 const React = require('react');
 const DatePicker = require('react-datepicker');
 const moment = require('moment');
-const $ = require('jquery');
 
 
 var DateSelection= React.createClass({
@@ -49,13 +48,12 @@ var DateSelection= React.createClass({
         });
     },
 	render: function(){
-		console.log('startDays: ', this.state.startDays);
 		return ( 
 		        <div>
 		            <h5>Date Selection</h5>
     		        <div className="form-horizontal">
     		            <div className="form-group">
-        			        <lable htmlFor="inputFromDate" className="col-sm-2 control-label"><p>From:</p></lable>
+        			        <lable htmlFor="inputFromDate" className="col-sm-2 control-label">From:</lable>
         			        <div className="col-sm-10">
         			            <DatePicker
         			                ref='startdate'

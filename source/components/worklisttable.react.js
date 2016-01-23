@@ -20,14 +20,6 @@ var footerStyle = {
 };
 
 var WorklistTable = React.createClass({
-	getDefaultProps: function(){
-		return {
-			dimensions: {
-				height: 750,
-				width: 960
-			}
-		};
-	},
     getInitialState: function(){
 		return {
 			columnWidths: {
@@ -139,14 +131,13 @@ var WorklistTable = React.createClass({
 			dropdown = null;
 		}
 		return (
-		<div>
-			<div style={{display: 'inline-block'}}>
+			<div>
 		      	<Table
 		        	rowsCount={StepStore.getWorklistLength()}
 		        	rowHeight={45}
 		        	headerHeight={40}
-		        	width={this.props.dimensions.width}
-		        	height={this.props.dimensions.height}
+		        	width={this.props.width}
+		        	height={this.props.height}
 		        	footerHeight={0}
 		        	isColumnResizing={false}
 		        	onColumnResizeEndCallback={this._onColumnResizeEnd}
@@ -202,7 +193,6 @@ var WorklistTable = React.createClass({
 		      	</div>
 		      	{dropdown}
 	      	</div>
-	     </div> 
 		);
 	}
 });
