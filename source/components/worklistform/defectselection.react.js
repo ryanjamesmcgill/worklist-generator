@@ -5,8 +5,16 @@ const WorklistFormActionCreators = require('../../actions/WorklistFormActionCrea
 const CheckboxList = require('./checkboxlist.react');
 
 var DefectSelection= React.createClass({
+	getInitialState: function(){
+		return({
+			selections: WorklistFormStore.getSelectionsDefectClasses()
+		});
+	},
     logChange: function(val, array){
         WorklistFormActionCreators.setSelectionsDefectClasses(array);
+        this.setState({
+        	selections: array
+        });
     },
 	render: function(){
 	    var options = WorklistFormStore.getOptionsDefectClasses();
@@ -16,7 +24,7 @@ var DefectSelection= React.createClass({
 	        <div className="form-group">
 	            <Select
                     name="doi"
-                    value=""
+                    value={this.state.selections}
                     options={options}
                     onChange={this.logChange}
                     multi={true}

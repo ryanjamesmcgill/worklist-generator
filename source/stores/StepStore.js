@@ -106,6 +106,9 @@ var StepStore = assign({}, EventEmitter.prototype, {
 	removeChangeListener: function(callback){
 		this.removeListener(CHANGE_EVENT, callback);
 	},
+	getWorklistSteps: function(){
+		return WorklistSteps;	
+	},
 	getMasterStepAt: function(filteredIndex){
 		var MasterIndex = filteredIndexes[filteredIndex];
 		return MasterSteps[MasterIndex];

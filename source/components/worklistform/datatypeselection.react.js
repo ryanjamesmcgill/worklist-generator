@@ -1,10 +1,22 @@
 const React = require('react');
 const Select = require('react-select');
+const WorklistFormActionCreators = require('../../actions/WorklistFormActionCreators');
 const WorklistFormStore = require('../../stores/WorklistFormStore');
 
 var DataTypeSelection= React.createClass({
-    logChange: function(val){
-        console.log("Selected: " + val); 
+    getInitialState: function(){
+        return ({
+            datatype: 'Count'
+        });
+    },
+    componentDidMount: function(){
+        WorklistFormActionCreators.setSelectionsDataType(this.state.datatype);  
+    },
+    logChange: function(datatype){
+        WorklistFormActionCreators.setSelectionsDataType(datatype);
+        this.setState({
+            datatype: datatype
+        });
     },
 	render: function(){
         var options = WorklistFormStore.getOptionsDataTypes();
@@ -14,7 +26,7 @@ var DataTypeSelection= React.createClass({
 	        <div className="form-group">
 	            <Select
                     name="datatype"
-                    value="Count"
+                    value={this.state.datatype}
                     options={options}
                     onChange={this.logChange}
                 />

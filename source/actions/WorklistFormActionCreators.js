@@ -16,6 +16,22 @@ function setOptionsDataTypes(array){
     AppDispatcher.dispatch(action);
 }
 
+function setOptionsSavedStepSets(sets){
+    var action = {
+        type: 'set_options_savedStepSets',
+        sets: sets
+    };
+    AppDispatcher.dispatch(action);
+}
+
+function setSelectionsDates(dates){
+    var action = {
+        type: 'set_selections_dates',
+        dates: dates
+    };
+    AppDispatcher.dispatch(action);
+}
+
 function setSelectionsDefectClasses(array){
     var action = {
         type: 'set_selections_defectClasses',
@@ -43,6 +59,8 @@ function setSelectionMergeType(mergeType){
 module.exports = {
     setOptionsDefectClasses:setOptionsDefectClasses,
     setOptionsDataTypes: setOptionsDataTypes,
+    setOptionsSavedStepSets: setOptionsSavedStepSets,
+    setSelectionsDates: setSelectionsDates,
     setSelectionsDefectClasses: setSelectionsDefectClasses,
     setSelectionsDataType: setSelectionsDataType,
     setSelectionMergeType: setSelectionMergeType

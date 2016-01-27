@@ -1,8 +1,11 @@
 const _ = require('lodash');
 const StepActionCreators = require('../actions/StepActionCreators');
-const stepArray = require('./stepdata/steps.json');
+
+//const stepArray = require('./stepdata/steps.json');
+const stepArray = window.references.stepMaster;
 
 function generateMasterSteps(){
+    console.log('steps');
     StepActionCreators.setMasterSteps(stepArray);
 }
 

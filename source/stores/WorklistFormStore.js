@@ -6,7 +6,8 @@ const CHANGE_EVENT = 'change';
 
 var options = {
 	defectClasses : [],
-	dataTypes : []
+	dataTypes : [],
+	savedStepSets : {}
 };
 
 var selections = {
@@ -25,13 +26,20 @@ function setOptionsDefectClasses(array){
 function setOptionsDataTypes(array){
 	options.dataTypes = array;
 }
+function setOptionsSavedStepSets(sets){
+	options.savedStepSets = sets;
+}
 function setSelectionsDefectClasses(array){
 	selections.defectClasses = array;
 }
-function setSelectionDataType(dataType){
+function setSelectionsDates(dates){
+	selections.dates.startday=dates.startday;
+	selections.dates.endday=dates.endday;
+}
+function setSelectionsDataType(dataType){
 	selections.dataType = dataType;
 }
-function setSelectionMergeType(mergeType){
+function setSelectionsMergeType(mergeType){
 	selections.mergeType = mergeType;
 }
 function emitChange(){
@@ -51,6 +59,12 @@ var WorklistFormStore = assign({}, EventEmitter.prototype, {
 	getOptionsDataTypes: function(){
 		return options.dataTypes;
 	},
+	getOptionsSavedStepSets: function(){
+		return options.savedStepSets;
+	},
+	getOptionSavedStepSet: function(key){
+		return options.savedStepSets[key];
+	},
 	getSelectionsDefectClasses: function(){
 		return selections.defectClasses;
 	},
@@ -59,6 +73,9 @@ var WorklistFormStore = assign({}, EventEmitter.prototype, {
 	},
 	getSelectionsMergeType: function(){
 		return selections.mergeType;
+	},
+	getSelections: function(){
+		return selections;
 	}
 });
 
@@ -72,16 +89,24 @@ function handleAction(action){
 			setOptionsDataTypes(action.array);
 			emitChange();
 			break;
+		case 'set_options_savedStepSets':
+			setOptionsSavedStepSets(action.sets);
+			emitChange();
+			break;
+		case 'set_selections_dates':
+			setSelectionsDates(action.dates);
+			emitChange();
+			break;
 		case 'set_selections_defectClasses':
 			setSelectionsDefectClasses(action.array);
 			emitChange();
 			break;
 		case 'set_selections_dataType':
-			setSelectionDataType(action.dataType);
+			setSelectionsDataType(action.dataType);
 			emitChange();
 			break;
 		case 'set_selections_mergeType':
-			setSelectionMergeType(action.mergeType);
+			setSelectionsMergeType(action.mergeType);
 			emitChange();
 			break;
 		default: // .. do nothing

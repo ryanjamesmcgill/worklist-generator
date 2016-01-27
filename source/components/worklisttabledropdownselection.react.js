@@ -43,7 +43,6 @@ var WorklistTableDropdownSelection = React.createClass({
         this.props.onStepmasterClick();
     },
     createList: function(){
-        console.log('createlist');
         var list=[];
         StepStore.WorklistStepsMap(
             function(stepObj, index, array){

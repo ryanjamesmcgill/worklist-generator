@@ -6,7 +6,7 @@ var Converter = require("csvtojson").Converter;
 var fs = require('fs');
 
 gulp.task('default', function(){
-	
+	/*
 	var converter = new Converter({});
 	converter.fromFile("./source/utils/stepdata/steps.csv",function(err,result){
 		if (err) throw err;
@@ -16,7 +16,8 @@ gulp.task('default', function(){
 		});
 	
 	});
-
+	*/
+	
 	return browserify('./source/app.js')
 			.transform(babelify, {presets: "react"})
 			.bundle()
