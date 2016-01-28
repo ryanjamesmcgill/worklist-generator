@@ -1,6 +1,8 @@
 "use strict";
 const React = require('react');
 const Modal = require('react-modal');
+const StepActionCreators = require('../../actions/StepActionCreators');
+const _ = require('lodash');
 
 
 var modalStyle={
@@ -43,46 +45,88 @@ var closeSymbolStyle = {
 	height: '21px'
 };
 
-var Stepmaster = React.createClass({
+var LoadFileModal = React.createClass({
+  getInitialState: function(){
+    return ({
+      loadError : false,
+      errorMessage: null,
+      loadDisabled: true
+    });
+  },
+  _onInputChange: function(){
+    this.setState({
+      loadDisabled: false
+    });
+  },
+  _onClose: function(){
+    this.setState({
+      loadError: false,
+      errorMessage: null,
+      loadDisabled: true
+    });
+    this.props.onLoadfileClick();
+  },
   _onLoad: function(){
     var reader = new FileReader();
     var file = this.refs.fileinput.files[0];
+    var self = this;
     
     reader.onload = function(upload){
-      console.log('loaded file'); 
+      console.log('loaded file');
+      try {
+        var array = JSON.parse(upload.currentTarget.result);
+        self._onClose();
+      } catch(err) {
+        self.setState({
+          loadError: true,
+          errorMessage: err.message
+        });
+      }
+      array.map(function(stepObj, index, array){
+        StepActionCreators.addStepToWorklist(stepObj);
+      });
+      
     };
     
     reader.readAsText(file);
   },
 	render: function(){
+	  var LoadError = null;
+	  if (this.state.loadError){
+	    var errorMessage = "Error loading file: '" + this.state.errorMessage + "'";
+	    var LoadError = <p style={{color: '#C53E3E'}}>{errorMessage}</p>;
+	  }
+	  
 	  // Check for the various File API support.
     if (window.File && window.FileReader && window.FileList && window.Blob) {
       // Great success! All the File APIs are supported.
   		return (
   			<Modal
   				isOpen={this.props.loadfileIsVisible}
-  				onRequestClose={this.props.onLoadfileClick}
+  				onRequestClose={this._onClose}
   				style={modalStyle}>
   				<span 	className="close"
   					style={closeSymbolStyle}
-  					onClick={this.props.onLoadfileClick}>&times;</span>
+  					onClick={this._onClose}>&times;</span>
   				<h3 style={{marginTop: 0}}>Load File</h3>
   				<p>Load a set of steps from a previously saved file..</p>
+  				{LoadError}
           <input  ref="fileinput" 
                   type="file" 
                   name="file"
                   multiple={false}
-                  accept=".csv"
+                  onChange={this._onInputChange}
+                  accept=".json"
                   className="upload-file"
                   style={{margin:10}}/>
           <div className="" style={{textAlign:'center'}}>
-            <button className="btn btn-primary" 
+            <button className="btn btn-primary"
                     style={{marginRight: 10}}
                     onClick={this._onLoad}>
                 Load
             </button>
             <button className="btn btn-default"
-                    onClick={this.props.onLoadfileClick}>
+                    onClick={this._onClose}>
                 Cancel
             </button>
           </div>
@@ -106,4 +150,4 @@ var Stepmaster = React.createClass({
 	}
 });
 
-module.exports = Stepmaster;
+module.exports = LoadFileModal;

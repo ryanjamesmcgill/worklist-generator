@@ -26,15 +26,22 @@ var LoadButton = React.createClass({
 		});
 		list.push(<li key="divider" className="divider" role="seperator"></li>);
 		list.push(	<li key="loadFile" onClick={this.props.onLoadfileClick}>
-						<a className="dropdown-item" href="#">Upload a custom set</a>
+						<a className="dropdown-item" href="#">Upload from file..</a>
 					</li>);
 		return list;
 	},
 	render: function(){
 		var list = this.createList();
 		return (
-		<div className="btn-group" role="group">
-		  <button type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		<div className="btn-group" 
+				role="group"
+				data-toggle="tooltip" 
+				data-placement="top"
+				data-delay={300}
+				title="load set of steps">
+		  <button 	type="button" 
+					data-toggle="dropdown" 
+					className="btn btn-default"className="btn btn-default dropdown-toggle"  aria-haspopup="true" aria-expanded="false">
 		    Load
 		  </button>
 		  <ul className="dropdown-menu">

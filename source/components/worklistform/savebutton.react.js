@@ -13,7 +13,14 @@ var SaveButton = React.createClass({
 	},
 	render: function(){
 		return ( 
-				<button className="btn btn-default" onClick={this._onClick}>Save</button>
+				<button type="button" 
+						data-toggle="tooltip" 
+						data-placement="top"
+						data-delay={300}
+						title={"Save current worklist for easy access later. "+
+							"This can be useful for a common set of scan/process steps."}
+						className="btn btn-default" 
+						onClick={this._onClick}>Save</button>
 		);
 	}
 });

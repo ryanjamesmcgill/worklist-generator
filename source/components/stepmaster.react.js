@@ -63,8 +63,8 @@ var Stepmaster = React.createClass({
 	getDefaultProps: function(){
 		return {
 			dimensions: {
-				height: 600,
-				width: 800
+				height: 650,
+				width: 875
 			}	
 		}
 	},
@@ -75,9 +75,8 @@ var Stepmaster = React.createClass({
 				button: 46,
 				processid: 120,
 				stepseq: 120,
-				stepdesc: 250,
-				ppid: 100,
-				inWorklist: 100
+				stepdesc: 300,
+				ppid: 250
 			},
 		};
 	},
@@ -175,16 +174,6 @@ var Stepmaster = React.createClass({
 	        	<Column
 	     			columnKey="ppid"
 	     			width={this.state.columnWidths.ppid}
-	     			isResizable={true}
-	        	    header={props=>(<StepmasterHeader
-	        	    			filterType={props.columnKey}
-	        	    			handler={this._onType}/> )}
-	        	    cell={props=>(<StepmasterText
-	        	    			column={props.columnKey}
-	        	    			stepObj={StepStore.getMasterStepAt(props.rowIndex)} /> ) } />
-	        	<Column
-	     			columnKey="workliststatus"
-	     			width={this.state.columnWidths.inWorklist}
 	     			isResizable={true}
 	        	    header={props=>(<StepmasterHeader
 	        	    			filterType={props.columnKey}

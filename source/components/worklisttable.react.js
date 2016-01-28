@@ -12,10 +12,11 @@ const Column = FixedDataTable.Column;
 const Cell = FixedDataTable.Cell;
 
 var footerStyle = {
-    height: 20,
+    height: 30,
+    padding: 5,
     margin: 'auto',
-    backgroundColor: '#dae6eb',
-    color: '#667b8f',
+    color: '#777',
+    fontSize: 12,
     fontStyle: 'italic'
 };
 
@@ -25,10 +26,9 @@ var WorklistTable = React.createClass({
 			columnWidths: {
 				button: 50,
 				stepseq: 120,
-				stepdesc: 250,
+				stepdesc: 370,
 				ppid: 200,
-				scancorrelation: 200,
-				scanstep: 120
+				scancorrelation: 200
 			},
 			dropdown: {
 				visible: false,
@@ -180,16 +180,9 @@ var WorklistTable = React.createClass({
 	        	    				onDropdownMouseLeave={this._onDropdownMouseLeave}
 	        	    				showDropdown={this.showDropdown}
 	        	    				stepObj={StepStore.getWorklistStepAt(props.rowIndex)} /> ) } />
-				<Column
-	     			columnKey="scanstep"
-	     			width={this.state.columnWidths.scanstep}
-	     			isResizable={true}
-	        	    header={<Cell><p className="tableHeader">Scan Step</p></Cell>}
-	        	    cell={props=>(<WorklistTableText
-	        	    				value={StepStore.getWorklistStepAt(props.rowIndex)[props.columnKey]}/> )} />
 		      	</Table>
 		      	<div id="footer" style={footerStyle}>
-		      		<p className="text-center">Ryan J McGill</p>
+		      		<p className="text-center">created by Ryan McGill - r.mcgill@samsung.com</p>
 		      	</div>
 		      	{dropdown}
 	      	</div>

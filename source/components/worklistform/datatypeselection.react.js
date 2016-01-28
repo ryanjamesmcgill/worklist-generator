@@ -22,7 +22,7 @@ var DataTypeSelection= React.createClass({
         var options = WorklistFormStore.getOptionsDataTypes();
 		return (
 	    <div>
-	        <h5>Data Type</h5>
+	        <h4>Data Type</h4>
 	        <div className="form-group">
 	            <Select
                     name="datatype"

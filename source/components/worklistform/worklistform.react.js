@@ -11,6 +11,7 @@ const queryString = require('query-string');
 
 
 
+
 var WorklistForm = React.createClass({
 	getInitialState: function(){
 		const parsed = queryString.parse(location.search);
@@ -25,8 +26,6 @@ var WorklistForm = React.createClass({
 			endday: endday
 		};
 		WorklistFormActionCreators.setSelectionsDates(dates);
-		var selections = WorklistFormStore.getSelections();
-		console.log('worklistform submitted');
 		XlsxUtils.generateWorklist();
 	},
 	_onAddSteps: function(e){
@@ -51,15 +50,29 @@ var WorklistForm = React.createClass({
     			<hr />
 				<div className="row">
 				    <div className="col-md-12">
-        				<div className="row form-group" style={{textAlign:'center'}}>
+        				<div className="row form-group" id="toolbar" style={{textAlign:'center'}}>
         					<div className="btn-group" role="group">
-	        					<button className="btn btn-default" onClick={this._onAddSteps}>Add Steps..</button>
-	        					{ SaveButtonWrapper }
+	        					<button type="button" 
+	        							data-toggle="tooltip" 
+	        							data-placement="top"
+	        							data-delay={300}
+	        							title="add steps from stepmaster"
+	        							className="btn btn-default" 
+	        							onClick={this._onAddSteps}>Add Steps..</button>
+	        					<SaveButton />
 	        					<LoadButton 
 	        						onLoadfileClick={this.props.onLoadfileClick} />
 	        				</div>
 							<div className="btn-group" style={{marginLeft: 20}}>
-        						<button type="submit" onClick={this._onSubmit} className="btn btn-primary">Generate Worklist</button>
+        						<button type="submit"
+        							data-toggle="tooltip" 
+        							data-placement="top"
+        							data-delay={300}
+        							title={"This will download an .xlsx file that you can import into"+
+        									" YMS Defect Trend for quick and easy defect charts!"}
+        							onClick={this._onSubmit} 
+        							className="btn btn-primary">Generate Worklist
+        						</button>
 							</div>	        				
     					</div>
 					</div>

@@ -50,7 +50,7 @@ var DateSelection= React.createClass({
 	render: function(){
 		return ( 
 		        <div>
-		            <h5>Date Selection</h5>
+		            <h4>Date Selection</h4>
     		        <div className="form-horizontal">
     		            <div className="form-group">
         			        <lable htmlFor="inputFromDate" className="col-sm-2 control-label">From:</lable>

@@ -20,7 +20,7 @@ var DefectSelection= React.createClass({
 	    var options = WorklistFormStore.getOptionsDefectClasses();
 		return (
 	    <div>
-	        <h5>Defect Selection</h5>
+	        <h4>Defect Selection</h4>
 	        <div className="form-group">
 	            <Select
                     name="doi"
