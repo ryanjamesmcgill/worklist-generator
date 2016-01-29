@@ -62,8 +62,21 @@ function filter(){
 	}
 }
 function addStepToWorklist(stepObj){
+	/*adding scanstep attribute, required for worklist*/
 	stepObj.scanstep=null;
-	WorklistSteps.push(stepObj);
+	
+	/*only allow unique steps in worklist*/
+	var foundStep = false;
+	WorklistSteps.map(function(element, index, WorklistSteps){
+		if(element.stepseq == stepObj.stepseq){
+			foundStep = true;
+		}
+	});
+	if(!foundStep){
+		WorklistSteps.push(stepObj);	
+	}
+	
+	/*if duplicate steps are in stepmaster, this will mark them all as 'added to worklist'*/
 	MasterSteps.map(function(element, index, MasterSteps){
 		if(element.stepseq == stepObj.stepseq){
 			element.workliststatus = true;
@@ -137,11 +150,13 @@ var StepStore = assign({}, EventEmitter.prototype, {
 		return filteredIndexes.length;
 	},
 	getFilteredSteps: function(){
-		return filteredIndexes.map(
+		var array = [];
+		filteredIndexes.map(
 					function(index){
-						return MasterSteps[index];
+						array.push(MasterSteps[index]);
 					}
-			);	
+			);
+		return array;
 	},
 	getFilters: function(){
 		return filters;

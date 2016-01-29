@@ -73966,6 +73966,7 @@ var navStyle = {
 var containerStyle = {
 	backgroundColor: '#FFFFFF',
 	paddingTop: 10,
+	marginBottom: 10,
 	paddingLeft: 15,
 	paddingRight: 15,
 	borderRadius: 20,
@@ -74039,20 +74040,24 @@ var Application = React.createClass({
 			),
 			React.createElement(
 				'div',
-				{ className: 'container', style: containerStyle, ref: 'container' },
-				React.createElement(WorklistForm, {
-					onStepmasterClick: this._onStepmasterClick,
-					onLoadfileClick: this._onLoadfileClick }),
-				React.createElement(WorklistTable, {
-					onStepmasterClick: this._onStepmasterClick,
-					width: this.state.containerWidth - (containerStyle.paddingRight + containerStyle.paddingLeft),
-					height: this.props.worklistTableHeight }),
-				React.createElement(Stepmaster, {
-					stepmasterIsVisible: this.state.stepmasterIsVisible,
-					onStepmasterClick: this._onStepmasterClick }),
-				React.createElement(LoadfileModal, {
-					loadfileIsVisible: this.state.loadfileIsVisible,
-					onLoadfileClick: this._onLoadfileClick })
+				{ style: { paddingLeft: 10, paddingRight: 10 } },
+				React.createElement(
+					'div',
+					{ className: 'container', style: containerStyle, ref: 'container' },
+					React.createElement(WorklistForm, {
+						onStepmasterClick: this._onStepmasterClick,
+						onLoadfileClick: this._onLoadfileClick }),
+					React.createElement(WorklistTable, {
+						onStepmasterClick: this._onStepmasterClick,
+						width: this.state.containerWidth - (containerStyle.paddingRight + containerStyle.paddingLeft),
+						height: this.props.worklistTableHeight }),
+					React.createElement(Stepmaster, {
+						stepmasterIsVisible: this.state.stepmasterIsVisible,
+						onStepmasterClick: this._onStepmasterClick }),
+					React.createElement(LoadfileModal, {
+						loadfileIsVisible: this.state.loadfileIsVisible,
+						onLoadfileClick: this._onLoadfileClick })
+				)
 			)
 		);
 	}
@@ -74170,14 +74175,35 @@ var Stepmaster = React.createClass({
 		});
 	},
 	_rowClassNameGetter: function (index) {
+		var classNames = "";
 		var stepObj = StepStore.getMasterStepAt(index);
-		if (!stepObj.workliststatus) {
-			return 'masterStepRow_active';
+
+		classNames = "stepmasterRow ";
+
+		if (stepObj.isScan) {
+			classNames += 'stepRow_scan ';
 		} else {
-			return 'masterStepRow_inactive';
+			classNames += 'stepRow_process ';
+		}
+
+		if (!stepObj.workliststatus) {
+			classNames += 'active ';
+		} else {
+			classNames += 'inactive ';
+		}
+
+		return classNames;
+	},
+	_onCellClick: function (obj, e) {
+		console.log('cell Click');
+		if (obj.workliststatus) {
+			StepActionCreators.removeStepFromWorklist(obj);
+		} else {
+			StepActionCreators.addStepToWorklist(obj);
 		}
 	},
 	render: function () {
+		var self = this;
 		return React.createElement(
 			Modal,
 			{
@@ -74209,13 +74235,15 @@ var Stepmaster = React.createClass({
 						height: this.props.dimensions.height,
 						footerHeight: 0,
 						isColumnResizing: false,
-						onColumnResizeEndCallback: this._onColumnResizeEnd },
+						onColumnResizeEndCallback: this._onColumnResizeEnd,
+						rowClassNameGetter: this._rowClassNameGetter },
 					React.createElement(Column, {
 						columnKey: 'button',
 						width: this.state.columnWidths.button,
 						isResizable: false,
 						header: React.createElement(StepmasterHeaderButton, null),
 						cell: props => React.createElement(StepmasterButton, {
+							onCellClick: self._onCellClick,
 							stepObj: StepStore.getMasterStepAt(props.rowIndex) }) }),
 					React.createElement(Column, {
 						columnKey: 'processid',
@@ -74226,6 +74254,7 @@ var Stepmaster = React.createClass({
 							handler: this._onType }),
 						cell: props => React.createElement(StepmasterText, {
 							column: props.columnKey,
+							onCellClick: self._onCellClick,
 							stepObj: StepStore.getMasterStepAt(props.rowIndex) }) }),
 					React.createElement(Column, {
 						columnKey: 'stepseq',
@@ -74236,6 +74265,7 @@ var Stepmaster = React.createClass({
 							handler: this._onType }),
 						cell: props => React.createElement(StepmasterText, {
 							column: props.columnKey,
+							onCellClick: self._onCellClick,
 							stepObj: StepStore.getMasterStepAt(props.rowIndex) }) }),
 					React.createElement(Column, {
 						columnKey: 'stepdesc',
@@ -74246,6 +74276,7 @@ var Stepmaster = React.createClass({
 							handler: this._onType }),
 						cell: props => React.createElement(StepmasterText, {
 							column: props.columnKey,
+							onCellClick: self._onCellClick,
 							stepObj: StepStore.getMasterStepAt(props.rowIndex) }) }),
 					React.createElement(Column, {
 						columnKey: 'ppid',
@@ -74256,6 +74287,7 @@ var Stepmaster = React.createClass({
 							handler: this._onType }),
 						cell: props => React.createElement(StepmasterText, {
 							column: props.columnKey,
+							onCellClick: self._onCellClick,
 							stepObj: StepStore.getMasterStepAt(props.rowIndex) }) })
 				)
 			),
@@ -74284,58 +74316,25 @@ const StepActionCreators = require('../actions/StepActionCreators');
 const Cell = require('fixed-data-table').Cell;
 
 var cellStyle = {
-    height: 45,
-    width: "100%"
-};
-
-var buttonStyle = {
-    height: 30,
-    width: "100%",
-    padding: 0
+    height: '100%',
+    margin: 'auto',
+    fontSize: 22
 };
 
 var StepmasterButton = React.createClass({
     displayName: 'StepmasterButton',
 
-    _onClick: function (e) {
-        var stepObj = this.props.stepObj;
-        var id = e.target.id;
-
-        if (id == "add") {
-            StepActionCreators.addStepToWorklist(stepObj);
-        } else {
-            StepActionCreators.removeStepFromWorklist(stepObj);
-        }
-        console.log('clicked ', stepObj);
-    },
     getButton: function (workliststatus) {
         if (!workliststatus) {
-            return React.createElement(
-                'button',
-                { type: 'button',
-                    id: 'add',
-                    className: 'btn btn-primary',
-                    onClick: this._onClick,
-                    style: buttonStyle },
-                React.createElement('span', {
-                    style: { position: 'relative', left: 0.5 },
-                    className: 'glyphicon glyphicon-plus',
-                    id: 'add',
-                    'aria-hidden': 'true' })
-            );
+            return React.createElement('span', {
+                className: 'glyphicon glyphicon-plus-sign',
+                id: 'add',
+                'aria-hidden': 'true' });
         } else {
-            return React.createElement(
-                'button',
-                { type: 'button',
-                    id: 'remove',
-                    className: 'btn btn-danger',
-                    onClick: this._onClick,
-                    style: buttonStyle },
-                React.createElement('span', {
-                    className: 'glyphicon glyphicon-minus',
-                    id: 'remove',
-                    'aria-hidden': 'true' })
-            );
+            return React.createElement('span', {
+                className: 'glyphicon glyphicon-minus-sign',
+                id: 'remove',
+                'aria-hidden': 'true' });
         }
     },
     render: function () {
@@ -74343,7 +74342,8 @@ var StepmasterButton = React.createClass({
         var buttonElement = this.getButton(stepObj.workliststatus);
         return React.createElement(
             Cell,
-            { style: cellStyle },
+            { style: cellStyle,
+                onClick: this.props.onCellClick.bind(null, this.props.stepObj) },
             buttonElement
         );
     }
@@ -74393,32 +74393,43 @@ module.exports = StepmasterHeader;
 },{"../stores/StepStore":323,"fixed-data-table":62,"react":257}],306:[function(require,module,exports){
 const React = require('react');
 const StepStore = require('../stores/StepStore');
+const StepActionCreators = require('../actions/StepActionCreators');
 const Cell = require('fixed-data-table').Cell;
+const _ = require('lodash');
 
 var StepmasterHeaderButton = React.createClass({
     displayName: 'StepmasterHeaderButton',
 
     _onClick: function (e) {
         console.log('all filtered ', StepStore.getFilteredSteps());
+        var steps = StepStore.getFilteredSteps();
+        steps.map(function (stepObj, index, array) {
+            StepActionCreators.addStepToWorklist(stepObj);
+        });
     },
     render: function () {
         return React.createElement(
             Cell,
-            null,
-            React.createElement(
-                'button',
-                { type: 'button',
-                    className: 'btn btn-info btn-sm',
-                    onClick: this._onClick },
-                'All'
-            )
+            { style: {
+                    margin: 'auto',
+                    position: 'relative',
+                    top: '45%',
+                    fontSize: 22 } },
+            React.createElement('span', { onClick: this._onClick, className: 'glyphicon glyphicon-plus-sign', 'aria-hidden': 'true' })
         );
     }
 });
 
 module.exports = StepmasterHeaderButton;
+/*
+<button type="button" 
+        className="btn btn-info btn-sm"
+        onClick={this._onClick}>
+        All
+</button>
+*/
 
-},{"../stores/StepStore":323,"fixed-data-table":62,"react":257}],307:[function(require,module,exports){
+},{"../actions/StepActionCreators":299,"../stores/StepStore":323,"fixed-data-table":62,"lodash":66,"react":257}],307:[function(require,module,exports){
 const React = require('react');
 const StepStore = require('../stores/StepStore');
 const Cell = require('fixed-data-table').Cell;
@@ -74432,15 +74443,10 @@ var StepmasterText = React.createClass({
             height: "100%",
             width: "100%"
         };
-
-        if (this.props.stepObj.workliststatus) {
-            style.color = "rgba(0, 0, 0, 0.40)";
-        } else {
-            style.color = "rgba(0, 0, 0, 1.00)";
-        }
         return React.createElement(
             Cell,
-            { style: style },
+            { style: style,
+                onClick: this.props.onCellClick.bind(null, this.props.stepObj) },
             String(value)
         );
     }
@@ -75349,9 +75355,9 @@ var WorklistTable = React.createClass({
 		var classList = "";
 		var stepObj = StepStore.getWorklistStepAt(index);
 		if (stepObj.isScan) {
-			classList += "worklistStepRow_scan ";
+			classList += "stepRow_scan ";
 		} else {
-			classList += "worklistStepRow_process ";
+			classList += "stepRow_process ";
 		}
 		if (_.indexOf(this.state.activeIndexes, index) > -1) {
 			classList += "worklistactive ";
@@ -75481,9 +75487,9 @@ const StepActionCreators = require('../actions/StepActionCreators');
 const Cell = require('fixed-data-table').Cell;
 
 var style = {
-    height: "100%",
-    width: "100%"
-
+    height: '100%',
+    margin: 'auto',
+    fontSize: 22
 };
 
 var WorklistTableButton = React.createClass({
@@ -75498,19 +75504,22 @@ var WorklistTableButton = React.createClass({
         return React.createElement(
             Cell,
             { style: style },
-            React.createElement(
-                'button',
-                { type: 'button',
-                    id: 'add',
-                    className: 'btn btn-secondary btn-sm worklistRemoveBtn',
-                    onClick: this._onClick },
-                '-'
-            )
+            React.createElement('span', { onClick: this._onClick,
+                className: 'glyphicon glyphicon-minus-sign',
+                'aria-hidden': 'true' })
         );
     }
 });
 
 module.exports = WorklistTableButton;
+
+/*
+<button type="button" 
+    id="add"
+    className="btn btn-secondary btn-sm worklistRemoveBtn"
+    onClick={this._onClick}>
+    -
+</button>*/
 
 },{"../actions/StepActionCreators":299,"../stores/StepStore":323,"fixed-data-table":62,"react":257}],319:[function(require,module,exports){
 const React = require('react');
@@ -75584,6 +75593,7 @@ var WorklistTableDropdownSelection = React.createClass({
         var scanStep = e.currentTarget.id;
         StepActionCreators.setWorklistPair(processStep, scanStep);
         this.props.hideDropdown();
+        this.props.onDropdownMouseLeave();
     },
     onMouseDown: function (e) {
         this.setState({
@@ -75637,7 +75647,7 @@ var WorklistTableDropdownSelection = React.createClass({
         var list = this.createList();
         var style = {
             display: 'block',
-            position: 'absolute',
+            position: 'fixed',
             top: this.props.y,
             left: this.props.x - 20,
             maxHeight: 200,
@@ -75750,8 +75760,21 @@ function filter() {
 	}
 }
 function addStepToWorklist(stepObj) {
+	/*adding scanstep attribute, required for worklist*/
 	stepObj.scanstep = null;
-	WorklistSteps.push(stepObj);
+
+	/*only allow unique steps in worklist*/
+	var foundStep = false;
+	WorklistSteps.map(function (element, index, WorklistSteps) {
+		if (element.stepseq == stepObj.stepseq) {
+			foundStep = true;
+		}
+	});
+	if (!foundStep) {
+		WorklistSteps.push(stepObj);
+	}
+
+	/*if duplicate steps are in stepmaster, this will mark them all as 'added to worklist'*/
 	MasterSteps.map(function (element, index, MasterSteps) {
 		if (element.stepseq == stepObj.stepseq) {
 			element.workliststatus = true;
@@ -75824,9 +75847,11 @@ var StepStore = assign({}, EventEmitter.prototype, {
 		return filteredIndexes.length;
 	},
 	getFilteredSteps: function () {
-		return filteredIndexes.map(function (index) {
-			return MasterSteps[index];
+		var array = [];
+		filteredIndexes.map(function (index) {
+			array.push(MasterSteps[index]);
 		});
+		return array;
 	},
 	getFilters: function () {
 		return filters;

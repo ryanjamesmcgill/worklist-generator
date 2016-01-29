@@ -107,12 +107,12 @@ var WorklistTable = React.createClass({
 		var classList = "";
 		var stepObj = StepStore.getWorklistStepAt(index);
 		if(stepObj.isScan){
-			classList += "worklistStepRow_scan ";
+			classList += "stepRow_scan ";
 		} else {
-			classList += "worklistStepRow_process ";
+			classList += "stepRow_process ";
 		}
 		if(_.indexOf(this.state.activeIndexes,index)>-1){
-			classList += "worklistactive "
+			classList += "worklistactive ";
 		}
 		return classList;
 	},

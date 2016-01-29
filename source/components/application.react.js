@@ -16,6 +16,7 @@ var navStyle={
 var containerStyle = {
     backgroundColor: '#FFFFFF',
     paddingTop: 10,
+    marginBottom: 10,
     paddingLeft: 15,
     paddingRight: 15,
     borderRadius: 20,
@@ -64,7 +65,7 @@ var Application = React.createClass({
 	},
 	render: function(){
 		return ( 
-			<div>
+		<div>
 			<nav className="navbar navbar-inverse navbar-static-top" 
 				role="navigation"
 				style={navStyle}>
@@ -72,6 +73,7 @@ var Application = React.createClass({
 			        <div className="col-md-12"><h1>Worklist-Generator</h1></div>
 			    </div>
 			</nav>
+			<div style={{paddingLeft: 10, paddingRight: 10}}>
 			<div className="container" style={containerStyle} ref="container">
 				<WorklistForm
 					onStepmasterClick={this._onStepmasterClick}
@@ -88,6 +90,7 @@ var Application = React.createClass({
 					onLoadfileClick={this._onLoadfileClick} />
 			</div>
 			</div>
+		</div>
 		);
 	}
 });

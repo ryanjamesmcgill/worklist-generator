@@ -26,6 +26,7 @@ var WorklistTableDropdownSelection = React.createClass({
         var scanStep = e.currentTarget.id;
         StepActionCreators.setWorklistPair(processStep, scanStep);
         this.props.hideDropdown();
+        this.props.onDropdownMouseLeave();
     },
     onMouseDown: function(e){
         this.setState({
@@ -66,7 +67,7 @@ var WorklistTableDropdownSelection = React.createClass({
         var list = this.createList();
         var style = {
             display: 'block',
-            position: 'absolute',
+            position: 'fixed',
             top: this.props.y,
             left: this.props.x-20,
             maxHeight: 200,

@@ -15,35 +15,67 @@ body {
 .control-label {
 	font-weight: bold;
 }
-.masterStepRow_active:hover .public_fixedDataTableCell_main {
-  background-color: #eef0f2;
+
+
+/*vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
+/* Glyphicons */
+.glyphicon-plus-sign{
+  color: #6897BB;
+}
+.glyphicon-plus-sign:hover{
+  color: #0079d6;
+  cursor: pointer;
+}
+.glyphicon-minus-sign {
+	color: #e7b1b1;
+}
+.glyphicon-minus-sign:hover {
+	color: #c53e3e;
+	cursor: pointer;
+}
+/*^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+
+
+
+/*vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
+/* DATA TABLE */
+.stepRow_process.inactive .public_fixedDataTableCell_main {
+  color: #cfd0d1;
+}
+
+.stepRow_scan.inactive .public_fixedDataTableCell_main {
+  color: #e1dec1;
 }
 
 
-.worklistStepRow_scan .public_fixedDataTableCell_main {
-	background-color: #ffff99;
+.stepRow_scan .public_fixedDataTableCell_main {
+	background-color: #fff7a3;
 }
-.worklistStepRow_scan.worklistactive .public_fixedDataTableCell_main {
-	background-color: #FFC966;
+.stepRow_scan:hover .public_fixedDataTableCell_main {
+	background-color: #f2ecb1;
 }
-.worklistStepRow_scan:hover .public_fixedDataTableCell_main {
-	background-color: #ffff66
+.stepRow_scan.worklistactive .public_fixedDataTableCell_main{
+  background-color: #ffd700;
 }
-.worklistStepRow_process .public_fixedDataTableCell_main {
+
+
+.stepRow_process .public_fixedDataTableCell_main {
   background-color: #fff;
+
 }
-.worklistStepRow_process.worklistactive .public_fixedDataTableCell_main {
-  background-color: #669cff;
+.stepRow_process:hover .public_fixedDataTableCell_main {
+  background-color: #F6F7F8;
 }
-.worklistStepRow_process:hover .public_fixedDataTableCell_main {
-  background-color: #eee;
+
+.public_fixedDataTableCell_main {
+  border-bottom: solid 1px #D3D3D3;
 }
-.worklistRemoveBtn {
-	background-color: #f7d6d6;
+
+.stepmasterRow:hover {
+  cursor: pointer;
 }
-.worklistRemoveBtn:hover {
-	background-color: #efabab;
-}
+/*^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+
 
 .btn-file {
     position: relative;

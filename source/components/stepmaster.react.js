@@ -104,14 +104,35 @@ var Stepmaster = React.createClass({
 	    });	
 	},
 	_rowClassNameGetter: function(index){
+		var classNames = "";
 		var stepObj = StepStore.getMasterStepAt(index);
-		if(!stepObj.workliststatus){
-			return 'masterStepRow_active';
+		
+		classNames = "stepmasterRow ";
+		
+		if(stepObj.isScan){
+			classNames += 'stepRow_scan ';
 		} else {
-			return 'masterStepRow_inactive';
+			classNames += 'stepRow_process ';
+		}
+		
+		if(!stepObj.workliststatus){
+			classNames += 'active ';
+		} else {
+			classNames += 'inactive ';
+		}
+		
+		return classNames;
+	},
+	_onCellClick: function(obj, e){
+		console.log('cell Click');
+		if(obj.workliststatus){
+			StepActionCreators.removeStepFromWorklist(obj);
+		} else {
+			StepActionCreators.addStepToWorklist(obj);
 		}
 	},
 	render: function(){
+		var self = this;
 		return (
 			<Modal
 				isOpen={this.props.stepmasterIsVisible}
@@ -132,7 +153,8 @@ var Stepmaster = React.createClass({
 	        	height={this.props.dimensions.height}
 	        	footerHeight={0}
 	        	isColumnResizing={false}
-	        	onColumnResizeEndCallback={this._onColumnResizeEnd}>
+	        	onColumnResizeEndCallback={this._onColumnResizeEnd}
+	        	rowClassNameGetter={this._rowClassNameGetter}>
 	        	
 	        	<Column
 	     			columnKey="button"
@@ -140,6 +162,7 @@ var Stepmaster = React.createClass({
 	     			isResizable={false}
 	        	    header={<StepmasterHeaderButton/>}
 	        	    cell={props=>(<StepmasterButton 
+	        	    	        	onCellClick={self._onCellClick}
 	        	    				stepObj={StepStore.getMasterStepAt(props.rowIndex)} /> ) } />
 	        	<Column
 	     			columnKey="processid"
@@ -150,7 +173,8 @@ var Stepmaster = React.createClass({
 	        	    			handler={this._onType}/> )}
 	        	    cell={props=>(<StepmasterText
 	        	    			column={props.columnKey}
-	        	    			stepObj={StepStore.getMasterStepAt(props.rowIndex)} /> ) } />
+	        	    			onCellClick={self._onCellClick}
+	        	    			stepObj={StepStore.getMasterStepAt(props.rowIndex)}/> ) } />
 	        	<Column
 	     			columnKey="stepseq"
 	     			width={this.state.columnWidths.stepseq}
@@ -160,6 +184,7 @@ var Stepmaster = React.createClass({
 	        	    			handler={this._onType}/> )}
 	        	    cell={props=>(<StepmasterText
 	        	    			column={props.columnKey}
+	        	    			onCellClick={self._onCellClick}
 	        	    			stepObj={StepStore.getMasterStepAt(props.rowIndex)} /> ) } />
 	        	<Column
 	     			columnKey="stepdesc"
@@ -170,6 +195,7 @@ var Stepmaster = React.createClass({
 	        	    			handler={this._onType}/> )}
 	        	    cell={props=>(<StepmasterText
 	        	    			column={props.columnKey}
+	        	    			onCellClick={self._onCellClick}
 	        	    			stepObj={StepStore.getMasterStepAt(props.rowIndex)} /> ) } />
 	        	<Column
 	     			columnKey="ppid"
@@ -180,6 +206,7 @@ var Stepmaster = React.createClass({
 	        	    			handler={this._onType}/> )}
 	        	    cell={props=>(<StepmasterText
 	        	    			column={props.columnKey}
+	        	    			onCellClick={self._onCellClick}
 	        	    			stepObj={StepStore.getMasterStepAt(props.rowIndex)} /> ) } />
 	      	</Table>
 	      	</div>

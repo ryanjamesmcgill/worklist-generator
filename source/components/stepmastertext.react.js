@@ -8,15 +8,10 @@ var StepmasterText = React.createClass({
         var style = {
             height: "100%",
             width: "100%"
-        }
-        
-        if(this.props.stepObj.workliststatus){
-            style.color = "rgba(0, 0, 0, 0.40)";
-        } else {
-            style.color = "rgba(0, 0, 0, 1.00)";
-        }
+        };
         return( 
-                <Cell style={style}>
+                <Cell style={style}
+                    onClick={this.props.onCellClick.bind(null,this.props.stepObj)}>
                 {String(value)}
                 </Cell> );
     }
