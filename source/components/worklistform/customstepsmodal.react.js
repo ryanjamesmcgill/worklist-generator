@@ -1,6 +1,6 @@
 "use strict";
-const React = require('react');
-const Modal = require('react-modal');
+var React = require('react');
+var Modal = require('react-modal');
 
 
 var modalStyle={

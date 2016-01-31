@@ -1,6 +1,6 @@
-const React = require('react');
-const WorklistFormActionCreators = require('../../actions/WorklistFormActionCreators');
-const WorklistFormStore = require('../../stores/WorklistFormStore');
+var React = require('react');
+var WorklistFormActionCreators = require('../../actions/WorklistFormActionCreators');
+var WorklistFormStore = require('../../stores/WorklistFormStore');
 
 var divStyle = {
 	marginLeft: 20

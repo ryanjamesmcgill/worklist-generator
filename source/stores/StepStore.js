@@ -1,10 +1,10 @@
-const AppDispatcher = require('../dispatcher/AppDispatcher');
-const EventEmitter = require('events').EventEmitter;
-const assign = require('object-assign');
-const StepUtils = require('../utils/StepUtils');
-const _ = require('lodash');
+var AppDispatcher = require('../dispatcher/AppDispatcher');
+var EventEmitter = require('events').EventEmitter;
+var assign = require('object-assign');
+var StepUtils = require('../utils/StepUtils');
+var _ = require('lodash');
 
-const CHANGE_EVENT = 'change';
+var CHANGE_EVENT = 'change';
 
 var MasterSteps = [];
 var WorklistSteps = [];
@@ -34,12 +34,20 @@ var filters = {
 
 function setMasterSteps(stepArray){
 	for(var i=0; i<stepArray.length; i++){
+		_.forEach(stepArray[i], function(value, key){
+			if(typeof key != 'string'){
+				console.error('[worklist-generator] step array does not have keys of type "String"');
+				return;
+			}
+			stepArray[i].key = key.toLowerCase();
+		})
 	    MasterSteps.push(stepArray[i]);
 	    filteredIndexes.push(i);
 	    
 	    MasterSteps[i].workliststatus = false;
 	    var isScan;
-	    if(MasterSteps[i].ppid.indexOf("SCAN")>-1){
+	    if(MasterSteps[i].ppid.indexOf("SCAN")>-1){ //fake data
+	    //if(MasterSteps[i].ppid.indexOf("@PART")>-1){ //real data
 	    	isScan=true;
 	    } else {
 	    	isScan=false;

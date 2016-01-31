@@ -1,15 +1,15 @@
 "use strict";
-const React = require('react');
-const _ = require('lodash');
-const StepStore = require('../stores/StepStore');
-const WorklistTableButton = require('./worklisttablebutton.react');
-const WorklistTableText = require('./worklisttabletext.react');
-const WorklistTableDropdown = require('./worklisttabledropdown.react');
-const WorklistTableDropdownSelection = require('./worklisttabledropdownselection.react');
-const FixedDataTable = require('fixed-data-table');
-const Table = FixedDataTable.Table;
-const Column = FixedDataTable.Column;
-const Cell = FixedDataTable.Cell;
+var React = require('react');
+var _ = require('lodash');
+var StepStore = require('../stores/StepStore');
+var WorklistTableButton = require('./worklisttablebutton.react');
+var WorklistTableText = require('./worklisttabletext.react');
+var WorklistTableDropdown = require('./worklisttabledropdown.react');
+var WorklistTableDropdownSelection = require('./worklisttabledropdownselection.react');
+var FixedDataTable = require('fixed-data-table');
+var Table = FixedDataTable.Table;
+var Column = FixedDataTable.Column;
+var Cell = FixedDataTable.Cell;
 
 var footerStyle = {
     height: 30,
@@ -117,6 +117,7 @@ var WorklistTable = React.createClass({
 		return classList;
 	},
 	render: function(){
+		var self = this;
 		var dropdown;
 		if (this.state.dropdown.visible){
 			dropdown = <WorklistTableDropdownSelection
@@ -134,7 +135,7 @@ var WorklistTable = React.createClass({
 			<div>
 		      	<Table
 		        	rowsCount={StepStore.getWorklistLength()}
-		        	rowHeight={45}
+		        	rowHeight={30}
 		        	headerHeight={40}
 		        	width={this.props.width}
 		        	height={this.props.height}
@@ -147,39 +148,54 @@ var WorklistTable = React.createClass({
 	     			width={this.state.columnWidths.button}
 	     			isResizable={true}
 	        	    header=""
-	        	    cell={props=>(<WorklistTableButton 
-	        	    		stepObj={StepStore.getWorklistStepAt(props.rowIndex)} />) } />
+	        	    cell={function(props){
+	        	    		return (<WorklistTableButton 
+	        	    		stepObj={StepStore.getWorklistStepAt(props.rowIndex)} />); } 
+	        	    	
+	        	    } />
 		        <Column
 	     			columnKey="stepseq"
 	     			width={this.state.columnWidths.stepseq}
 	     			isResizable={true}
 	        	    header={<Cell><p className="tableHeader">Step Sequence</p></Cell>}
-	        	    cell={props=>(<WorklistTableText
-	        	    				value={StepStore.getWorklistStepAt(props.rowIndex)[props.columnKey]}/> )} />
+	        	    cell={function(props){
+	        	    			return (<WorklistTableText
+	        	    				value={StepStore.getWorklistStepAt(props.rowIndex)[props.columnKey]}/> );} 
+	        	    	
+	        	    } />
 	        	<Column
 	     			columnKey="stepdesc"
 	     			width={this.state.columnWidths.stepdesc}
 	     			isResizable={true}
 	        	    header={<Cell><p className="tableHeader">Step Description</p></Cell>}
-	        	    cell={props=>(<WorklistTableText
-	        	    				value={StepStore.getWorklistStepAt(props.rowIndex)[props.columnKey]}/> )} />
+	        	    cell={function(props){
+	        	    			return (<WorklistTableText
+	        	    				value={StepStore.getWorklistStepAt(props.rowIndex)[props.columnKey]}/> ); } 
+	        	    	
+	        	    } />
 	        	<Column
 	     			columnKey="ppid"
 	     			width={this.state.columnWidths.ppid}
 	     			isResizable={true}
 	        	    header={<Cell><p className="tableHeader">PPID</p></Cell>}
-	        	    cell={props=>(<WorklistTableText
-	        	    				value={StepStore.getWorklistStepAt(props.rowIndex)[props.columnKey]}/> )} />
+	        	    cell={function(props){
+	        	    			return (<WorklistTableText
+	        	    				value={StepStore.getWorklistStepAt(props.rowIndex)[props.columnKey]}/> ); } 
+	        	    	
+	        	    }/>
 	        	<Column
 	     			columnKey="scancorrelation"
 	     			width={this.state.columnWidths.scancorrelation}
 	     			isResizable={true}
 	        	    header={<Cell><p className="tableHeader">Scan Correlation</p></Cell>}
-	        	    cell={props=>(<WorklistTableDropdown
-	        	    				onDropdownMouseEnter={this._onDropdownMouseEnter}
-	        	    				onDropdownMouseLeave={this._onDropdownMouseLeave}
-	        	    				showDropdown={this.showDropdown}
-	        	    				stepObj={StepStore.getWorklistStepAt(props.rowIndex)} /> ) } />
+	        	    cell={function(props){
+	        	    		return (<WorklistTableDropdown
+	        	    				onDropdownMouseEnter={self._onDropdownMouseEnter}
+	        	    				onDropdownMouseLeave={self._onDropdownMouseLeave}
+	        	    				showDropdown={self.showDropdown}
+	        	    				stepObj={StepStore.getWorklistStepAt(props.rowIndex)} /> ); }
+	        	    	
+	        	    } />
 		      	</Table>
 		      	<div id="footer" style={footerStyle}>
 		      		<p className="text-center">created by Ryan McGill - r.mcgill@samsung.com</p>

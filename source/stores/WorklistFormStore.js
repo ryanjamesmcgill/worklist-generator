@@ -1,8 +1,8 @@
-const AppDispatcher = require('../dispatcher/AppDispatcher');
-const EventEmitter = require('events').EventEmitter;
-const assign = require('object-assign');
+var AppDispatcher = require('../dispatcher/AppDispatcher');
+var EventEmitter = require('events').EventEmitter;
+var assign = require('object-assign');
 
-const CHANGE_EVENT = 'change';
+var CHANGE_EVENT = 'change';
 
 var options = {
 	defectClasses : [],

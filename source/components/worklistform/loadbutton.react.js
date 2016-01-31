@@ -1,7 +1,7 @@
-const React = require('react');
-const WorklistFormStore = require('../../stores/WorklistFormStore');
-const StepActionCreators = require('../../actions/StepActionCreators');
-const _ = require('lodash');
+var React = require('react');
+var WorklistFormStore = require('../../stores/WorklistFormStore');
+var StepActionCreators = require('../../actions/StepActionCreators');
+var _ = require('lodash');
 
 var LoadButton = React.createClass({
 	_onSetClick: function(e){

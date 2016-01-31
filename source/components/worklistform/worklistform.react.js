@@ -1,20 +1,20 @@
-const React = require('react');
-const WorklistFormActionCreators = require('../../actions/WorklistFormActionCreators');
-const WorklistFormStore = require('../../stores/WorklistFormStore');
-const DateSelection = require('./dateselection.react');
-const DefectSelection = require('./defectselection.react');
-const DataTypeSelection = require('./datatypeselection.react');
-const LoadButton = require('./loadbutton.react');
-const SaveButton = require('./savebutton.react');
-const XlsxUtils = require('../../utils/XlsxUtils');
-const queryString = require('query-string');
+var React = require('react');
+var WorklistFormActionCreators = require('../../actions/WorklistFormActionCreators');
+var WorklistFormStore = require('../../stores/WorklistFormStore');
+var DateSelection = require('./dateselection.react');
+var DefectSelection = require('./defectselection.react');
+var DataTypeSelection = require('./datatypeselection.react');
+var LoadButton = require('./loadbutton.react');
+var SaveButton = require('./savebutton.react');
+var XlsxUtils = require('../../utils/XlsxUtils');
+var queryString = require('query-string');
 
 
 
 
 var WorklistForm = React.createClass({
 	getInitialState: function(){
-		const parsed = queryString.parse(location.search);
+		var parsed = queryString.parse(location.search);
 		return parsed;
 	},
 	_onSubmit: function(e){

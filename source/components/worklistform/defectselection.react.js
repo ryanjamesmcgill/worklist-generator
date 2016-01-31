@@ -1,8 +1,8 @@
-const React = require('react');
-const Select = require('react-select');
-const WorklistFormStore = require('../../stores/WorklistFormStore');
-const WorklistFormActionCreators = require('../../actions/WorklistFormActionCreators');
-const CheckboxList = require('./checkboxlist.react');
+var React = require('react');
+var Select = require('react-select');
+var WorklistFormStore = require('../../stores/WorklistFormStore');
+var WorklistFormActionCreators = require('../../actions/WorklistFormActionCreators');
+var CheckboxList = require('./checkboxlist.react');
 
 var DefectSelection= React.createClass({
 	getInitialState: function(){

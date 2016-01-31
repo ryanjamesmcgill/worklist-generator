@@ -16,7 +16,13 @@ body {
 	font-weight: bold;
 }
 
-
+.stepmasterButton .public_fixedDataTableCell_cellContent, .worklistTableBtn .public_fixedDataTableCell_cellContent{
+  padding: 1px;
+}
+.worklistTable .public_fixedDataTableCell_cellContent{
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
 /*vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
 /* Glyphicons */
 .glyphicon-plus-sign{
@@ -95,4 +101,19 @@ body {
     background: white;
     cursor: inherit;
     display: block;
+}
+
+
+
+
+.ReactModal__Overlay {
+  opacity: 0;
+}
+
+.ReactModal__Overlay--after-open {
+  opacity: 1;
+  transition: opacity 200ms ease-in;
+  -webkit-transition: opacity 200ms ease-in;
+  -moz-transition: opacity 200ms ease-in;
+  -o-transition: opacity 200ms ease-in;
 }

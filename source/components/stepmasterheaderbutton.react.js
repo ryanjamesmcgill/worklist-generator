@@ -1,8 +1,8 @@
-const React = require('react');
-const StepStore = require('../stores/StepStore');
-const StepActionCreators = require('../actions/StepActionCreators');
-const Cell = require('fixed-data-table').Cell;
-const _ = require('lodash');
+var React = require('react');
+var StepStore = require('../stores/StepStore');
+var StepActionCreators = require('../actions/StepActionCreators');
+var Cell = require('fixed-data-table').Cell;
+var _ = require('lodash');
 
 var StepmasterHeaderButton = React.createClass({
     _onClick: function(e){

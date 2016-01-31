@@ -1,5 +1,5 @@
-const React = require('react');
-const Cell = require('fixed-data-table').Cell;
+var React = require('react');
+var Cell = require('fixed-data-table').Cell;
 
 var WorklistTableDropdown = React.createClass({
     render: function(){
@@ -16,7 +16,7 @@ var WorklistTableDropdown = React.createClass({
             button= <button   
                     className="btn btn-default dropdown-toggle" 
                     type="button"
-                    style={{padding: "2px 12px", width: "80%"}}
+                    style={{padding: "2px 12px", width: "80%", fontSize: 12}}
                     onClick={this.props.showDropdown.bind(null,this.props.stepObj)}
                     onMouseEnter={this.props.onDropdownMouseEnter.bind(null,this.props.stepObj)}
                     onMouseLeave={this.props.onDropdownMouseLeave}>
@@ -25,7 +25,9 @@ var WorklistTableDropdown = React.createClass({
                     </button> ;
         }
         return( 
-                <Cell style={style}>
+                <Cell
+                    className = "worklistTable"
+                    style={style}>
                  {button}   
                 </Cell> );
     }

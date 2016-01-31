@@ -1,6 +1,6 @@
-const React = require('react');
-const DatePicker = require('react-datepicker');
-const moment = require('moment');
+var React = require('react');
+var DatePicker = require('react-datepicker');
+var moment = require('moment');
 
 
 var DateSelection= React.createClass({

@@ -1,7 +1,7 @@
-const React = require('react');
-const StepStore = require('../stores/StepStore');
-const StepActionCreators = require('../actions/StepActionCreators');
-const Cell = require('fixed-data-table').Cell;
+var React = require('react');
+var StepStore = require('../stores/StepStore');
+var StepActionCreators = require('../actions/StepActionCreators');
+var Cell = require('fixed-data-table').Cell;
 
 var style = {
     height: '100%',
@@ -16,7 +16,9 @@ var WorklistTableButton = React.createClass({
         console.log('removed ', stepObj);
     },
     render: function(){
-        return( <Cell style = {style} >
+        return( <Cell
+                    className = "worklistTableBtn"
+                    style = {style} >
 
                 <span onClick={this._onClick} 
                 className="glyphicon glyphicon-minus-sign" 

@@ -1,7 +1,7 @@
-const React = require('react');
-const filesaver = require('filesaver.js');
-const StepStore = require('../../stores/StepStore');
-const Blob = require('blob');
+var React = require('react');
+var filesaver = require('filesaver.js');
+var StepStore = require('../../stores/StepStore');
+var Blob = require('blob');
 
 var SaveButton = React.createClass({
 	_onClick: function(e){

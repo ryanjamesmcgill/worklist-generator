@@ -1,13 +1,13 @@
-const filesaver = require('filesaver.js');
-const XLSX = require('xlsx-browserify-shim');
-const Blob = require('blob');
-const StepStore = require('../stores/StepStore');
-const WorklistFormStore = require('../stores/WorklistFormStore');
-//const columnMap = require('./worklistformdata/columnmap');
-const columnMap = window.references.columnMap;
-//const columnKeys = require('./worklistformdata/columnkeys');
-const columnKeys = window.references.columnKeys;
-const _ = require('lodash');
+var filesaver = require('filesaver.js');
+var XLSX = require('xlsx-browserify-shim');
+var Blob = require('blob');
+var StepStore = require('../stores/StepStore');
+var WorklistFormStore = require('../stores/WorklistFormStore');
+//var columnMap = require('./worklistformdata/columnmap');
+var columnMap = window.references.columnMap;
+//var columnKeys = require('./worklistformdata/columnkeys');
+var columnKeys = window.references.columnKeys;
+var _ = require('lodash');
 
 function generateWorklist(){
     var selections = WorklistFormStore.getSelections();
@@ -141,7 +141,7 @@ function getNameFromSelections(selections){
 function generateStepMap(){
 	var stepMap = {};
 	
-	/*Construct stepMap's 1st layer with scan steps*/
+	/*varruct stepMap's 1st layer with scan steps*/
 	StepStore.WorklistStepsMap(
 		function(stepObj, index, array){
 			if(stepObj.isScan){

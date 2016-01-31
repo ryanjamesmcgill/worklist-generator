@@ -1,7 +1,7 @@
-const React = require('react');
-const Select = require('react-select');
-const WorklistFormActionCreators = require('../../actions/WorklistFormActionCreators');
-const WorklistFormStore = require('../../stores/WorklistFormStore');
+var React = require('react');
+var Select = require('react-select');
+var WorklistFormActionCreators = require('../../actions/WorklistFormActionCreators');
+var WorklistFormStore = require('../../stores/WorklistFormStore');
 
 var DataTypeSelection= React.createClass({
     getInitialState: function(){

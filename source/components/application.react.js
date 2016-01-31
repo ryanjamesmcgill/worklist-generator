@@ -1,9 +1,10 @@
-const React = require('react');
-const Stepmaster = require('./stepmaster.react');
-const WorklistTable = require('./worklisttable.react');
-const WorklistForm = require('./worklistform/worklistform.react');
-const CustomStepsModal = require('./worklistform/customstepsmodal.react');
-const LoadfileModal = require('./worklistform/loadfilemodal.react');
+var React = require('react');
+var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
+var Stepmaster = require('./stepmaster.react');
+var WorklistTable = require('./worklisttable.react');
+var WorklistForm = require('./worklistform/worklistform.react');
+var CustomStepsModal = require('./worklistform/customstepsmodal.react');
+var LoadfileModal = require('./worklistform/loadfilemodal.react');
 
 var navStyle={
 	backgroundColor: '#292929',
@@ -70,7 +71,10 @@ var Application = React.createClass({
 				role="navigation"
 				style={navStyle}>
 				<div className="container">
-			        <div className="col-md-12"><h1>Worklist-Generator</h1></div>
+			        <div className="col-md-12">
+			        	<h1 key="wg">Worklist-Generator</h1>
+			        </div>
+			       
 			    </div>
 			</nav>
 			<div style={{paddingLeft: 10, paddingRight: 10}}>
@@ -90,6 +94,13 @@ var Application = React.createClass({
 					onLoadfileClick={this._onLoadfileClick} />
 			</div>
 			</div>
+			
+			<span //These elements are here just to load the glyphicon for quick access later
+				style={{display: 'none'}}
+                className="glyphicon glyphicon-minus-sign"></span>
+            <span
+				style={{display: 'none'}}
+                className="glyphicon glyphicon-plus-sign"></span>
 		</div>
 		);
 	}

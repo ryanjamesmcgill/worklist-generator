@@ -1,16 +1,16 @@
 "use strict";
-const React = require('react');
-const StepStore = require('../stores/StepStore');
-const StepActionCreators = require('../actions/StepActionCreators');
-const StepmasterHeader = require('./stepmasterheader.react');
-const StepmasterText = require('./stepmastertext.react');
-const StepmasterButton = require("./stepmasterbutton.react");
-const StepmasterHeaderButton = require("./stepmasterheaderbutton.react");
-const Modal = require('react-modal');
-const FixedDataTable = require('fixed-data-table');
-const Table = FixedDataTable.Table;
-const Column = FixedDataTable.Column;
-const Cell = FixedDataTable.Cell;
+var React = require('react');
+var StepStore = require('../stores/StepStore');
+var StepActionCreators = require('../actions/StepActionCreators');
+var StepmasterHeader = require('./stepmasterheader.react');
+var StepmasterText = require('./stepmastertext.react');
+var StepmasterButton = require("./stepmasterbutton.react");
+var StepmasterHeaderButton = require("./stepmasterheaderbutton.react");
+var Modal = require('react-modal');
+var FixedDataTable = require('fixed-data-table');
+var Table = FixedDataTable.Table;
+var Column = FixedDataTable.Column;
+var Cell = FixedDataTable.Cell;
 
 var modalStyle={
   overlay : {
@@ -147,7 +147,7 @@ var Stepmaster = React.createClass({
 			<h4 style={{marginTop: '0px'}}>Select steps to add to your worklist</h4>
 	      	<Table
 	        	rowsCount={StepStore.getFilteredLength()}
-	        	rowHeight={45}
+	        	rowHeight={30}
 	        	headerHeight={80}
 	        	width={this.props.dimensions.width}
 	        	height={this.props.dimensions.height}
@@ -161,53 +161,81 @@ var Stepmaster = React.createClass({
 	     			width={this.state.columnWidths.button}
 	     			isResizable={false}
 	        	    header={<StepmasterHeaderButton/>}
-	        	    cell={props=>(<StepmasterButton 
-	        	    	        	onCellClick={self._onCellClick}
-	        	    				stepObj={StepStore.getMasterStepAt(props.rowIndex)} /> ) } />
+	        	    cell={	
+        	    	function(props){ 
+    	    			return (<StepmasterButton 
+    	    	        	onCellClick={self._onCellClick}
+    	    				stepObj={StepStore.getMasterStepAt(props.rowIndex)}/> ); } 
+	        	    	} />
 	        	<Column
 	     			columnKey="processid"
 	     			width={this.state.columnWidths.processid}
 	     			isResizable={true}
-	        	    header={props=>(<StepmasterHeader
+	        	    header={
+	        	    function(props){
+	        	    	return(<StepmasterHeader
 	        	    			filterType={props.columnKey}
-	        	    			handler={this._onType}/> )}
-	        	    cell={props=>(<StepmasterText
+	        	    			handler={self._onType}/> ); }
+	        	    	
+	        	    }
+	        	    cell={
+	        	    function(props){
+	        	    	return(<StepmasterText
 	        	    			column={props.columnKey}
 	        	    			onCellClick={self._onCellClick}
-	        	    			stepObj={StepStore.getMasterStepAt(props.rowIndex)}/> ) } />
+	        	    			stepObj={StepStore.getMasterStepAt(props.rowIndex)}/> ); }
+	        	    	
+	        	    } />
 	        	<Column
 	     			columnKey="stepseq"
 	     			width={this.state.columnWidths.stepseq}
 	     			isResizable={true}
-	        	    header={props=>(<StepmasterHeader
+	        	    header={function(props){
+	        	    	return(<StepmasterHeader
 	        	    			filterType={props.columnKey}
-	        	    			handler={this._onType}/> )}
-	        	    cell={props=>(<StepmasterText
+	        	    			handler={self._onType}/> ); }
+	        	    	
+	        	    }
+	        	    cell={function(props){
+	        	    		return (<StepmasterText
 	        	    			column={props.columnKey}
 	        	    			onCellClick={self._onCellClick}
-	        	    			stepObj={StepStore.getMasterStepAt(props.rowIndex)} /> ) } />
+	        	    			stepObj={StepStore.getMasterStepAt(props.rowIndex)} /> ); }
+	        	    	
+	        	    } />
 	        	<Column
 	     			columnKey="stepdesc"
 	     			width={this.state.columnWidths.stepdesc}
 	     			isResizable={true}
-	        	    header={props=>(<StepmasterHeader
+	        	    header={function(props){
+	        	    			return (<StepmasterHeader
 	        	    			filterType={props.columnKey}
-	        	    			handler={this._onType}/> )}
-	        	    cell={props=>(<StepmasterText
+	        	    			handler={self._onType}/> );}
+	        	    	
+	        	    }
+	        	    cell={function(props){
+	        	    		return (<StepmasterText
 	        	    			column={props.columnKey}
 	        	    			onCellClick={self._onCellClick}
-	        	    			stepObj={StepStore.getMasterStepAt(props.rowIndex)} /> ) } />
+	        	    			stepObj={StepStore.getMasterStepAt(props.rowIndex)} /> ); }
+	        	    	
+	        	    } />
 	        	<Column
 	     			columnKey="ppid"
 	     			width={this.state.columnWidths.ppid}
 	     			isResizable={true}
-	        	    header={props=>(<StepmasterHeader
+	        	    header={function(props){
+	        	    		return (<StepmasterHeader
 	        	    			filterType={props.columnKey}
-	        	    			handler={this._onType}/> )}
-	        	    cell={props=>(<StepmasterText
+	        	    			handler={self._onType}/> )}
+	        	    	
+	        	    }
+	        	    cell={function(props){
+	        	    		return (<StepmasterText
 	        	    			column={props.columnKey}
 	        	    			onCellClick={self._onCellClick}
-	        	    			stepObj={StepStore.getMasterStepAt(props.rowIndex)} /> ) } />
+	        	    			stepObj={StepStore.getMasterStepAt(props.rowIndex)} /> );}
+	        	    } />
 	      	</Table>
 	      	</div>
 	      	<div>

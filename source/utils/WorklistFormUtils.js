@@ -1,7 +1,7 @@
-const defectClasses = window.references.defectClasses;
-const dataTypes = window.references.dataTypes;
-const stepSets = window.references.stepSets;
-const WorklistFormActionCreators = require('../actions/WorklistFormActionCreators');
+var defectClasses = window.references.defectClasses;
+var dataTypes = window.references.dataTypes;
+var stepSets = window.references.stepSets;
+var WorklistFormActionCreators = require('../actions/WorklistFormActionCreators');
 
 function initializeWorklistFormOptions(){
     WorklistFormActionCreators.setOptionsDefectClasses(defectClasses);

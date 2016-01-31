@@ -1,9 +1,10 @@
 "use strict";
-const React = require('react');
-const Modal = require('react-modal');
-const StepActionCreators = require('../../actions/StepActionCreators');
-const _ = require('lodash');
+var React = require('react');
 
+var Modal = require('react-modal');
+var StepActionCreators = require('../../actions/StepActionCreators');
+var _ = require('lodash');
+var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 
 var modalStyle={
   overlay : {
@@ -105,6 +106,7 @@ var LoadFileModal = React.createClass({
   				isOpen={this.props.loadfileIsVisible}
   				onRequestClose={this._onClose}
   				style={modalStyle}>
+  				<ReactCSSTransitionGroup transitionName="example" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
   				<span 	className="close"
   					style={closeSymbolStyle}
   					onClick={this._onClose}>&times;</span>
@@ -130,6 +132,7 @@ var LoadFileModal = React.createClass({
                 Cancel
             </button>
           </div>
+          </ReactCSSTransitionGroup>
   	    </Modal>
   		);
     }

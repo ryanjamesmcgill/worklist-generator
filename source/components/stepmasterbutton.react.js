@@ -1,12 +1,13 @@
-const React = require('react');
-const StepStore = require('../stores/StepStore');
-const StepActionCreators = require('../actions/StepActionCreators');
-const Cell = require('fixed-data-table').Cell;
+var React = require('react');
+var StepStore = require('../stores/StepStore');
+var StepActionCreators = require('../actions/StepActionCreators');
+var Cell = require('fixed-data-table').Cell;
 
 var cellStyle = {
     height: '100%',
     margin: 'auto',
-    fontSize: 22
+    fontSize: 22,
+    padding: 0
 }
 
 var StepmasterButton = React.createClass({
@@ -30,7 +31,8 @@ var StepmasterButton = React.createClass({
     render: function(){
         var stepObj = this.props.stepObj
         var buttonElement = this.getButton(stepObj.workliststatus);
-        return( <Cell style = {cellStyle}
+        return( <Cell className="stepmasterButton" 
+                    style = {cellStyle}
                     onClick={this.props.onCellClick.bind(null,this.props.stepObj)}>
                     {buttonElement}
                 </Cell>
