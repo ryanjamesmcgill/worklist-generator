@@ -24,7 +24,7 @@ var modalStyle={
     right                     : 'auto',
     bottom                    : 'auto',
     marginRight               : '-50%',
-    transform                 : 'translate(-50%, -50%)',
+    //transform                 : 'translate(-50%, -50%)',
     zIndex					           : 10,
     border                     : '1px solid #ccc',
     background                 : '#fff',

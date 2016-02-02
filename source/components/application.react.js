@@ -88,7 +88,9 @@ var Application = React.createClass({
 					height={this.props.worklistTableHeight}/>
 				<Stepmaster
 					stepmasterIsVisible={this.state.stepmasterIsVisible}
-					onStepmasterClick={this._onStepmasterClick} />
+					onStepmasterClick={this._onStepmasterClick} 
+					width={Math.min(window.innerWidth-200,960)}
+					height={window.innerHeight - 200}/>
 				<LoadfileModal
 					loadfileIsVisible={this.state.loadfileIsVisible}
 					onLoadfileClick={this._onLoadfileClick} />

@@ -25,10 +25,12 @@ var modalStyle={
   },
   content : {
   	display					   : 'inline-block',
-    position                   : 'relative',
-    top                        : '50px',
-    left					   : 0,
-    right					   : 0,
+    position                   : 'absolute',
+    top                        : '50%',
+    left					   : '50%',
+    right					   : 'auto',
+    bottom					   : 'auto',
+    marginRight				   : '-50%',
     padding                    : '20px',
     zIndex					   : 10,
     border                     : '1px solid #ccc',
@@ -60,14 +62,6 @@ var cellOverlayStyle = {
     };
 
 var Stepmaster = React.createClass({
-	getDefaultProps: function(){
-		return {
-			dimensions: {
-				height: 650,
-				width: 875
-			}	
-		}
-	},
     getInitialState: function(){
 		return {
 			filters: StepStore.getFilters(),
@@ -77,7 +71,7 @@ var Stepmaster = React.createClass({
 				stepseq: 120,
 				stepdesc: 300,
 				ppid: 250
-			},
+			}
 		};
 	},
 	componentDidMount: function(){
@@ -132,7 +126,7 @@ var Stepmaster = React.createClass({
 		}
 	},
 	render: function(){
-		var self = this;
+		self = this;
 		return (
 			<Modal
 				isOpen={this.props.stepmasterIsVisible}
@@ -143,14 +137,14 @@ var Stepmaster = React.createClass({
 					style={closeSymbolStyle}
 					onClick={this.props.onStepmasterClick}>&times;</span>
 					
-			<div id="stepmaster-container" style={{margin: 'auto', width: this.props.dimensions.width}}>
+			<div id="stepmaster-container" style={{margin: 'auto', width: this.props.width}}>
 			<h4 style={{marginTop: '0px'}}>Select steps to add to your worklist</h4>
 	      	<Table
 	        	rowsCount={StepStore.getFilteredLength()}
 	        	rowHeight={30}
 	        	headerHeight={80}
-	        	width={this.props.dimensions.width}
-	        	height={this.props.dimensions.height}
+	        	width={this.props.width}
+	        	height={this.props.height}
 	        	footerHeight={0}
 	        	isColumnResizing={false}
 	        	onColumnResizeEndCallback={this._onColumnResizeEnd}
@@ -160,7 +154,7 @@ var Stepmaster = React.createClass({
 	     			columnKey="button"
 	     			width={this.state.columnWidths.button}
 	     			isResizable={false}
-	        	    header={<StepmasterHeaderButton/>}
+	        	    header={null}
 	        	    cell={	
         	    	function(props){ 
     	    			return (<StepmasterButton 

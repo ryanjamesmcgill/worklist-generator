@@ -74835,7 +74835,9 @@ var Application = React.createClass({
 						height: this.props.worklistTableHeight }),
 					React.createElement(Stepmaster, {
 						stepmasterIsVisible: this.state.stepmasterIsVisible,
-						onStepmasterClick: this._onStepmasterClick }),
+						onStepmasterClick: this._onStepmasterClick,
+						width: Math.min(window.innerWidth - 200, 960),
+						height: window.innerHeight - 200 }),
 					React.createElement(LoadfileModal, {
 						loadfileIsVisible: this.state.loadfileIsVisible,
 						onLoadfileClick: this._onLoadfileClick })
@@ -74882,10 +74884,12 @@ var modalStyle = {
 	},
 	content: {
 		display: 'inline-block',
-		position: 'relative',
-		top: '50px',
-		left: 0,
-		right: 0,
+		position: 'absolute',
+		top: '50%',
+		left: '50%',
+		right: 'auto',
+		bottom: 'auto',
+		marginRight: '-50%',
 		padding: '20px',
 		zIndex: 10,
 		border: '1px solid #ccc',
@@ -74919,14 +74923,6 @@ var cellOverlayStyle = {
 var Stepmaster = React.createClass({
 	displayName: 'Stepmaster',
 
-	getDefaultProps: function () {
-		return {
-			dimensions: {
-				height: 650,
-				width: 875
-			}
-		};
-	},
 	getInitialState: function () {
 		return {
 			filters: StepStore.getFilters(),
@@ -74991,7 +74987,7 @@ var Stepmaster = React.createClass({
 		}
 	},
 	render: function () {
-		var self = this;
+		self = this;
 		return React.createElement(
 			Modal,
 			{
@@ -75007,7 +75003,7 @@ var Stepmaster = React.createClass({
 			),
 			React.createElement(
 				'div',
-				{ id: 'stepmaster-container', style: { margin: 'auto', width: this.props.dimensions.width } },
+				{ id: 'stepmaster-container', style: { margin: 'auto', width: this.props.width } },
 				React.createElement(
 					'h4',
 					{ style: { marginTop: '0px' } },
@@ -75019,8 +75015,8 @@ var Stepmaster = React.createClass({
 						rowsCount: StepStore.getFilteredLength(),
 						rowHeight: 30,
 						headerHeight: 80,
-						width: this.props.dimensions.width,
-						height: this.props.dimensions.height,
+						width: this.props.width,
+						height: this.props.height,
 						footerHeight: 0,
 						isColumnResizing: false,
 						onColumnResizeEndCallback: this._onColumnResizeEnd,
@@ -75029,7 +75025,7 @@ var Stepmaster = React.createClass({
 						columnKey: 'button',
 						width: this.state.columnWidths.button,
 						isResizable: false,
-						header: React.createElement(StepmasterHeaderButton, null),
+						header: null,
 						cell: function (props) {
 							return React.createElement(StepmasterButton, {
 								onCellClick: self._onCellClick,
@@ -75740,7 +75736,7 @@ var modalStyle = {
     right: 'auto',
     bottom: 'auto',
     marginRight: '-50%',
-    transform: 'translate(-50%, -50%)',
+    //transform                 : 'translate(-50%, -50%)',
     zIndex: 10,
     border: '1px solid #ccc',
     background: '#fff',
@@ -76567,21 +76563,14 @@ var filters = {
 
 function setMasterSteps(stepArray) {
 	for (var i = 0; i < stepArray.length; i++) {
-		_.forEach(stepArray[i], function (value, key) {
-			if (typeof key != 'string') {
-				console.error('[worklist-generator] step array does not have keys of type "String"');
-				return;
-			}
-			stepArray[i].key = key.toLowerCase();
-		});
 		MasterSteps.push(stepArray[i]);
 		filteredIndexes.push(i);
 
 		MasterSteps[i].workliststatus = false;
 		var isScan;
-		if (MasterSteps[i].ppid.indexOf("SCAN") > -1) {
-			//fake data
-			//if(MasterSteps[i].ppid.indexOf("@PART")>-1){ //real data
+		//if(MasterSteps[i].ppid.indexOf("SCAN")>-1){ //fake data
+		if (MasterSteps[i].ppid.indexOf("@PART") > -1) {
+			//real data
 			isScan = true;
 		} else {
 			isScan = false;

@@ -34,20 +34,13 @@ var filters = {
 
 function setMasterSteps(stepArray){
 	for(var i=0; i<stepArray.length; i++){
-		_.forEach(stepArray[i], function(value, key){
-			if(typeof key != 'string'){
-				console.error('[worklist-generator] step array does not have keys of type "String"');
-				return;
-			}
-			stepArray[i].key = key.toLowerCase();
-		})
 	    MasterSteps.push(stepArray[i]);
 	    filteredIndexes.push(i);
 	    
 	    MasterSteps[i].workliststatus = false;
 	    var isScan;
-	    if(MasterSteps[i].ppid.indexOf("SCAN")>-1){ //fake data
-	    //if(MasterSteps[i].ppid.indexOf("@PART")>-1){ //real data
+	    //if(MasterSteps[i].ppid.indexOf("SCAN")>-1){ //fake data
+	    if(MasterSteps[i].ppid.indexOf("@PART")>-1){ //real data
 	    	isScan=true;
 	    } else {
 	    	isScan=false;
