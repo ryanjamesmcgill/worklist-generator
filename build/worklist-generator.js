@@ -74930,7 +74930,7 @@ var Stepmaster = React.createClass({
 				button: 46,
 				processid: 120,
 				stepseq: 120,
-				stepdesc: 300,
+				stepdesc: 375,
 				ppid: 250
 			}
 		};
@@ -76541,7 +76541,7 @@ var filteredIndexes = [];
 var filters = {
 	"processid": {
 		"value": "",
-		"name": "Process ID"
+		"name": "Process"
 	},
 	"stepseq": {
 		"value": "",
@@ -76958,6 +76958,9 @@ function generateLine(selectionsObj, scanStep, processStep) {
 	var length = Object.keys(columnMap).length;
 	for (var i = 0; i < length; i++) {
 		switch (i) {
+			case columnMap["WORK_KEY"]:
+				line.push("1");
+				break;
 			case columnMap["GROUPKEY"]:
 				line.push("-999999999");
 				break;

@@ -12,7 +12,7 @@ var filteredIndexes = [];
 var filters = {
 		"processid": {
 			"value": "",
-			"name": "Process ID"
+			"name": "Process"
 		},
 		"stepseq": {
 			"value": "",

@@ -69,7 +69,7 @@ var Stepmaster = React.createClass({
 				button: 46,
 				processid: 120,
 				stepseq: 120,
-				stepdesc: 300,
+				stepdesc: 375,
 				ppid: 250
 			}
 		};

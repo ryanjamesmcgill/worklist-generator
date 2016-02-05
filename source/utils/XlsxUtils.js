@@ -38,8 +38,11 @@ function generateLine(selectionsObj, scanStep, processStep){
 	var length = Object.keys(columnMap).length;
 	for(var i = 0; i < length; i++){
 		switch(i) {
+			case columnMap["WORK_KEY"]:
+				line.push("1");
+				break;
 			case columnMap["GROUPKEY"]:
-				line.push("-999999999")
+				line.push("-999999999");
 				break;
 			case columnMap["LINEID"]:
 				line.push("SFBX");
