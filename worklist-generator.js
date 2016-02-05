@@ -76568,8 +76568,8 @@ function setMasterSteps(stepArray) {
 
 		MasterSteps[i].workliststatus = false;
 		var isScan;
-		//if(MasterSteps[i].ppid.indexOf("SCAN")>-1){ //fake data
-		if (MasterSteps[i].ppid.indexOf("@PART") > -1) {
+		if(MasterSteps[i].ppid.indexOf("SCAN")>-1){ //fake data
+		//if (MasterSteps[i].ppid.indexOf("@PART") > -1) {
 			//real data
 			isScan = true;
 		} else {
