@@ -156,7 +156,8 @@ function generateStepMap(){
 	/*Now fill in process steps*/
 	StepStore.WorklistStepsMap(
 		function(stepObj, index, array){
-			if(!stepObj.isScan){
+			if(stepObj.scanstep){ //if this step as an associated scan step, can only be a process step
+				console.assert(!stepObj.isScan, 'During gernerateStepMap(), A scan step was associated with another scan step which should not happen.');
 				stepMap[stepObj.scanstep].push(stepObj.stepseq);
 			}		
 		}
