@@ -1,7 +1,7 @@
 "use strict";
 var React = require('react');
 var _ = require('lodash');
-var StepStore = require('../stores/StepStore');
+var StepStore = require('../../stores/StepStore');
 var WorklistTableButton = require('./worklisttablebutton.react');
 var WorklistTableText = require('./worklisttabletext.react');
 var WorklistTableDropdown = require('./worklisttabledropdown.react');

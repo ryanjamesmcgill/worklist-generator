@@ -1,7 +1,7 @@
 "use strict";
 var React = require('react');
-var StepStore = require('../stores/StepStore');
-var StepActionCreators = require('../actions/StepActionCreators');
+var StepStore = require('../../stores/StepStore');
+var StepActionCreators = require('../../actions/StepActionCreators');
 var StepmasterHeader = require('./stepmasterheader.react');
 var StepmasterText = require('./stepmastertext.react');
 var StepmasterButton = require("./stepmasterbutton.react");
@@ -127,6 +127,10 @@ var Stepmaster = React.createClass({
 	},
 	render: function(){
 		self = this;
+		var addAllEnabled = false;
+		if(StepStore.getFilteredLength() < this.props.addAllThreshold){
+			addAllEnabled = true;
+		}
 		return (
 			<Modal
 				isOpen={this.props.stepmasterIsVisible}
@@ -154,7 +158,7 @@ var Stepmaster = React.createClass({
 	     			columnKey="button"
 	     			width={this.state.columnWidths.button}
 	     			isResizable={false}
-	        	    header={null}
+	        	    header={<StepmasterHeaderButton enabled={addAllEnabled} />}
 	        	    cell={	
         	    	function(props){ 
     	    			return (<StepmasterButton 

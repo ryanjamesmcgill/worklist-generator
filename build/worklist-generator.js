@@ -74873,8 +74873,8 @@ ReactDOM.render(React.createElement(Application, null), document.getElementById(
 },{"./components/application.react":309,"./utils/StepUtils":332,"./utils/WorklistFormUtils":333,"console-polyfill":9,"es5-shim":11,"es5-shim/es5-sham":10,"react":264,"react-dom":76}],309:[function(require,module,exports){
 var React = require('react');
 var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
-var Stepmaster = require('./stepmaster.react');
-var WorklistTable = require('./worklisttable.react');
+var Stepmaster = require('./stepmaster/stepmaster.react');
+var WorklistTable = require('./worklisttable/worklisttable.react');
 var WorklistForm = require('./worklistform/worklistform.react');
 var CustomStepsModal = require('./worklistform/customstepsmodal.react');
 var LoadfileModal = require('./worklistform/loadfilemodal.react');
@@ -74979,7 +74979,8 @@ var Application = React.createClass({
 						stepmasterIsVisible: this.state.stepmasterIsVisible,
 						onStepmasterClick: this._onStepmasterClick,
 						width: Math.min(window.innerWidth - 200, 960),
-						height: window.innerHeight - 200 }),
+						height: window.innerHeight - 200,
+						addAllThreshold: 20 }),
 					React.createElement(LoadfileModal, {
 						loadfileIsVisible: this.state.loadfileIsVisible,
 						onLoadfileClick: this._onLoadfileClick })
@@ -74997,12 +74998,12 @@ var Application = React.createClass({
 
 module.exports = Application;
 
-},{"./stepmaster.react":310,"./worklistform/customstepsmodal.react":316,"./worklistform/loadfilemodal.react":321,"./worklistform/worklistform.react":323,"./worklisttable.react":324,"react":264,"react-addons-css-transition-group":71}],310:[function(require,module,exports){
+},{"./stepmaster/stepmaster.react":310,"./worklistform/customstepsmodal.react":316,"./worklistform/loadfilemodal.react":321,"./worklistform/worklistform.react":323,"./worklisttable/worklisttable.react":324,"react":264,"react-addons-css-transition-group":71}],310:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
-var StepStore = require('../stores/StepStore');
-var StepActionCreators = require('../actions/StepActionCreators');
+var StepStore = require('../../stores/StepStore');
+var StepActionCreators = require('../../actions/StepActionCreators');
 var StepmasterHeader = require('./stepmasterheader.react');
 var StepmasterText = require('./stepmastertext.react');
 var StepmasterButton = require("./stepmasterbutton.react");
@@ -75130,6 +75131,10 @@ var Stepmaster = React.createClass({
 	},
 	render: function () {
 		self = this;
+		var addAllEnabled = false;
+		if (StepStore.getFilteredLength() < this.props.addAllThreshold) {
+			addAllEnabled = true;
+		}
 		return React.createElement(
 			Modal,
 			{
@@ -75167,7 +75172,7 @@ var Stepmaster = React.createClass({
 						columnKey: 'button',
 						width: this.state.columnWidths.button,
 						isResizable: false,
-						header: null,
+						header: React.createElement(StepmasterHeaderButton, { enabled: addAllEnabled }),
 						cell: function (props) {
 							return React.createElement(StepmasterButton, {
 								onCellClick: self._onCellClick,
@@ -75253,10 +75258,10 @@ var Stepmaster = React.createClass({
 
 module.exports = Stepmaster;
 
-},{"../actions/StepActionCreators":306,"../stores/StepStore":330,"./stepmasterbutton.react":311,"./stepmasterheader.react":312,"./stepmasterheaderbutton.react":313,"./stepmastertext.react":314,"fixed-data-table":62,"react":264,"react-modal":83}],311:[function(require,module,exports){
+},{"../../actions/StepActionCreators":306,"../../stores/StepStore":330,"./stepmasterbutton.react":311,"./stepmasterheader.react":312,"./stepmasterheaderbutton.react":313,"./stepmastertext.react":314,"fixed-data-table":62,"react":264,"react-modal":83}],311:[function(require,module,exports){
 var React = require('react');
-var StepStore = require('../stores/StepStore');
-var StepActionCreators = require('../actions/StepActionCreators');
+var StepStore = require('../../stores/StepStore');
+var StepActionCreators = require('../../actions/StepActionCreators');
 var Cell = require('fixed-data-table').Cell;
 
 var cellStyle = {
@@ -75297,10 +75302,10 @@ var StepmasterButton = React.createClass({
 
 module.exports = StepmasterButton;
 
-},{"../actions/StepActionCreators":306,"../stores/StepStore":330,"fixed-data-table":62,"react":264}],312:[function(require,module,exports){
+},{"../../actions/StepActionCreators":306,"../../stores/StepStore":330,"fixed-data-table":62,"react":264}],312:[function(require,module,exports){
 var React = require('react');
 var Cell = require('fixed-data-table').Cell;
-var StepStore = require("../stores/StepStore");
+var StepStore = require("../../stores/StepStore");
 
 var StepmasterHeader = React.createClass({
     displayName: 'StepmasterHeader',
@@ -75336,10 +75341,10 @@ var StepmasterHeader = React.createClass({
 
 module.exports = StepmasterHeader;
 
-},{"../stores/StepStore":330,"fixed-data-table":62,"react":264}],313:[function(require,module,exports){
+},{"../../stores/StepStore":330,"fixed-data-table":62,"react":264}],313:[function(require,module,exports){
 var React = require('react');
-var StepStore = require('../stores/StepStore');
-var StepActionCreators = require('../actions/StepActionCreators');
+var StepStore = require('../../stores/StepStore');
+var StepActionCreators = require('../../actions/StepActionCreators');
 var Cell = require('fixed-data-table').Cell;
 var _ = require('lodash');
 
@@ -75354,6 +75359,15 @@ var StepmasterHeaderButton = React.createClass({
         });
     },
     render: function () {
+        var classes;
+        var clickCallBack;
+        if (this.props.enabled) {
+            classes = "glyphicon glyphicon-plus-sign";
+            clickCallBack = this._onClick;
+        } else {
+            classes = "glyphicon glyphicon-plus-sign disabled";
+            clickCallBack = null;
+        }
         return React.createElement(
             Cell,
             { style: {
@@ -75361,23 +75375,16 @@ var StepmasterHeaderButton = React.createClass({
                     position: 'relative',
                     top: '45%',
                     fontSize: 22 } },
-            React.createElement('span', { onClick: this._onClick, className: 'glyphicon glyphicon-plus-sign', 'aria-hidden': 'true' })
+            React.createElement('span', { onClick: clickCallBack, className: classes, 'aria-hidden': 'true' })
         );
     }
 });
 
 module.exports = StepmasterHeaderButton;
-/*
-<button type="button" 
-        className="btn btn-info btn-sm"
-        onClick={this._onClick}>
-        All
-</button>
-*/
 
-},{"../actions/StepActionCreators":306,"../stores/StepStore":330,"fixed-data-table":62,"lodash":66,"react":264}],314:[function(require,module,exports){
+},{"../../actions/StepActionCreators":306,"../../stores/StepStore":330,"fixed-data-table":62,"lodash":66,"react":264}],314:[function(require,module,exports){
 var React = require('react');
-var StepStore = require('../stores/StepStore');
+var StepStore = require('../../stores/StepStore');
 var Cell = require('fixed-data-table').Cell;
 
 var style = {
@@ -75403,7 +75410,7 @@ var StepmasterText = React.createClass({
 
 module.exports = StepmasterText;
 
-},{"../stores/StepStore":330,"fixed-data-table":62,"react":264}],315:[function(require,module,exports){
+},{"../../stores/StepStore":330,"fixed-data-table":62,"react":264}],315:[function(require,module,exports){
 var React = require('react');
 var WorklistFormActionCreators = require('../../actions/WorklistFormActionCreators');
 var WorklistFormStore = require('../../stores/WorklistFormStore');
@@ -76202,7 +76209,7 @@ module.exports = WorklistForm;
 
 var React = require('react');
 var _ = require('lodash');
-var StepStore = require('../stores/StepStore');
+var StepStore = require('../../stores/StepStore');
 var WorklistTableButton = require('./worklisttablebutton.react');
 var WorklistTableText = require('./worklisttabletext.react');
 var WorklistTableDropdown = require('./worklisttabledropdown.react');
@@ -76446,10 +76453,10 @@ var WorklistTable = React.createClass({
 
 module.exports = WorklistTable;
 
-},{"../stores/StepStore":330,"./worklisttablebutton.react":325,"./worklisttabledropdown.react":326,"./worklisttabledropdownselection.react":327,"./worklisttabletext.react":328,"fixed-data-table":62,"lodash":66,"react":264}],325:[function(require,module,exports){
+},{"../../stores/StepStore":330,"./worklisttablebutton.react":325,"./worklisttabledropdown.react":326,"./worklisttabledropdownselection.react":327,"./worklisttabletext.react":328,"fixed-data-table":62,"lodash":66,"react":264}],325:[function(require,module,exports){
 var React = require('react');
-var StepStore = require('../stores/StepStore');
-var StepActionCreators = require('../actions/StepActionCreators');
+var StepStore = require('../../stores/StepStore');
+var StepActionCreators = require('../../actions/StepActionCreators');
 var Cell = require('fixed-data-table').Cell;
 
 var style = {
@@ -76489,7 +76496,7 @@ module.exports = WorklistTableButton;
     -
 </button>*/
 
-},{"../actions/StepActionCreators":306,"../stores/StepStore":330,"fixed-data-table":62,"react":264}],326:[function(require,module,exports){
+},{"../../actions/StepActionCreators":306,"../../stores/StepStore":330,"fixed-data-table":62,"react":264}],326:[function(require,module,exports){
 var React = require('react');
 var Cell = require('fixed-data-table').Cell;
 
@@ -76535,8 +76542,8 @@ module.exports = WorklistTableDropdown;
 },{"fixed-data-table":62,"react":264}],327:[function(require,module,exports){
 var React = require('react');
 var Cell = require('fixed-data-table').Cell;
-var StepStore = require('../stores/StepStore');
-var StepActionCreators = require('../actions/StepActionCreators');
+var StepStore = require('../../stores/StepStore');
+var StepActionCreators = require('../../actions/StepActionCreators');
 
 var WorklistTableDropdownSelection = React.createClass({
     displayName: 'WorklistTableDropdownSelection',
@@ -76638,7 +76645,7 @@ var WorklistTableDropdownSelection = React.createClass({
 
 module.exports = WorklistTableDropdownSelection;
 
-},{"../actions/StepActionCreators":306,"../stores/StepStore":330,"fixed-data-table":62,"react":264}],328:[function(require,module,exports){
+},{"../../actions/StepActionCreators":306,"../../stores/StepStore":330,"fixed-data-table":62,"react":264}],328:[function(require,module,exports){
 var React = require('react');
 var Cell = require('fixed-data-table').Cell;
 
@@ -76984,8 +76991,6 @@ module.exports = WorklistFormStore;
 },{"../dispatcher/AppDispatcher":329,"events":7,"object-assign":68}],332:[function(require,module,exports){
 var _ = require('lodash');
 var StepActionCreators = require('../actions/StepActionCreators');
-
-//var stepArray = require('./stepdata/steps.json');
 var stepArray = window.references.stepMaster;
 
 function generateMasterSteps() {
@@ -77065,10 +77070,7 @@ var XLSX = require('xlsx-browserify-shim');
 var Blob = require('blob');
 var StepStore = require('../stores/StepStore');
 var WorklistFormStore = require('../stores/WorklistFormStore');
-//var columnMap = require('./worklistformdata/columnmap');
 var columnMap = window.references.columnMap;
-//var columnKeys = require('./worklistformdata/columnkeys');
-var columnKeys = window.references.columnKeys;
 var _ = require('lodash');
 
 function generateWorklist() {
@@ -77076,7 +77078,7 @@ function generateWorklist() {
 	var stepMap = generateStepMap();
 	var line;
 	var table = [[], [], [], [], [], [], [], [], []]; //initalize with 9 blank rows
-	table.push(columnKeys);
+	table.push(_.keys(columnMap));
 	_.forEach(stepMap, function (stepArray, scanStep) {
 		if (stepArray.length > 0) {
 			stepArray.map(function (processStep, index, array) {
@@ -77102,6 +77104,9 @@ function generateLine(selectionsObj, scanStep, processStep) {
 		switch (i) {
 			case columnMap["WORK_KEY"]:
 				line.push("1");
+				break;
+			case columnMap["TITLE"]:
+				line.push(scanStep + '_' + processStep + '_' + DEFECTNAME);
 				break;
 			case columnMap["GROUPKEY"]:
 				line.push("-999999999");

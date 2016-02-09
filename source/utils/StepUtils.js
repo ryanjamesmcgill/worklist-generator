@@ -1,7 +1,5 @@
 var _ = require('lodash');
 var StepActionCreators = require('../actions/StepActionCreators');
-
-//var stepArray = require('./stepdata/steps.json');
 var stepArray = window.references.stepMaster;
 
 function generateMasterSteps(){

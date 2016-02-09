@@ -36,9 +36,16 @@ body {
 .glyphicon-plus-sign{
   color: #6897BB;
 }
+.glyphicon-plus-sign.disabled{
+  color: #c2d5e3;
+}
 .glyphicon-plus-sign:hover{
   color: #0079d6;
   cursor: pointer;
+}
+.glyphicon-plus-sign.disabled:hover{
+  cursor: not-allowed;
+  color: #c2d5e3;
 }
 .glyphicon-minus-sign {
 	color: #e7b1b1;
@@ -133,4 +140,10 @@ body {
 .ReactModal__Content--after-open {
   transform: translate(-50%,-50%);
   transition: transform 300ms ease;
+}
+
+
+/* IE REDIRECT PAGE */
+.link {
+  color: #666666;
 }

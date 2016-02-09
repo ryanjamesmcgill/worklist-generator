@@ -1,6 +1,6 @@
 var React = require('react');
 var Cell = require('fixed-data-table').Cell;
-var StepStore = require("../stores/StepStore");
+var StepStore = require("../../stores/StepStore");
 
 var StepmasterHeader = React.createClass({
     render: function(){

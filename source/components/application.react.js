@@ -1,7 +1,7 @@
 var React = require('react');
 var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
-var Stepmaster = require('./stepmaster.react');
-var WorklistTable = require('./worklisttable.react');
+var Stepmaster = require('./stepmaster/stepmaster.react');
+var WorklistTable = require('./worklisttable/worklisttable.react');
 var WorklistForm = require('./worklistform/worklistform.react');
 var CustomStepsModal = require('./worklistform/customstepsmodal.react');
 var LoadfileModal = require('./worklistform/loadfilemodal.react');
@@ -90,7 +90,8 @@ var Application = React.createClass({
 					stepmasterIsVisible={this.state.stepmasterIsVisible}
 					onStepmasterClick={this._onStepmasterClick} 
 					width={Math.min(window.innerWidth-200,960)}
-					height={window.innerHeight - 200}/>
+					height={window.innerHeight - 200}
+					addAllThreshold={20}/>
 				<LoadfileModal
 					loadfileIsVisible={this.state.loadfileIsVisible}
 					onLoadfileClick={this._onLoadfileClick} />

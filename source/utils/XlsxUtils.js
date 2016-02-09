@@ -3,10 +3,7 @@ var XLSX = require('xlsx-browserify-shim');
 var Blob = require('blob');
 var StepStore = require('../stores/StepStore');
 var WorklistFormStore = require('../stores/WorklistFormStore');
-//var columnMap = require('./worklistformdata/columnmap');
 var columnMap = window.references.columnMap;
-//var columnKeys = require('./worklistformdata/columnkeys');
-var columnKeys = window.references.columnKeys;
 var _ = require('lodash');
 
 function generateWorklist(){
@@ -14,7 +11,7 @@ function generateWorklist(){
     var stepMap = generateStepMap();
     var line;
     var table = [[],[],[],[],[],[],[],[],[]]; //initalize with 9 blank rows
-    table.push(columnKeys);
+    table.push(_.keys(columnMap));
     _.forEach(stepMap, function(stepArray, scanStep){
     	if(stepArray.length > 0){
     		stepArray.map(function(processStep,index,array){
@@ -40,6 +37,9 @@ function generateLine(selectionsObj, scanStep, processStep){
 		switch(i) {
 			case columnMap["WORK_KEY"]:
 				line.push("1");
+				break;
+			case columnMap["TITLE"]:
+				line.push(scanStep+'_'+processStep+'_'+DEFECTNAME);
 				break;
 			case columnMap["GROUPKEY"]:
 				line.push("-999999999");

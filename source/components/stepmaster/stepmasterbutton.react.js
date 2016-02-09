@@ -1,6 +1,6 @@
 var React = require('react');
-var StepStore = require('../stores/StepStore');
-var StepActionCreators = require('../actions/StepActionCreators');
+var StepStore = require('../../stores/StepStore');
+var StepActionCreators = require('../../actions/StepActionCreators');
 var Cell = require('fixed-data-table').Cell;
 
 var cellStyle = {

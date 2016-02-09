@@ -1,5 +1,5 @@
 var React = require('react');
-var StepStore = require('../stores/StepStore');
+var StepStore = require('../../stores/StepStore');
 var Cell = require('fixed-data-table').Cell;
 
 

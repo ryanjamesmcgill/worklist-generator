@@ -1,7 +1,7 @@
 var React = require('react');
 var Cell = require('fixed-data-table').Cell;
-var StepStore = require('../stores/StepStore');
-var StepActionCreators = require('../actions/StepActionCreators');
+var StepStore = require('../../stores/StepStore');
+var StepActionCreators = require('../../actions/StepActionCreators');
 
 var WorklistTableDropdownSelection = React.createClass({
     getInitialState: function(){
