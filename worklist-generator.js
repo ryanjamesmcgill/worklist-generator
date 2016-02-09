@@ -24285,7 +24285,7 @@ module.exports = invariant;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],67:[function(require,module,exports){
 //! moment.js
-//! version : 2.11.1
+//! version : 2.11.2
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
 //! license : MIT
 //! momentjs.com
@@ -26102,7 +26102,7 @@ module.exports = invariant;
     }
 
     // ASP.NET json date format regex
-    var aspNetRegex = /(\-)?(?:(\d*)[. ])?(\d+)\:(\d+)(?:\:(\d+)\.?(\d{3})?)?/;
+    var aspNetRegex = /^(\-)?(?:(\d*)[. ])?(\d+)\:(\d+)(?:\:(\d+)\.?(\d{3})?\d*)?$/;
 
     // from http://docs.closure-library.googlecode.com/git/closure_goog_date_date.js.source.html
     // somewhat more in line with 4.4.3.2 2004 spec, but allows decimal anywhere
@@ -27857,7 +27857,7 @@ module.exports = invariant;
     // Side effect imports
 
 
-    utils_hooks__hooks.version = '2.11.1';
+    utils_hooks__hooks.version = '2.11.2';
 
     setHookCallback(local__createLocal);
 
@@ -31286,39 +31286,36 @@ module.exports = getNative;
 
 },{}],95:[function(require,module,exports){
 /**
- * lodash 3.0.4 (Custom Build) <https://lodash.com/>
- * Build: `lodash modern modularize exports="npm" -o ./`
- * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
+ * lodash 3.0.6 (Custom Build) <https://lodash.com/>
+ * Build: `lodash modularize exports="npm" -o ./`
+ * Copyright 2012-2016 The Dojo Foundation <http://dojofoundation.org/>
  * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
- * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+ * Copyright 2009-2016 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
  * Available under MIT license <https://lodash.com/license>
  */
 
-/**
- * Checks if `value` is object-like.
- *
- * @private
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
- */
-function isObjectLike(value) {
-  return !!value && typeof value == 'object';
-}
+/** Used as references for various `Number` constants. */
+var MAX_SAFE_INTEGER = 9007199254740991;
 
-/** Used for native method references. */
+/** `Object#toString` result references. */
+var argsTag = '[object Arguments]',
+    funcTag = '[object Function]',
+    genTag = '[object GeneratorFunction]';
+
+/** Used for built-in method references. */
 var objectProto = Object.prototype;
 
 /** Used to check objects for own properties. */
 var hasOwnProperty = objectProto.hasOwnProperty;
 
-/** Native method references. */
-var propertyIsEnumerable = objectProto.propertyIsEnumerable;
-
 /**
- * Used as the [maximum length](http://ecma-international.org/ecma-262/6.0/#sec-number.max_safe_integer)
- * of an array-like value.
+ * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
+ * of values.
  */
-var MAX_SAFE_INTEGER = 9007199254740991;
+var objectToString = objectProto.toString;
+
+/** Built-in value references. */
+var propertyIsEnumerable = objectProto.propertyIsEnumerable;
 
 /**
  * The base implementation of `_.property` without support for deep paths.
@@ -31346,31 +31343,7 @@ function baseProperty(key) {
 var getLength = baseProperty('length');
 
 /**
- * Checks if `value` is array-like.
- *
- * @private
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is array-like, else `false`.
- */
-function isArrayLike(value) {
-  return value != null && isLength(getLength(value));
-}
-
-/**
- * Checks if `value` is a valid array-like length.
- *
- * **Note:** This function is based on [`ToLength`](http://ecma-international.org/ecma-262/6.0/#sec-tolength).
- *
- * @private
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
- */
-function isLength(value) {
-  return typeof value == 'number' && value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
-}
-
-/**
- * Checks if `value` is classified as an `arguments` object.
+ * Checks if `value` is likely an `arguments` object.
  *
  * @static
  * @memberOf _
@@ -31386,8 +31359,174 @@ function isLength(value) {
  * // => false
  */
 function isArguments(value) {
-  return isObjectLike(value) && isArrayLike(value) &&
-    hasOwnProperty.call(value, 'callee') && !propertyIsEnumerable.call(value, 'callee');
+  // Safari 8.1 incorrectly makes `arguments.callee` enumerable in strict mode.
+  return isArrayLikeObject(value) && hasOwnProperty.call(value, 'callee') &&
+    (!propertyIsEnumerable.call(value, 'callee') || objectToString.call(value) == argsTag);
+}
+
+/**
+ * Checks if `value` is array-like. A value is considered array-like if it's
+ * not a function and has a `value.length` that's an integer greater than or
+ * equal to `0` and less than or equal to `Number.MAX_SAFE_INTEGER`.
+ *
+ * @static
+ * @memberOf _
+ * @type Function
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is array-like, else `false`.
+ * @example
+ *
+ * _.isArrayLike([1, 2, 3]);
+ * // => true
+ *
+ * _.isArrayLike(document.body.children);
+ * // => true
+ *
+ * _.isArrayLike('abc');
+ * // => true
+ *
+ * _.isArrayLike(_.noop);
+ * // => false
+ */
+function isArrayLike(value) {
+  return value != null &&
+    !(typeof value == 'function' && isFunction(value)) && isLength(getLength(value));
+}
+
+/**
+ * This method is like `_.isArrayLike` except that it also checks if `value`
+ * is an object.
+ *
+ * @static
+ * @memberOf _
+ * @type Function
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an array-like object, else `false`.
+ * @example
+ *
+ * _.isArrayLikeObject([1, 2, 3]);
+ * // => true
+ *
+ * _.isArrayLikeObject(document.body.children);
+ * // => true
+ *
+ * _.isArrayLikeObject('abc');
+ * // => false
+ *
+ * _.isArrayLikeObject(_.noop);
+ * // => false
+ */
+function isArrayLikeObject(value) {
+  return isObjectLike(value) && isArrayLike(value);
+}
+
+/**
+ * Checks if `value` is classified as a `Function` object.
+ *
+ * @static
+ * @memberOf _
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
+ * @example
+ *
+ * _.isFunction(_);
+ * // => true
+ *
+ * _.isFunction(/abc/);
+ * // => false
+ */
+function isFunction(value) {
+  // The use of `Object#toString` avoids issues with the `typeof` operator
+  // in Safari 8 which returns 'object' for typed array constructors, and
+  // PhantomJS 1.9 which returns 'function' for `NodeList` instances.
+  var tag = isObject(value) ? objectToString.call(value) : '';
+  return tag == funcTag || tag == genTag;
+}
+
+/**
+ * Checks if `value` is a valid array-like length.
+ *
+ * **Note:** This function is loosely based on [`ToLength`](http://ecma-international.org/ecma-262/6.0/#sec-tolength).
+ *
+ * @static
+ * @memberOf _
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
+ * @example
+ *
+ * _.isLength(3);
+ * // => true
+ *
+ * _.isLength(Number.MIN_VALUE);
+ * // => false
+ *
+ * _.isLength(Infinity);
+ * // => false
+ *
+ * _.isLength('3');
+ * // => false
+ */
+function isLength(value) {
+  return typeof value == 'number' && value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
+}
+
+/**
+ * Checks if `value` is the [language type](https://es5.github.io/#x8) of `Object`.
+ * (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
+ *
+ * @static
+ * @memberOf _
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an object, else `false`.
+ * @example
+ *
+ * _.isObject({});
+ * // => true
+ *
+ * _.isObject([1, 2, 3]);
+ * // => true
+ *
+ * _.isObject(_.noop);
+ * // => true
+ *
+ * _.isObject(null);
+ * // => false
+ */
+function isObject(value) {
+  var type = typeof value;
+  return !!value && (type == 'object' || type == 'function');
+}
+
+/**
+ * Checks if `value` is object-like. A value is object-like if it's not `null`
+ * and has a `typeof` result of "object".
+ *
+ * @static
+ * @memberOf _
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
+ * @example
+ *
+ * _.isObjectLike({});
+ * // => true
+ *
+ * _.isObjectLike([1, 2, 3]);
+ * // => true
+ *
+ * _.isObjectLike(_.noop);
+ * // => false
+ *
+ * _.isObjectLike(null);
+ * // => false
+ */
+function isObjectLike(value) {
+  return !!value && typeof value == 'object';
 }
 
 module.exports = isArguments;
@@ -32843,11 +32982,14 @@ var AutosizeInput = React.createClass({
 	focus: function focus() {
 		this.refs.input.focus();
 	},
+	blur: function blur() {
+		this.refs.input.blur();
+	},
 	select: function select() {
 		this.refs.input.select();
 	},
 	render: function render() {
-		var escapedValue = (this.props.value || '').replace(/\&/g, '&amp;').replace(/ /g, '&nbsp;').replace(/\</g, '&lt;').replace(/\>/g, '&gt;');
+		var escapedValue = (this.props.defaultValue || this.props.value || '').replace(/\&/g, '&amp;').replace(/ /g, '&nbsp;').replace(/\</g, '&lt;').replace(/\>/g, '&gt;');
 		var wrapperStyle = this.props.style || {};
 		if (!wrapperStyle.display) wrapperStyle.display = 'inline-block';
 		var inputStyle = _extends({}, this.props.inputStyle);
@@ -74731,8 +74873,8 @@ ReactDOM.render(React.createElement(Application, null), document.getElementById(
 },{"./components/application.react":309,"./utils/StepUtils":332,"./utils/WorklistFormUtils":333,"console-polyfill":9,"es5-shim":11,"es5-shim/es5-sham":10,"react":264,"react-dom":76}],309:[function(require,module,exports){
 var React = require('react');
 var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
-var Stepmaster = require('./stepmaster.react');
-var WorklistTable = require('./worklisttable.react');
+var Stepmaster = require('./stepmaster/stepmaster.react');
+var WorklistTable = require('./worklisttable/worklisttable.react');
 var WorklistForm = require('./worklistform/worklistform.react');
 var CustomStepsModal = require('./worklistform/customstepsmodal.react');
 var LoadfileModal = require('./worklistform/loadfilemodal.react');
@@ -74837,7 +74979,8 @@ var Application = React.createClass({
 						stepmasterIsVisible: this.state.stepmasterIsVisible,
 						onStepmasterClick: this._onStepmasterClick,
 						width: Math.min(window.innerWidth - 200, 960),
-						height: window.innerHeight - 200 }),
+						height: window.innerHeight - 200,
+						addAllThreshold: 20 }),
 					React.createElement(LoadfileModal, {
 						loadfileIsVisible: this.state.loadfileIsVisible,
 						onLoadfileClick: this._onLoadfileClick })
@@ -74855,12 +74998,12 @@ var Application = React.createClass({
 
 module.exports = Application;
 
-},{"./stepmaster.react":310,"./worklistform/customstepsmodal.react":316,"./worklistform/loadfilemodal.react":321,"./worklistform/worklistform.react":323,"./worklisttable.react":324,"react":264,"react-addons-css-transition-group":71}],310:[function(require,module,exports){
+},{"./stepmaster/stepmaster.react":310,"./worklistform/customstepsmodal.react":316,"./worklistform/loadfilemodal.react":321,"./worklistform/worklistform.react":323,"./worklisttable/worklisttable.react":324,"react":264,"react-addons-css-transition-group":71}],310:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
-var StepStore = require('../stores/StepStore');
-var StepActionCreators = require('../actions/StepActionCreators');
+var StepStore = require('../../stores/StepStore');
+var StepActionCreators = require('../../actions/StepActionCreators');
 var StepmasterHeader = require('./stepmasterheader.react');
 var StepmasterText = require('./stepmastertext.react');
 var StepmasterButton = require("./stepmasterbutton.react");
@@ -74988,6 +75131,10 @@ var Stepmaster = React.createClass({
 	},
 	render: function () {
 		self = this;
+		var addAllEnabled = false;
+		if (StepStore.getFilteredLength() < this.props.addAllThreshold) {
+			addAllEnabled = true;
+		}
 		return React.createElement(
 			Modal,
 			{
@@ -75025,7 +75172,7 @@ var Stepmaster = React.createClass({
 						columnKey: 'button',
 						width: this.state.columnWidths.button,
 						isResizable: false,
-						header: null,
+						header: React.createElement(StepmasterHeaderButton, { enabled: addAllEnabled }),
 						cell: function (props) {
 							return React.createElement(StepmasterButton, {
 								onCellClick: self._onCellClick,
@@ -75111,10 +75258,10 @@ var Stepmaster = React.createClass({
 
 module.exports = Stepmaster;
 
-},{"../actions/StepActionCreators":306,"../stores/StepStore":330,"./stepmasterbutton.react":311,"./stepmasterheader.react":312,"./stepmasterheaderbutton.react":313,"./stepmastertext.react":314,"fixed-data-table":62,"react":264,"react-modal":83}],311:[function(require,module,exports){
+},{"../../actions/StepActionCreators":306,"../../stores/StepStore":330,"./stepmasterbutton.react":311,"./stepmasterheader.react":312,"./stepmasterheaderbutton.react":313,"./stepmastertext.react":314,"fixed-data-table":62,"react":264,"react-modal":83}],311:[function(require,module,exports){
 var React = require('react');
-var StepStore = require('../stores/StepStore');
-var StepActionCreators = require('../actions/StepActionCreators');
+var StepStore = require('../../stores/StepStore');
+var StepActionCreators = require('../../actions/StepActionCreators');
 var Cell = require('fixed-data-table').Cell;
 
 var cellStyle = {
@@ -75155,10 +75302,10 @@ var StepmasterButton = React.createClass({
 
 module.exports = StepmasterButton;
 
-},{"../actions/StepActionCreators":306,"../stores/StepStore":330,"fixed-data-table":62,"react":264}],312:[function(require,module,exports){
+},{"../../actions/StepActionCreators":306,"../../stores/StepStore":330,"fixed-data-table":62,"react":264}],312:[function(require,module,exports){
 var React = require('react');
 var Cell = require('fixed-data-table').Cell;
-var StepStore = require("../stores/StepStore");
+var StepStore = require("../../stores/StepStore");
 
 var StepmasterHeader = React.createClass({
     displayName: 'StepmasterHeader',
@@ -75194,10 +75341,10 @@ var StepmasterHeader = React.createClass({
 
 module.exports = StepmasterHeader;
 
-},{"../stores/StepStore":330,"fixed-data-table":62,"react":264}],313:[function(require,module,exports){
+},{"../../stores/StepStore":330,"fixed-data-table":62,"react":264}],313:[function(require,module,exports){
 var React = require('react');
-var StepStore = require('../stores/StepStore');
-var StepActionCreators = require('../actions/StepActionCreators');
+var StepStore = require('../../stores/StepStore');
+var StepActionCreators = require('../../actions/StepActionCreators');
 var Cell = require('fixed-data-table').Cell;
 var _ = require('lodash');
 
@@ -75212,6 +75359,15 @@ var StepmasterHeaderButton = React.createClass({
         });
     },
     render: function () {
+        var classes;
+        var clickCallBack;
+        if (this.props.enabled) {
+            classes = "glyphicon glyphicon-plus-sign";
+            clickCallBack = this._onClick;
+        } else {
+            classes = "glyphicon glyphicon-plus-sign disabled";
+            clickCallBack = null;
+        }
         return React.createElement(
             Cell,
             { style: {
@@ -75219,23 +75375,16 @@ var StepmasterHeaderButton = React.createClass({
                     position: 'relative',
                     top: '45%',
                     fontSize: 22 } },
-            React.createElement('span', { onClick: this._onClick, className: 'glyphicon glyphicon-plus-sign', 'aria-hidden': 'true' })
+            React.createElement('span', { onClick: clickCallBack, className: classes, 'aria-hidden': 'true' })
         );
     }
 });
 
 module.exports = StepmasterHeaderButton;
-/*
-<button type="button" 
-        className="btn btn-info btn-sm"
-        onClick={this._onClick}>
-        All
-</button>
-*/
 
-},{"../actions/StepActionCreators":306,"../stores/StepStore":330,"fixed-data-table":62,"lodash":66,"react":264}],314:[function(require,module,exports){
+},{"../../actions/StepActionCreators":306,"../../stores/StepStore":330,"fixed-data-table":62,"lodash":66,"react":264}],314:[function(require,module,exports){
 var React = require('react');
-var StepStore = require('../stores/StepStore');
+var StepStore = require('../../stores/StepStore');
 var Cell = require('fixed-data-table').Cell;
 
 var style = {
@@ -75261,7 +75410,7 @@ var StepmasterText = React.createClass({
 
 module.exports = StepmasterText;
 
-},{"../stores/StepStore":330,"fixed-data-table":62,"react":264}],315:[function(require,module,exports){
+},{"../../stores/StepStore":330,"fixed-data-table":62,"react":264}],315:[function(require,module,exports){
 var React = require('react');
 var WorklistFormActionCreators = require('../../actions/WorklistFormActionCreators');
 var WorklistFormStore = require('../../stores/WorklistFormStore');
@@ -76060,7 +76209,7 @@ module.exports = WorklistForm;
 
 var React = require('react');
 var _ = require('lodash');
-var StepStore = require('../stores/StepStore');
+var StepStore = require('../../stores/StepStore');
 var WorklistTableButton = require('./worklisttablebutton.react');
 var WorklistTableText = require('./worklisttabletext.react');
 var WorklistTableDropdown = require('./worklisttabledropdown.react');
@@ -76304,10 +76453,10 @@ var WorklistTable = React.createClass({
 
 module.exports = WorklistTable;
 
-},{"../stores/StepStore":330,"./worklisttablebutton.react":325,"./worklisttabledropdown.react":326,"./worklisttabledropdownselection.react":327,"./worklisttabletext.react":328,"fixed-data-table":62,"lodash":66,"react":264}],325:[function(require,module,exports){
+},{"../../stores/StepStore":330,"./worklisttablebutton.react":325,"./worklisttabledropdown.react":326,"./worklisttabledropdownselection.react":327,"./worklisttabletext.react":328,"fixed-data-table":62,"lodash":66,"react":264}],325:[function(require,module,exports){
 var React = require('react');
-var StepStore = require('../stores/StepStore');
-var StepActionCreators = require('../actions/StepActionCreators');
+var StepStore = require('../../stores/StepStore');
+var StepActionCreators = require('../../actions/StepActionCreators');
 var Cell = require('fixed-data-table').Cell;
 
 var style = {
@@ -76347,7 +76496,7 @@ module.exports = WorklistTableButton;
     -
 </button>*/
 
-},{"../actions/StepActionCreators":306,"../stores/StepStore":330,"fixed-data-table":62,"react":264}],326:[function(require,module,exports){
+},{"../../actions/StepActionCreators":306,"../../stores/StepStore":330,"fixed-data-table":62,"react":264}],326:[function(require,module,exports){
 var React = require('react');
 var Cell = require('fixed-data-table').Cell;
 
@@ -76393,8 +76542,8 @@ module.exports = WorklistTableDropdown;
 },{"fixed-data-table":62,"react":264}],327:[function(require,module,exports){
 var React = require('react');
 var Cell = require('fixed-data-table').Cell;
-var StepStore = require('../stores/StepStore');
-var StepActionCreators = require('../actions/StepActionCreators');
+var StepStore = require('../../stores/StepStore');
+var StepActionCreators = require('../../actions/StepActionCreators');
 
 var WorklistTableDropdownSelection = React.createClass({
     displayName: 'WorklistTableDropdownSelection',
@@ -76496,7 +76645,7 @@ var WorklistTableDropdownSelection = React.createClass({
 
 module.exports = WorklistTableDropdownSelection;
 
-},{"../actions/StepActionCreators":306,"../stores/StepStore":330,"fixed-data-table":62,"react":264}],328:[function(require,module,exports){
+},{"../../actions/StepActionCreators":306,"../../stores/StepStore":330,"fixed-data-table":62,"react":264}],328:[function(require,module,exports){
 var React = require('react');
 var Cell = require('fixed-data-table').Cell;
 
@@ -76842,8 +76991,6 @@ module.exports = WorklistFormStore;
 },{"../dispatcher/AppDispatcher":329,"events":7,"object-assign":68}],332:[function(require,module,exports){
 var _ = require('lodash');
 var StepActionCreators = require('../actions/StepActionCreators');
-
-//var stepArray = require('./stepdata/steps.json');
 var stepArray = window.references.stepMaster;
 
 function generateMasterSteps() {
@@ -76923,10 +77070,7 @@ var XLSX = require('xlsx-browserify-shim');
 var Blob = require('blob');
 var StepStore = require('../stores/StepStore');
 var WorklistFormStore = require('../stores/WorklistFormStore');
-//var columnMap = require('./worklistformdata/columnmap');
 var columnMap = window.references.columnMap;
-//var columnKeys = require('./worklistformdata/columnkeys');
-var columnKeys = window.references.columnKeys;
 var _ = require('lodash');
 
 function generateWorklist() {
@@ -76934,7 +77078,7 @@ function generateWorklist() {
 	var stepMap = generateStepMap();
 	var line;
 	var table = [[], [], [], [], [], [], [], [], []]; //initalize with 9 blank rows
-	table.push(columnKeys);
+	table.push(_.keys(columnMap));
 	_.forEach(stepMap, function (stepArray, scanStep) {
 		if (stepArray.length > 0) {
 			stepArray.map(function (processStep, index, array) {
@@ -76960,6 +77104,9 @@ function generateLine(selectionsObj, scanStep, processStep) {
 		switch (i) {
 			case columnMap["WORK_KEY"]:
 				line.push("1");
+				break;
+			case columnMap["TITLE"]:
+				line.push(scanStep + '_' + processStep + '_' + DEFECTNAME);
 				break;
 			case columnMap["GROUPKEY"]:
 				line.push("-999999999");
@@ -77073,7 +77220,9 @@ function generateStepMap() {
 
 	/*Now fill in process steps*/
 	StepStore.WorklistStepsMap(function (stepObj, index, array) {
-		if (!stepObj.isScan) {
+		if (stepObj.scanstep) {
+			//if this step as an associated scan step, can only be a process step
+			console.assert(!stepObj.isScan, 'During gernerateStepMap(), A scan step was associated with another scan step which should not happen.');
 			stepMap[stepObj.scanstep].push(stepObj.stepseq);
 		}
 	});
