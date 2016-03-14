@@ -1,10 +1,36 @@
 var _ = require('lodash');
+var $ = require('jquery');
 var StepActionCreators = require('../actions/StepActionCreators');
 var stepArray = window.references.stepMaster;
 
 function generateMasterSteps(){
-    console.log('steps');
-    StepActionCreators.setMasterSteps(stepArray);
+    var getStaticData = false; //debugging parameter to use when API is not available
+    
+    if(getStaticData){
+        StepActionCreators.setMasterSteps(stepArray);
+    } else {
+        StepActionCreators.setLoadingStatus(true);
+        $.ajax({
+            url: "http://105.193.20.157:3031/api/globalsteps",
+            type: "GET",
+            crossDomain: true,
+            dataType: "json",
+            success: function(data){
+                var arrayData = JSON.parse(data);
+                console.log('success from api request');
+                StepActionCreators.setMasterSteps(arrayData);
+                StepActionCreators.setLoadingStatus(false);
+            },
+            error: function(xhr, status, error){
+                console.log('error from api request');
+                alert("Uh oh! There seems to be a problem contacting the server."
+                        + "\nPlease contact Ryan McGill (r.mcgill@samsung.com)"
+                        + "\nstatus: " + status);
+                StepActionCreators.setLoadingStatus(false);
+            },
+            timeout: 5000
+        });
+    }
 }
 
 function filterTest(row, filters){

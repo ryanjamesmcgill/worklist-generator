@@ -1,10 +1,12 @@
 var React = require('react');
 var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
+var StepStore = require('../stores/StepStore');
 var Stepmaster = require('./stepmaster/stepmaster.react');
 var WorklistTable = require('./worklisttable/worklisttable.react');
 var WorklistForm = require('./worklistform/worklistform.react');
 var CustomStepsModal = require('./worklistform/customstepsmodal.react');
 var LoadfileModal = require('./worklistform/loadfilemodal.react');
+var LoadingModal = require('./loadingmodal.react');
 
 var navStyle={
 	backgroundColor: '#292929',
@@ -32,6 +34,7 @@ var Application = React.createClass({
 	},
 	getInitialState: function(){
 		return {
+			loadingModalVisible: StepStore.getLoadStatus(),
 			stepmasterIsVisible: false,
 			loadfileIsVisible: false,
 			containerWidth: 970
@@ -39,6 +42,7 @@ var Application = React.createClass({
 	},
 	componentDidMount: function(){
 		window.addEventListener('resize', this._onResize);
+		StepStore.addChangeListener(this._onStepStoreChange);
 		
 		var width = this.refs.container.clientWidth;
 		this.setState({
@@ -47,6 +51,7 @@ var Application = React.createClass({
 	},
 	componentWillUnmount: function() {
 		window.removeEventListener('resize', this._onResize);
+		StepStore.removeChangeListener(this._onStepStoreChange);
 	},
 	_onResize: function(e) {
 		var width = this.refs.container.clientWidth;
@@ -57,6 +62,11 @@ var Application = React.createClass({
 	_onStepmasterClick: function(e){
 		this.setState({
 			stepmasterIsVisible: !(this.state.stepmasterIsVisible)
+		});
+	},
+	_onStepStoreChange: function(){
+		this.setState({
+			loadingModalVisible: StepStore.getLoadStatus()
 		});
 	},
 	_onLoadfileClick: function(e){
@@ -104,6 +114,8 @@ var Application = React.createClass({
             <span
 				style={{display: 'none'}}
                 className="glyphicon glyphicon-plus-sign"></span>
+            <LoadingModal 
+				visible = {this.state.loadingModalVisible} />
 		</div>
 		);
 	}
